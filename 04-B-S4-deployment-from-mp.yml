@@ -7,6 +7,7 @@
   vars:
     suser_id: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME')}}"
     suser_password: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD')}}"
+    sapcar_archive: SAPCAR_1115-70006178.EXE
 
   tasks:
     - name: ensure sap software download directory exists
@@ -66,7 +67,7 @@
       community.sap_launchpad.software_center_download:
         suser_id: "{{ suser_id }}"
         suser_password: "{{ suser_password }}"
-        softwarecenter_search_query: SAPCAR_1010-70006178.EXE
+        softwarecenter_search_query: "{{ sapcar_archive }}"
         dest: "{{ sap_swpm_software_path }}"
       tags:
         - sap_s4_softwaredownload

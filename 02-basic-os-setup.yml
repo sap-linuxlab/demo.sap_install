@@ -59,7 +59,7 @@
                      dhcp4: true
                      dhcp4_send_hostname: true
 
-    - name: get storage pool setup from server defkinition
+    - name: get storage pool setup from server definition
       set_fact:
          storage_pools: "{{ gcp_machines | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
 
