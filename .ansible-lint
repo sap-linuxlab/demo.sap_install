@@ -1,0 +1,7 @@
+skip_list:
+     - empty-string-compare
+     - meta-incorrect
+     - meta-no-info
+     - indentation
+     - no-changed-when
+     - line-length
