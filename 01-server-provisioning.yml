@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  gather_facts: false
+
+  ## You need to define servers in the following way
+  #   gcp_machines:
+  #           - name: rha-hana
+  #             bdisksize: 50
+  #             disk2size: 2
+  #             vmtype: n1-standard-2
+  #             group: hana
+  #             storage_pools:
+  #              (s. storage config role)
+
+  tasks:
+  - name: Debug dictionary
+    debug:
+      msg:
+        - "Name: {{ item.name }}"
+        - "boot: {{ item.bdisksize }}"
+        - "disk2:{{ item.disk2size }}"
+        - "type: {{ item.vmtype }}"
+        - "group:{{ item.group }}"
+    loop: "{{ gcp_machines }}"
+
+  - name: Create GCE VMs
+    include_role:
+      name: gcp_vm_create
+    vars:
+      gcp_vm_name: "{{ item.name }}"
+      gcp_vm_bdisksize: "{{ item.bdisksize }}"
+      gcp_vm_disk2size: "{{ item.disk2size }}"
+      gcp_vm_type: "{{ item.vmtype }}"
+      gcp_vm_awx_group: "{{ item.group }}"
+    loop: "{{ gcp_machines }}"

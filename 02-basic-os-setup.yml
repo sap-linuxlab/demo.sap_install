@@ -1,0 +1,68 @@
+---
+####################################################
+#
+# This playbook covers all configuration steps for phase 2: Basic OS Setup
+#
+#  - subscription and repositories
+#  - network setup
+#  - storage customization
+
+- name: Ensure Servers are booted and reachable
+  hosts: all
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Wait for SSH to come up
+    wait_for:
+      host: "{{ ansible_host }}"
+      port: 22
+      delay: 10
+      timeout: 360
+    delegate_to: localhost
+
+- name: Phase 2 - basic OS Setup
+  hosts: all
+  become: true
+
+  # Default variables for the playbooks can be set here
+  # and can be overwritten in the template file
+  vars:
+    reg_activation_key: "{{ sap_rhsm_activationkey }}"
+    reg_organization_id: "{{ sap_rhsm_org_id }}"
+    reg_osrelease: 8.4
+    repositories:
+      - rhel-8-for-x86_64-baseos-e4s-rpms
+      - rhel-8-for-x86_64-appstream-e4s-rpms
+      - rhel-8-for-x86_64-sap-solutions-e4s-rpms
+      - rhel-8-for-x86_64-sap-netweaver-e4s-rpms
+      - rhel-8-for-x86_64-highavailability-e4s-rpms
+
+  tasks:
+    - name: Ensure Correct subscription and repositories
+      include_role:
+        name: mk-ansible-roles.subscribe_rhn
+
+    - name: ensure network configuration is persistent
+      include_role:
+        name: redhat.rhel_system_roles.network
+      vars:
+         network_provider: nm
+         network_connections:
+           - name: "{{ ansible_default_ipv4.alias }}"
+             mac: "{{ ansible_default_ipv4.macaddress }}"
+             interface_name: "{{ ansible_default_ipv4.interface }}"
+             # state: up
+             # persistent_state: present
+             type: ethernet
+             # autoconnect: true
+             ip:
+                     dhcp4: true
+                     dhcp4_send_hostname: true
+
+    - name: get storage pool setup from server defkinition
+      set_fact:
+         storage_pools: "{{ gcp_machines | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
+
+    - name: Ensure storage is configured correctly
+      include_role:
+        name: redhat.rhel_system_roles.storage

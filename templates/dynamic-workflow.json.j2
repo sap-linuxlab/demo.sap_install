@@ -1,0 +1,22 @@
+{
+  "name": "Delete Host Survey",
+  "description": "Choose host to be deleted",
+  "spec": [
+    {
+      "type": "multiplechoice",
+      "question_name": "Delete which snapshots?",
+      "question_description": "Select all hosts that apply",
+      "variable": "hostlist_del",
+      "choices": [
+{% for host in groups['all'] %}
+{% if loop.last %}
+        "{{host}}"
+{% else %}
+        "{{host}}",
+{% endif %}
+{% endfor %}
+      ],
+      "required": true,
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+- src: mk-ansible-roles.check_reboot
+- src: mk-ansible-roles.subscribe_rhn
+- src: mk-ansible-roles.setup_nfs_server
+# name: sap.download
+# src: https://github.com/kksat/sap.download.git

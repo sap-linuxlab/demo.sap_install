@@ -1,0 +1,78 @@
+---
+
+- name: Install S4
+  hosts: gcp_awx_group_s4
+  become: true
+
+  vars:
+    suser_id: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME')}}"
+    suser_password: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD')}}"
+
+  tasks:
+    - name: ensure sap software download directory exists
+      file:
+        path: "{{ sap_swpm_software_path }}"
+        state: directory
+        mode: '0755'
+
+    - name: ensure S-USER and PASSWORD are defined
+      fail:
+        msg: "Please set SAP_SUPPORT_DOWNLOAD_USERNAME and SAP_SUPPORT_DOWNLOAD_PASSWORD"
+      when: ( suser_id|trim ==''  )  or  ( suser_password|trim == '' )
+      tags:
+        - sap_s4_softwaredownload
+
+    - name: ensure prereqs are installed
+      pip:
+        name:
+              - urllib3
+              - beautifulsoup4
+              - lxml
+              - requests
+        state: present
+      tags:
+        - sap_s4_softwaredownload
+
+    # Use task block to call Ansible Module
+
+    - name: Execute Ansible Module 'maintenance_planner' to get files from MP
+      community.sap_launchpad.maintenance_planner:
+        suser_id: "{{ suser_id }}"
+        suser_password: "{{ suser_password }}"
+        transaction_name: "{{ mp_transaction_name }}"
+      register: sap_maintenance_planner_basket_register
+      tags:
+        - sap_s4_softwaredownload
+
+    - name: Display Download Basket
+      debug:
+        msg:
+          - "{{ sap_maintenance_planner_basket_register.download_basket }}"
+      tags:
+        - sap_s4_softwaredownload
+
+    - name: Execute Ansible Module 'software_center_download' to download files
+      community.sap_launchpad.software_center_download:
+        suser_id: "{{ suser_id }}"
+        suser_password: "{{ suser_password }}"
+        download_link: "{{ item.DirectLink }}"
+        download_filename: "{{ item.Filename }}"
+        dest: "{{ sap_swpm_software_path }}"
+      loop: "{{ sap_maintenance_planner_basket_register.download_basket }}"
+      tags:
+        - sap_s4_softwaredownload
+
+    - name: download sapcar
+      community.sap_launchpad.software_center_download:
+        suser_id: "{{ suser_id }}"
+        suser_password: "{{ suser_password }}"
+        softwarecenter_search_query: SAPCAR_1010-70006178.EXE
+        dest: "{{ sap_swpm_software_path }}"
+      tags:
+        - sap_s4_softwaredownload
+
+    - name: execute the SWPM Installation
+      include_role:
+        name: community.sap_install.sap_swpm
+      tags:
+        - sap_s4_swpm

@@ -1,0 +1,24 @@
+---
+# This playbook configures a server with
+#  - nfs-service
+#  - avantra server software
+
+- name: Install nfs Server
+  hosts: gcp_awx_group_management
+  become: true
+
+  vars:
+          # subscription mgmgt
+          #
+          reg_activation_key: "{{ sap_rhsm_activationkey }}"
+          reg_organization_id: "{{ sap_rhsm_org_id }}"
+
+          # RHN Server
+          exportdirs:
+             - /export/sap-software: '10.0.0.0/8(ro)'
+             - /export/hana/shared: '10.0.0.0/8(rw)'
+
+  roles:
+               - mk-ansible-roles.subscribe_rhn
+               # linux-system-roles.storage
+               - mk-ansible-roles.setup_nfs_server
