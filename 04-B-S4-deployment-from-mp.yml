@@ -14,7 +14,10 @@
   vars:
     suser_id: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME')}}"
     suser_password: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD')}}"
-    sapcar_archive: SAPCAR_1115-70006178.EXE
+    # update regularily -- not always im MP download list
+    sap_installation_tools:
+            - SAPCAR_1115-70006178.EXE
+            - SWPM20SP10_5-80003424.SAR
 
   tasks:
     - name: ensure sap software download directory exists
@@ -70,12 +73,13 @@
       tags:
         - sap_s4_softwaredownload
 
-    - name: download sapcar
+    - name: download additional installation tools
       community.sap_launchpad.software_center_download:
         suser_id: "{{ suser_id }}"
         suser_password: "{{ suser_password }}"
-        softwarecenter_search_query: "{{ sapcar_archive }}"
+        softwarecenter_search_query: "{{ item }}"
         dest: "{{ sap_swpm_software_path }}"
+      loop: "{{ sap_installation_tools }}"
       tags:
         - sap_s4_softwaredownload
 
