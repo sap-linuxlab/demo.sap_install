@@ -11,39 +11,7 @@
   hosts: gcp_awx_group_s4
   become: true
 
-  vars:
-    suser_id: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME')}}"
-    suser_password: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD')}}"
-
   tasks:
-    - name: ensure sap software download directory exists
-      file:
-        path: "{{ sap_swpm_software_path }}"
-        state: directory
-        mode: '0755'
-
-    - name: ensure S-USER and PASSWORD are defined
-      fail:
-        msg: "Please set SAP_SUPPORT_DOWNLOAD_USERNAME and SAP_SUPPORT_DOWNLOAD_PASSWORD"
-      when: ( suser_id|trim ==''  )  or  ( suser_password|trim == '' )
-
-    - name: ensure prereqs are installed
-      pip:
-        name:
-              - urllib3
-              - beautifulsoup4
-              - lxml
-              - requests
-        state: present
-
-    - name: Execute Ansible Module to download SAP software
-      community.sap_launchpad.software_center_download:
-        suser_id: "{{ suser_id }}"
-        suser_password: "{{ suser_password }}"
-        softwarecenter_search_query: "{{ item }}"
-        dest: "{{ sap_swpm_software_path }}"
-      loop: "{{ sap_s4_software }}"
-
     - name: execute the SWPM Installation
       include_role:
         name: community.sap_install.sap_swpm
