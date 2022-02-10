@@ -16,7 +16,7 @@ collections:
           # requires ansible 2.9+
         - name: https://github.com/sap-linuxlab/community.sap_launchpad.git
           type: git
-        - name: https://github.com/sap-linuxlab/community.sap_install.git,dev
+        - name: https://github.com/sap-linuxlab/community.sap_install.git,mkoch-bugfix
           type: git
         - name: https://github.com/sap-linuxlab/community.sap_operations.git
           type: git
