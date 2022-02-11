@@ -116,16 +116,22 @@
            - nfs-utils
          state: present
 
-    - name: Ensure Mountpoint exists
-      file:
-         path: "{{ gcs_bucket_path }}"
-         state: directory
-         mode: '0755'
+    - name: ensure google-cloud-storage Python library is installed
+      pip:
+         name: google-cloud-storage
+         state: installed
 
-    - name: Ensure Bucket is mounted
-      mount:
-         path: "{{ gcs_bucket_path }}"
-         src: "rhel-bastion:{{ gcs_bucket_path }}"
-         fstype: nfs
-         opts: ro
-         state: present
+
+         #    - name: Ensure Mountpoint exists
+         #      file:
+         #         path: "{{ gcs_bucket_path }}"
+         #         state: directory
+         #         mode: '0755'
+
+         #    - name: Ensure Bucket is mounted
+         #      mount:
+         #         path: "{{ gcs_bucket_path }}"
+         #         src: "{{ gcs_bucket_name }}"
+         #         fstype: gcsfuse
+         #         opts: ro
+         #         state: present

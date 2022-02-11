@@ -24,7 +24,7 @@
          owner: root
          group: root
 
-    - name: copy files from istorage bucket to {{ sap_hana_install_software_directory }}
+    - name: copy files from storage bucket to {{ sap_hana_install_software_directory }}
       google.cloud.gcp_storage_object:
         action: download
         bucket: "{{ gcp_storage_bucket }}"
@@ -32,6 +32,9 @@
         dest: "{{ sap_hana_install_software_directory }}/{{ item }}"
         auth_kind: application
       loop: "{{ sap_hana_install_sarfiles }}"
+
+    - name: copy sapcar to {{ sap_hana_install_software_directory }}
+      command: gsutil cp gs://{{ gcp_storage_bucket }}/sap/SAPCAR*.EXE {{ sap_hana_install_software_directory }}
 
     - name: execute the SAP Hana Installation
       include_role:
