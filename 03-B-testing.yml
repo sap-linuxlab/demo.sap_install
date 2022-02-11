@@ -17,21 +17,15 @@
           # include_role:
           # name: google.cloud.gcsfuse
 
-   - name: debug
-     ansible.builtin.debug:
-     msg: |
-         the value of foo.txt is {{ lookup('community.google.gcp_storage_file',
-         bucket='rh-ava-packages', src='sap/SAPCAR_1115-70006178.EXE',
-         auth_kind='serviceaccount') }}
 
-
-   - name: copy HANA images from bucket locally
-     include_role:
-       name: gcp_copy_file_from_bucket
-     vars:
-       gcp_copy_file_from_bucket_bucketname: "rh-ava-packages"
-       gcp_copy_file_from_bucket_filename: "sap/{{ item }}"
-       gcp_copy_file_from_bucket_dest: "{{ sap_hana_install_software_directory }}"
+   - name: copy sarfiles from bucket locally
+     google.cloud.gcp_storage_object:
+       action: download
+       bucket: "rh-ava-packages"
+       src: "sap/{{ item }}"
+       dest: "{{ sap_hana_install_software_directory }}"
+       auth_kind: serviceaccount
+       state: present
      loop: "{{ sap_hana_install_sarfiles }}"
 
     # name: execute the SAP Hana Installation
