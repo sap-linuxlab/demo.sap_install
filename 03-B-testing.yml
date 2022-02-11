@@ -13,9 +13,9 @@
 
   tasks:
 
-          # - name: include GCSFUSE
-          # include_role:
-          # name: google.cloud.gcsfuse
+    - name: Print Owner
+      debug:
+              msg: "GCP Service EMAIL {{ lookup('env','GCP_SERVICE_ACCOUNT_EMAIL') }}"
     - name: prerequisites
       pip:
         name: google-cloud-storage
