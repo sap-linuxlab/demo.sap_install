@@ -22,7 +22,7 @@
       vars:
          gcp_copy_file_from_bucket_bucketname: "rh-ava-packages"
          gcp_copy_file_from_bucket_filename: "sap/{{ item }}"
-         gcp_copy_file_from_bucket_destination: "{{ sap_hana_install_software_directory }}"
+         gcp_copy_file_from_bucket_dest: "{{ sap_hana_install_software_directory }}"
       loop: "{{ sap_hana_install_sarfiles_list }}"
 
     # name: execute the SAP Hana Installation

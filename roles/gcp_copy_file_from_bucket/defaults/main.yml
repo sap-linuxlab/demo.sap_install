@@ -3,4 +3,4 @@
 #
 gcp_copy_file_from_bucket_bucketname:
 gcp_copy_file_from_bucket_filename:
-gcp_copy_file_from_bucket_destination:
+gcp_copy_file_from_bucket_dest:
