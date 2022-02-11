@@ -61,9 +61,10 @@
       items: "{{ gcp_vm_network_tags }}"
     labels:
       awx_group: "{{ gcp_vm_awx_group }}"
-#    project: "{{ project_id }}"
     auth_kind: serviceaccount
-#    service_account_file: "{{ credentials_file }}"
+    scopes:
+      - https://www.googleapis.com/auth/compute
+      - https://www.googleapis.com/auth/devstorage.read_only
     state: present
   register: gcp_new_instance
 
