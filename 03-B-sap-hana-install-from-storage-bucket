@@ -1,0 +1,38 @@
+---
+# Phase 3 - step B
+#
+# This playbook downloads the hana software defined
+# in the list {{ sap_hana_software }} to {{ sap_hana_install_software_directory }}
+#
+# The role sap_hana_install unpacks the software in {{ sap_hana_install_software_directory }}
+# Then it calls the installation of SAP HANA with the configured paramters
+
+- name: Phase 3-B - Install Hana
+  hosts: gcp_awx_group_hana
+  become: true
+
+  tasks:
+
+     #
+     # the files are stored in a google bucket
+     #  download the required files to {{ sap_hana_install_software_directory }}
+    - name: ensure target directory exists
+      file:
+         path: "{{ sap_hana_install_software_directory }}"
+         state: directory
+         mode: '0755'
+         owner: root
+         group: root
+
+    - name: copy files from istorage bucket to {{ sap_hana_install_software_directory }}
+      google.cloud.gcp_storage_object:
+        action: download
+        bucket: "{{ gcp_storage_bucket }}"
+        src: "sap/{{ item }}"
+        dest: "{{ sap_hana_install_software_directory }}/{{ item }}"
+        auth_kind: application
+      loop: "{{ sap_hana_install_sarfiles }}"
+
+    - name: execute the SAP Hana Installation
+      include_role:
+        name: community.sap_install.sap_hana_install

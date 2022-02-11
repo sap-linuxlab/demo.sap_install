@@ -1,6 +1,0 @@
----
-# defaults file for gcp_copy_file_from_bucket
-#
-gcp_copy_file_from_bucket_bucketname:
-gcp_copy_file_from_bucket_filename:
-gcp_copy_file_from_bucket_dest:
