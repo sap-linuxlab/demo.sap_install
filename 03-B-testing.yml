@@ -17,7 +17,7 @@
   tasks:
 
     - name: copy HANA images from bucket locally
-      include:role:
+      include_role:
         name: gcp_copy_file_from_bucket
       vars:
          gcp_copy_file_from_bucket_bucketname: "rh-ava-packages"
