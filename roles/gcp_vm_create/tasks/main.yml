@@ -62,9 +62,11 @@
     labels:
       awx_group: "{{ gcp_vm_awx_group }}"
     auth_kind: serviceaccount
-    scopes:
-      - https://www.googleapis.com/auth/compute
-      - https://www.googleapis.com/auth/devstorage.read_only
+    service_accounts:
+       - email: 37149106036-compute@developer.gserviceaccount.com
+         scopes:
+           - https://www.googleapis.com/auth/compute
+           - https://www.googleapis.com/auth/devstorage.read_only
     state: present
   register: gcp_new_instance
 
