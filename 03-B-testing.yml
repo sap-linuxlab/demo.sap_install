@@ -17,6 +17,14 @@
           # include_role:
           # name: google.cloud.gcsfuse
 
+   - name: debug
+     ansible.builtin.debug:
+     msg: |
+         the value of foo.txt is {{ lookup('community.google.gcp_storage_file',
+         bucket='rh-ava-packages', src='sap/SAPCAR_1115-70006178.EXE',
+         auth_kind='serviceaccount') }}
+
+
    - name: copy HANA images from bucket locally
      include_role:
        name: gcp_copy_file_from_bucket
