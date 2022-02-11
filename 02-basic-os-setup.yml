@@ -109,9 +109,11 @@
                   - https://packages.cloud.google.com/yum/doc/yum-key.gpg
                   - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 
-    - name: Ensure GCSFuse is installed
+    - name: Ensure GCSFuse & NFS client is installed
       dnf:
-         name: gcsfuse
+         name:
+           - gcsfuse
+           - nfs-utils
          state: present
 
     - name: Ensure Mountpoint exists
