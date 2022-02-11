@@ -1,0 +1,30 @@
+---
+# Phase 3 - step B
+#
+# This playbook downloads the hana software defined
+# in the list {{ sap_hana_software }} to {{ sap_hana_install_software_directory }}
+#
+# The role sap_hana_install unpacks the software in {{ sap_hana_install_software_directory }}
+# Then it calls the installation of SAP HANA with the configured paramters
+
+- name: Phase 3-B - Install Hana
+  hosts: gcp_awx_group_hana
+  become: true
+  vars:
+    suser_id: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME')}}"
+    suser_password: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD')}}"
+
+  tasks:
+
+    - name: copy HANA images from bucket locally
+      include:role:
+        name: gcp_copy_file_from_bucket
+      vars:
+         gcp_copy_file_from_bucket_bucketname: "rh-ava-packages"
+         gcp_copy_file_from_bucket_filename: "sap/{{ item }}"
+         gcp_copy_file_from_bucket_destination: "{{ sap_hana_install_software_directory }}"
+      loop: "{{ sap_hana_install_sarfiles_list }}"
+
+    # name: execute the SAP Hana Installation
+    # include_role:
+    #   name: community.sap_install.sap_hana_install

@@ -1,0 +1,21 @@
+---
+# tasks file for gcp_copy_file_from_bucket
+#
+- name: ensure target directory exists
+  file:
+    path: "{{ gcp_copy_file_from_bucket_dest }}"
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: copy file from bucket
+  copy:
+    content: "{{ lookup('gcp_storage_file',
+                 bucket=gcp_copy_file_from_bucket_bucket,
+                 src=gcp_copy_file_from_bucket_filename,
+                 auth_kind='serviceaccount') }}"
+    dest: "{{ gcp_copy_file_from_bucket_dest }}/{{ gcp_copy_file_from_bucket_filename | basename }}"
+    owner: root
+    group: root
+    mode: '0644'
