@@ -18,15 +18,15 @@
           # name: google.cloud.gcsfuse
 
 
-   - name: copy sarfiles from bucket locally
-     google.cloud.gcp_storage_object:
-       action: download
-       bucket: "rh-ava-packages"
-       src: "sap/{{ item }}"
-       dest: "{{ sap_hana_install_software_directory }}"
-       auth_kind: serviceaccount
-       state: present
-     loop: "{{ sap_hana_install_sarfiles }}"
+    - name: copy sarfiles from bucket locally
+      google.cloud.gcp_storage_object:
+        action: download
+        bucket: "rh-ava-packages"
+        src: "sap/{{ item }}"
+        dest: "{{ sap_hana_install_software_directory }}"
+        auth_kind: serviceaccount
+        state: present
+      loop: "{{ sap_hana_install_sarfiles }}"
 
     # name: execute the SAP Hana Installation
     # include_role:
