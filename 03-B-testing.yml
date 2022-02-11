@@ -8,26 +8,23 @@
 # Then it calls the installation of SAP HANA with the configured paramters
 
 - name: Phase 3-B - Install Hana
-  hosts: gcp_awx_group_hana
+  hosts: rha-nfs-server
   become: true
-  vars:
-    suser_id: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME')}}"
-    suser_password: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD')}}"
 
   tasks:
 
-    - name: include GCSFUSE
-      include_role:
-       name: google.cloud.gcsfuse
+          # - name: include GCSFUSE
+          # include_role:
+          # name: google.cloud.gcsfuse
 
-    # - name: copy HANA images from bucket locally
-    #  include_role:
-    #    name: gcp_copy_file_from_bucket
-    #  vars:
-    #    gcp_copy_file_from_bucket_bucketname: "rh-ava-packages"
-    #    gcp_copy_file_from_bucket_filename: "sap/{{ item }}"
-    #     gcp_copy_file_from_bucket_dest: "{{ sap_hana_install_software_directory }}"
-    #  loop: "{{ sap_hana_install_sarfiles_list }}"
+   - name: copy HANA images from bucket locally
+     include_role:
+       name: gcp_copy_file_from_bucket
+     vars:
+       gcp_copy_file_from_bucket_bucketname: "rh-ava-packages"
+       gcp_copy_file_from_bucket_filename: "sap/{{ item }}"
+       gcp_copy_file_from_bucket_dest: "{{ sap_hana_install_software_directory }}"
+     loop: "{{ sap_hana_install_sarfiles }}"
 
     # name: execute the SAP Hana Installation
     # include_role:

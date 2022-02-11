@@ -11,7 +11,7 @@
 
 - name: copy file from bucket
   copy:
-    content: "{{ lookup('gcp_storage_file',
+    content: "{{ lookup('community.google.gcp_storage_file',
                  bucket=gcp_copy_file_from_bucket_bucket,
                  src=gcp_copy_file_from_bucket_filename,
                  auth_kind='serviceaccount') }}"

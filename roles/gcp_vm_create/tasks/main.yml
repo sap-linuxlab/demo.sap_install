@@ -61,8 +61,7 @@
       items: "{{ gcp_vm_network_tags }}"
     labels:
       awx_group: "{{ gcp_vm_awx_group }}"
-      # auth_kind: serviceaccount
-    auth_kind: machineaccount
+    auth_kind: serviceaccount
     scopes:
       - https://www.googleapis.com/auth/compute
       - https://www.googleapis.com/auth/devstorage.read_only
