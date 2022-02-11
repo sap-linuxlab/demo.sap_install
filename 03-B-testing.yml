@@ -26,8 +26,8 @@
         action: download
         bucket: "rh-ava-packages"
         src: "sap/{{ item }}"
-        dest: "{{ sap_hana_install_software_directory }}"
-        auth_kind: "{{ gcp_authkind }}"
+        dest: "{{ sap_hana_install_software_directory }}/{{ item }}"
+        auth_kind: application
       loop: "{{ sap_hana_install_sarfiles }}"
 
     # name: execute the SAP Hana Installation
