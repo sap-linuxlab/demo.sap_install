@@ -16,7 +16,10 @@
           # - name: include GCSFUSE
           # include_role:
           # name: google.cloud.gcsfuse
-
+    - name: prerequisites
+      pip:
+        name: google-cloud-storage
+        state: present
 
     - name: copy sarfiles from bucket locally
       google.cloud.gcp_storage_object:
