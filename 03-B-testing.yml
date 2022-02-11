@@ -27,7 +27,7 @@
         bucket: "rh-ava-packages"
         src: "sap/{{ item }}"
         dest: "{{ sap_hana_install_software_directory }}"
-        auth_kind: serviceaccount
+        auth_kind: machineaccount
       loop: "{{ sap_hana_install_sarfiles }}"
 
     # name: execute the SAP Hana Installation
