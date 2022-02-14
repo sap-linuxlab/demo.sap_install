@@ -63,7 +63,7 @@
       awx_group: "{{ gcp_vm_awx_group }}"
     auth_kind: serviceaccount
     service_accounts:
-       - email: 37149106036-compute@developer.gserviceaccount.com
+       - email: "{{ lookup('env','GCE_EMAIL') }}"
          scopes:
            - https://www.googleapis.com/auth/compute
            - https://www.googleapis.com/auth/devstorage.read_only
