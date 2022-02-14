@@ -15,7 +15,7 @@
 
     - name: Print Owner
       debug:
-              msg: "GCP Service EMAIL {{ lookup('env','GCP_SERVICE_ACCOUNT_EMAIL') }}"
+              msg: "GCP Service EMAIL {{ lookup('env','GCE_EMAIL') }}"
     - name: prerequisites
       pip:
         name: google-cloud-storage

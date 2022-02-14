@@ -119,7 +119,7 @@
     - name: ensure google-cloud-storage Python library is installed
       pip:
          name: google-cloud-storage
-         state: installed
+         state: present
 
 
          #    - name: Ensure Mountpoint exists
