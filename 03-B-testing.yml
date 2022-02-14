@@ -8,7 +8,7 @@
 # Then it calls the installation of SAP HANA with the configured paramters
 
 - name: Phase 3-B - Install Hana
-  hosts: rha-nfs-server
+  hosts: rha-hana
   become: true
 
   tasks:
@@ -16,20 +16,8 @@
     - name: Print Owner
       debug:
               msg: "GCP Service EMAIL {{ lookup('env','GCE_EMAIL') }}"
+
     - name: prerequisites
       pip:
         name: google-cloud-storage
         state: present
-
-    - name: copy sarfiles from bucket locally
-      google.cloud.gcp_storage_object:
-        action: download
-        bucket: "rh-ava-packages"
-        src: "sap/{{ item }}"
-        dest: "{{ sap_hana_install_software_directory }}/{{ item }}"
-        auth_kind: application
-      loop: "{{ sap_hana_install_sarfiles }}"
-
-    # name: execute the SAP Hana Installation
-    # include_role:
-    #   name: community.sap_install.sap_hana_install
