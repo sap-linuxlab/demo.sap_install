@@ -1,0 +1,20 @@
+---
+#
+# This playbook downloads the Netweaver software defined in the list
+# {{ sap_s4_software }} to {{ sap_swpm_software_path }}
+#
+# The role sap_swpm unpacks thes software found in {{ sap_swpm_software_path }}
+# Then it calls the installation of sapinst with the configured paramters
+#
+
+- name: Install S4
+  hosts: gcp_awx_group_s4
+  become: true
+
+  tasks:
+
+    - name: execute the SWPM Installation
+      include_role:
+        name: redhat_sap.sap_s4hana_deployment
+      tags:
+        - sap_s4_swpm
