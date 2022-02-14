@@ -19,6 +19,8 @@
          mode: '0755'
          owner: root
          group: root
+      tags:
+        - sap_s4_softwaredownload
 
     - name: Copy files from storage bucket to "{{ sap_swpm_software_path }}"
       command: gsutil -m rsync -x "IMDB_SERVER20.*\.SAR$" gs://{{ gcp_bucket_name }}/sap  {{ sap_swpm_software_path }}
