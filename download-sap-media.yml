@@ -11,6 +11,7 @@
   vars_prompt:
     - name: "suser_id"
       prompt: "S-User ID"
+      private: false
       default: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME')}}"
     - name: "suser_password"
       prompt: "S-User PW"
@@ -18,9 +19,11 @@
       default: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD')}}"
     - name: "mp_transaction_name"
       prompt: "Enter Maintenance Planner Transaction Name"
+      private: false
       default: MP_S4H_DEMO
     - name: "sap_swpm_software_path"
       prompt: "Enter Download Path"
+      private: false
       default: /sap-software
 
   vars:
