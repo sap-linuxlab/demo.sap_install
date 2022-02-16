@@ -47,7 +47,8 @@
       host: "{{ ansible_host }}"
       port: 22
       delay: 10
-      timeout: 360
+      search_regex: OpenSSH
+      timeout: 920
     delegate_to: localhost
 
 - name: Phase 2 - basic OS Setup
