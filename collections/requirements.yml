@@ -6,9 +6,9 @@ collections:
         - name: google.cloud
           version: 1.0.2
           # source: https://console.redhat.com/api/automation-hub/
-        - name: redhat.rhel_system_roles
-          version: 1.7.3
-          # source: https://cloud.redhat.com/api/automation-hub/
+        # name: redhat.rhel_system_roles
+        #  version: 1.7.3
+        #  source: https://cloud.redhat.com/api/automation-hub/
         - name: community.general
           version: 4.3.0
         - name: community.postgresql
