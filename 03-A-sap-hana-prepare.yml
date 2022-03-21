@@ -4,7 +4,7 @@
 # This playbook configures all systems in the
 # HANA Group for consumption of SAP HANA software
 
-- name: Phase 3-A - Prepare for generic SAP Install
+- name: Phase 3-A - Prepare system for SAP HANA Installation
   hosts: gcp_awx_group_hana
   become: true
 

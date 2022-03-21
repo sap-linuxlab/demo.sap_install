@@ -4,7 +4,7 @@
 # This playbook configures all systems in S4 group
 # for consumption of SAP Netweaver software
 
-- name: Prepare for generic SAP Netweaver Install
+- name: Prepare for SAP Netweaver Installation
   hosts: gcp_awx_group_s4
   become: true
   roles:
