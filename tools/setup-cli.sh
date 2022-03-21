@@ -61,9 +61,12 @@ set_python_venv
 echo "create virtual python ennvironment at $venv"
 $PYTHON -m venv $venv
 source $venv/bin/activate
-$PYTHON -m pip install --upgrade pip
+${venv}/bin/python -m pip install --upgrade pip
 echo "installing ansible"
-$PYTHON -m pip install ansible==4.10 ansible-navigator
+${venv}/bin/python -m pip install ansible==4.10 ansible-navigator
+
+echo "Adding Virtual Pythonenvironment to ${HOME}/.bashrc"
+echo "source $venv/bin/activate" >> ${HOME}/.bashrc
 
 echo "create ansible navigator config"
 cat > ${HOME}/.ansible-navigator.yml << EOT
@@ -77,3 +80,7 @@ ansible-navigator:
      append: False
      file: ${venv}/ansible-navigator.log
 EOT
+
+echo "Ansible Core 2.11 (ansible 4.10) is installed in a virtual python environmnet"
+echo "run \"source $venv/bin/activate\" to activate the new ansible"
+echo ""
