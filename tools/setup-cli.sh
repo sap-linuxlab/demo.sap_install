@@ -8,8 +8,14 @@
 #
 # On Fedora or RHEL8.6+ you can also install the ansible-core package
 
-# Paramter
-venv=/opt/ansible
+# Where to install python venv for new ansible
+set_python_venv() {
+	if [ $(id -u) -ne 0 ]; then
+		venv=${HOME}/.ansible-core
+        else
+	        venv=/opt/ansible	
+	fi
+}
 
 # Find the python3 command
 check_python() {
@@ -43,34 +49,31 @@ check_python() {
      fi
 }
 
-# Check if you are running this as root
-check_root() {
-	if [ $(id -u) -ne 0 ]; then
-		echo "You have to run this script as root"
-		echo "please become root and run again"
-		echo ""
-		exit 1
-	fi
-}
-
 
 
 ########
 # 
 # main
 
-check_root
 check_python
+set_python_venv
 
 echo "create virtual python ennvironment at $venv"
 $PYTHON -m venv $venv
 source $venv/bin/activate
 $PYTHON -m pip install --upgrade pip
 echo "installing ansible"
-$PYTHON -m pip install ansible==2.12
-$PYTHON -m pip install ansible-navigator
+$PYTHON -m pip install ansible==4.10 ansible-navigator
 
-
-
-
-	
+echo "create ansible navigator config"
+cat > ${HOME}/.ansible-navigator.yml << EOT
+---
+ansible-navigator:
+   execution-environment:
+     container-engine: podman
+     enabled: False
+   logging:
+     level: critical
+     append: False
+     file: ${venv}/ansible-navigator.log
+EOT
