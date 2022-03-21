@@ -64,7 +64,7 @@ source $venv/bin/activate
 echo "Updating pip"
 ${venv}/bin/python -m pip install --upgrade pip  > ${venv}/inst.log 2>&1
 echo "Installing ansible 4.10 (ansible-core 2.11)"
-${venv}/bin/python -m pip install ansible==4.10 ansible-navigator >>  ${venv}/inst.log 2>&1
+${venv}/bin/python -m pip install ansible==4.10 ansible-navigator jmespath >>  ${venv}/inst.log 2>&1
 
 echo "Adding Virtual Python environment to ${HOME}/.bashrc"
 echo "source $venv/bin/activate" >> ${HOME}/.bashrc
