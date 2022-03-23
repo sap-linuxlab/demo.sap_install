@@ -5,7 +5,7 @@
 # Then it calls the installation of SAP HANA with the configured paramters
 
 - name: Phase 3-B - Install Hana
-  hosts: gcp_awx_group_hana
+  hosts: hanas
   become: true
 
   tasks:

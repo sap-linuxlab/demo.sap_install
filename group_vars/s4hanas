@@ -1,0 +1,74 @@
+---
+storage_pools:
+  - name: sap
+    disks:
+      - sdb
+    volumes:
+      - name: sap
+        size: "50 GiB"
+        mount_point: "/usr/sap"
+        state: present
+      - name: sapmnt
+        size: "20 GiB"
+        mount_point: "/usr/sapmnt"
+        state: present
+      - name: swap
+        size: "21 GiB"
+        fs_type: swap
+        state: present
+ 
+# sap_netweaver_preconfigure
+#---------------------------
+# No definition needed
+ 
+# sap_swpm 
+#----------
+sap_swpm_ansible_role_mode: advanced
+sap_swpm_sapcar_path: "/software/SAPCAR"
+sap_swpm_swpm_path: "/software/S4HANA_installation"
+
+# Product ID for New Installation
+#sap_swpm_product_catalog_id: "NW_ABAP_OneHost:S4HANA1909.CORE.HDB.ABAP"
+sap_swpm_update_etchosts: false
+
+# sap_swpm_fqdn: "example.com"
+sap_swpm_update_etchosts: "false"
+sap_swpm_master_password: "R3dh4t$123"
+
+sap_swpm_inifile_custom_values_dictionary:
+   '# Custom Config file created for SAP Workshop': ''
+   '# Product catalog ID': ''
+   '# NW_ABAP_OneHost:S4HANA1909.CORE.HDB.ABAP': ''
+   HDB_Schema_Check_Dialogs.schemaPassword:  "{{ sap_swpm_master_password }}"
+   HDB_Schema_Check_Dialogs.validateSchemaName:  "false"
+   NW_CI_Instance.ascsInstanceNumber:  ""
+   NW_CI_Instance.ascsVirtualHostname :  ""
+   NW_CI_Instance.ciInstanceNumber :  ""
+   NW_CI_Instance.ciVirtualHostname :  ""
+   NW_CI_Instance.scsVirtualHostname :  ""
+   NW_DDIC_Password.ddic000Password :  ""
+   NW_Delete_Sapinst_Users.removeUsers :  "true"
+   NW_GetMasterPassword.masterPwd : "{{ sap_swpm_master_password }}"
+   NW_GetSidNoProfiles.sid :  RHE
+   NW_HDB_DB.abapSchemaName :  ""
+   NW_HDB_DB.abapSchemaPassword :  "{{ sap_swpm_master_password }}"
+   NW_HDB_DB.javaSchemaName :  ""
+   NW_HDB_DB.javaSchemaPassword :  ""
+   NW_HDB_getDBInfo.dbhost : "hana-{{ guid }}1.example.com"
+   NW_HDB_getDBInfo.dbsid :  RHE
+   NW_HDB_getDBInfo.instanceNumber :  '00'
+   NW_HDB_getDBInfo.systemDbPassword :  "{{ sap_swpm_master_password }}"
+   NW_HDB_getDBInfo.systemPassword :  "{{ sap_swpm_master_password }}"
+   NW_HDB_getDBInfo.systemid :  RHE
+   NW_Recovery_Install_HDB.extractLocation :  /usr/sap/RHE/HDB00/backup/data/DB_RHE
+   NW_Recovery_Install_HDB.extractParallelJobs :  '30'
+   NW_Recovery_Install_HDB.sidAdmName :  rheadm
+   NW_Recovery_Install_HDB.sidAdmPassword :  "{{ sap_swpm_master_password }}"
+   NW_SAPCrypto.SAPCryptoFile :  /software/S4HANA_installation
+   NW_getFQDN.FQDN : ''
+   NW_getFQDN.setFQDN :  "true"
+   NW_getLoadType.loadType :  SAP
+   archives.downloadBasket :  "/software/S4HANA_installation"
+   hdb.create.dbacockpit.user :  "true"
+   hostAgent.sapAdmPassword :  "{{ sap_swpm_master_password }}"
+   nwUsers.sidadmPassword :  "{{ sap_swpm_master_password }}"

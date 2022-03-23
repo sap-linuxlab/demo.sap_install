@@ -1,6 +1,6 @@
 ---
 - name: load fileserver
-  hosts: fileserver
+  hosts: localhost
   become: true
   collections:
     - community.sap_launchpad
@@ -24,7 +24,7 @@
     - name: "sap_swpm_software_path"
       prompt: "Enter Download Path"
       private: false
-      default: /sap-software
+      default: /nfs/sap-software
 
   vars:
     sap_extra_software:
@@ -59,6 +59,7 @@
               - lxml
               - requests
             state: present
+            virtualenv: /home/cloud-user/.new-ansible-core
       tags:
         - sap_s4_softwaredownload
         - sap_extra_download

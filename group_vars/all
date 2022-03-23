@@ -1,0 +1,16 @@
+---
+## set GUID for more generic files
+guid: "{{ lookup('env', 'GUID') }}"
+
+## timesync 
+timesync_ntp_servers:
+      - hostname: 0.rhel.pool.ntp.org
+        iburst: yes
+timesync_ntp_provider: chrony
+ 
+## sap_general_preconfigure
+sap_general_preconfigure_modify_etc_hosts: true
+sap_general_preconfigure_update: true
+sap_general_preconfigure_fail_if_reboot_required: false
+sap_general_preconfigure_reboot_ok: true
+sap_domain: example.com

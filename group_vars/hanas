@@ -1,0 +1,40 @@
+---
+storage_pools:
+      - name: sap
+        disks:
+          - sdb
+        volumes:
+          - name: data
+            size: "128 GiB"
+            mount_point: "/hana/data"
+            fs_type: xfs
+            state: present
+          - name: log
+            size: "64 GiB"
+            mount_point: "/hana/log"
+            fs_type: xfs
+            state: present
+          - name: shared
+            size: "256 GiB"
+            mount_point: "/hana/shared"
+            fs_type: xfs
+            state: present
+          - name: sap
+            size: "50 GiB"
+            mount_point: "/usr/sap"
+            state: present
+ 
+# sap_hana_preconfigure
+#----------------------
+sap_hana_preconfigure_update: true
+sap_hana_preconfigure_fail_if_reboot_required: false
+sap_hana_preconfigure_reboot_ok: true
+ 
+# sap_hana_install
+#------------------
+sap_hana_install_software_directory: /software/HANA_installation
+sap_hana_install_software_extract_directory: /sap-hana
+sap_hana_install_sapcar_filename: ../SAPCAR/SAPCAR_1311-80000935.EXE
+sap_hana_install_common_master_password: "R3dh4t$123"
+sap_hana_install_sid: 'RHE'
+sap_hana_install_instance_number: "00"

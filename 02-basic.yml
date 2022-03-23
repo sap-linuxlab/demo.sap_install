@@ -1,0 +1,20 @@
+####################################################
+#
+# Phase 2: Basic OS Setup
+#
+# This playbook covers the following configuration steps
+#  - timesync
+#  - storage customization
+
+- name: Phase 2 - basic OS Setup
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Ensure storage is configured correctly
+      include_role:
+        name: fedora.linux_system_roles.timesync
+
+    - name: Ensure storage is configured correctly
+      include_role:
+        name: fedora.linux_system_roles.storage
