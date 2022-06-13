@@ -11,7 +11,7 @@
   - debug:
          var: existing_vms
 
-  - name: "Find folder for VM - {{ vm_name }}"
+  - name: "Find folder"
     community.vmware.vmware_guest_find:
         validate_certs: false
         name: "test"

@@ -61,7 +61,7 @@
       # password: "{{ vcenter_password }}"
       validate_certs: "{{ vcenter_validate_certs }}"
       name: testvm_2
-      template: rhel8.2
+      template: "{{ vmware_template }}"
       datacenter: "{{ vmware_datacenter }}"
       folder: "{{ vmware_folder }}"
       state: poweredon
