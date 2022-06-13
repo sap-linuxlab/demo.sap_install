@@ -71,6 +71,8 @@
       disk:
       - datastore: "{{ vmware_datastore }}"
         disk_mode: persistent
+      - datastore: "{{ vmware_datastore }}"
+        disk_mode: persistent
         size_gb: "{{ item.disk2size }}"
       hardware:
         memory_mb: "{{ item.mem_mb | default('16384') }}"
