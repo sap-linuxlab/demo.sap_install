@@ -63,6 +63,7 @@
       name: testvm_2
       template: "{{ vmware_template }}"
       datacenter: "{{ vmware_datacenter }}"
+      datastore: "{{ vmware_datastore }}"
       folder: "{{ vmware_folder }}"
       state: poweredon
       cluster: "{{ vmware_cluster }}"
