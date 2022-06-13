@@ -1,0 +1,58 @@
+---
+########################################################
+# Phase 1: server provisioning
+#
+# After running this playbook you will have
+# servers with RHEL8 running on VMware
+#
+# For input this playbook needs a dictionary with
+# the following paramters
+
+#   vmw_machines:
+#           - name: server-name
+#             bdisksize: 50
+#             disk2size: 200
+#             vmtype: n1-standard-2
+#             group: label for group
+
+# Additional variables which are used for vmware
+# are defined in the inventory
+
+# For using vmware.rest collection the following environment variables
+# need to be defined
+# export VMWARE_HOST=vcenter.test
+# export VMWARE_USER=myvcenter-user
+# export VMWARE_password=mypassword
+#
+# Optionally: vcenter_validate_certs: no or export VMWARE_VALIDATE_CERTS=no
+
+
+- hosts: localhost
+  gather_facts: false
+
+  tasks:
+  - name: Ensure required python library for vmware is installed
+    dnf:
+      name: python3-aiohttp
+      state: latest
+
+  - name: Output creation dictionary configuration
+    debug:
+      msg:
+        - "Name: {{ item.name }}"
+        - "boot: {{ item.bdisksize }}"
+        - "disk2:{{ item.disk2size }}"
+        - "type: {{ item.vmtype }}"
+        - "group:{{ item.group }}"
+    loop: "{{ vmw_machines }}"
+
+  - name: Create GCE VMs
+    include_role:
+      name: gcp_vm_create
+    vars:
+      gcp_vm_name: "{{ item.name }}"
+      gcp_vm_bdisksize: "{{ item.bdisksize }}"
+      gcp_vm_disk2size: "{{ item.disk2size }}"
+      gcp_vm_type: "{{ item.vmtype }}"
+      gcp_vm_awx_group: "{{ item.group }}"
+    loop: "{{ gcp_machines }}"
