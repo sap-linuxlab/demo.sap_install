@@ -72,7 +72,7 @@
         - sap_s4_softwaredownload
         - sap_extra_download
 
-    - name: Execute Ansible Module 'maintenance_planner' to get files from MP
+    - name: Execute Ansible Module 'maintenance_planner' to download files from MP config
       community.sap_launchpad.maintenance_planner:
         suser_id: "{{ suser_id }}"
         suser_password: "{{ suser_password }}"
@@ -81,23 +81,23 @@
       tags:
         - sap_s4_softwaredownload
 
-    - name: Display Download Basket
-      debug:
-        msg:
-          - "{{ sap_maintenance_planner_basket_register.download_basket }}"
-      tags:
-        - sap_s4_softwaredownload
+    # - name: Display Download Basket
+    #   debug:
+    #     msg:
+    #       - "{{ sap_maintenance_planner_basket_register.download_basket }}"
+    #   tags:
+    #     - sap_s4_softwaredownload
 
-    - name: Execute Ansible Module 'software_center_download' to download files
-      community.sap_launchpad.software_center_download:
-        suser_id: "{{ suser_id }}"
-        suser_password: "{{ suser_password }}"
-        download_link: "{{ item.DirectLink }}"
-        download_filename: "{{ item.Filename }}"
-        dest: "{{ sap_swpm_software_path }}"
-      loop: "{{ sap_maintenance_planner_basket_register.download_basket }}"
-      tags:
-        - sap_s4_softwaredownload
+    # - name: Execute Ansible Module 'software_center_download' to download files
+    #   community.sap_launchpad.software_center_download:
+    #     suser_id: "{{ suser_id }}"
+    #     suser_password: "{{ suser_password }}"
+    #     download_link: "{{ item.DirectLink }}"
+    #     download_filename: "{{ item.Filename }}"
+    #     dest: "{{ sap_swpm_software_path }}"
+    #   loop: "{{ sap_maintenance_planner_basket_register.download_basket }}"
+    #   tags:
+    #     - sap_s4_softwaredownload
 
     - name: download additional installation tools
       community.sap_launchpad.software_center_download:
