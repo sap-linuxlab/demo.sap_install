@@ -27,14 +27,14 @@
 # Gloablly required variables:
 #
 # Optionally: vcenter_validate_certs: no or export VMWARE_VALIDATE_CERTS=no
-# vmware_cluster_id:
+# vmware_cluster:
+# vmware_datacenter:
 # vmware_datastore:
 # vmware_folder:
-# vmware_resource_pool:
-# vmware_guest_os
-# vmware_hardware_version:
+# vmware_template:
 
-- hosts: localhost
+- name: phase 1 -- Server Provisioning
+  hosts: localhost
   gather_facts: false
 
   tasks:
@@ -60,24 +60,19 @@
       # username: "{{ vcenter_username }}"
       # password: "{{ vcenter_password }}"
       validate_certs: "{{ vcenter_validate_certs }}"
-      name: testvm_2
+      name: "{{ item.name }}"
       template: "{{ vmware_template }}"
       datacenter: "{{ vmware_datacenter }}"
       datastore: "{{ vmware_datastore }}"
       folder: "{{ vmware_folder }}"
       state: poweredon
       cluster: "{{ vmware_cluster }}"
+      disk:
+      - datastore: "{{ vmware_datastore }}"
+        disk_mode: persistent
+        size_gb: "{{ item.disk2size }}"
+      hardware:
+        memory_mb: "{{ item.mem_mb | default('16384') }}"
+        num_cpus: "{{ item.cpus | default('4') }}"
       wait_for_ip_address: true
-
-  # - name: Create VMs
-  #   vmware.vmware_rest.vcenter_vm:
-  #     placement:
-  #       cluster: "{{ vmware_cluster_id }}"
-  #       datastore: "{{ vmware_datastore }}"
-  #       folder: "{{ vmware_folder }}"
-  #       resource_pool: "{{ vmware_resource_pool }}"
-  #    name: "{{ item.name }}"
-  #     template:
-  #     stae:
-  #   register: _result
-  #  loop: "{{ vmware_machines }}"
+    loop: "{{ vmware_machines }}"
