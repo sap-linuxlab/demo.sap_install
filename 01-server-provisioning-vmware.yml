@@ -48,9 +48,9 @@
     debug:
       msg:
         - "Name: {{ item.name }}"
-        - "boot: {{ item.bdisksize }}"
-        - "disk2:{{ item.disk2size }}"
-        - "type: {{ item.vmtype }}"
+        - "disk2:{{ item.disk2size }} GB"
+        - "memory: {{ item.mem_mb | default('16384') }} MB"
+        - "cpus: {{ item.cpus | default('4') }}"
         - "group:{{ item.group }}"
     loop: "{{ vmware_machines }}"
 
@@ -67,6 +67,7 @@
       folder: "{{ vmware_folder }}"
       state: poweredon
       cluster: "{{ vmware_cluster }}"
+      # annotation: "{{ item.group }}"
       disk:
       - datastore: "{{ vmware_datastore }}"
         disk_mode: persistent
