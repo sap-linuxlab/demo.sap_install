@@ -54,18 +54,29 @@
         - "group:{{ item.group }}"
     loop: "{{ vmware_machines }}"
 
-  - name: Create VMs
-    vmware.vmware_rest.vcenter_vm:
-      placement:
-        cluster: "{{ vmware_cluster_id }}"
-        datastore: "{{ vmware_datastore }}"
-        folder: "{{ vmware_folder }}"
-        resource_pool: "{{ vmware_resource_pool }}"
-      name: "{{ item.name }}"
-      guest_OS: DEBIAN_8_64
-      hardware_version: VMX_11
-      memory:
-        hot_add_enabled: true
-        size_MiB: 1024
-    register: _result
-    loop: "{{ vmware_machines }}"
+  - name: Create VM from template
+    community.vmware.vmware_guest:
+      # hostname: "{{ vcenter_ip }}"
+      # username: "{{ vcenter_username }}"
+      # password: "{{ vcenter_password }}"
+      validate_certs: "{{ vcenter_validate_certs }}"
+      name: testvm_2
+      template: rhel8.2
+      datacenter: "{{ vmware_datacenter }}"
+      folder: "{{ vmware_folder }}"
+      state: poweredon
+      cluster: "{{ vmware_cluster }}"
+      wait_for_ip_address: true
+
+  # - name: Create VMs
+  #   vmware.vmware_rest.vcenter_vm:
+  #     placement:
+  #       cluster: "{{ vmware_cluster_id }}"
+  #       datastore: "{{ vmware_datastore }}"
+  #       folder: "{{ vmware_folder }}"
+  #       resource_pool: "{{ vmware_resource_pool }}"
+  #    name: "{{ item.name }}"
+  #     template:
+  #     stae:
+  #   register: _result
+  #  loop: "{{ vmware_machines }}"

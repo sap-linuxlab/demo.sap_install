@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  gather_facts: false
+
+  tasks:
+  - name: Collect the list of the existing VM
+    vmware.vmware_rest.vcenter_vm_info:
+    register: existing_vms
+    until: existing_vms is not failed
+
+  - debug:
+         var: existing_vms
+
+  - name: "Find folder for VM - {{ vm_name }}"
+    community.vmware.vmware_guest_find:
+        validate_certs: false
+        name: "test"
+    register: vm_facts
+
+  - debug:
+         var: vm_facts
