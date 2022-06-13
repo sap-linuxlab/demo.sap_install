@@ -24,17 +24,25 @@
 # export VMWARE_USER=myvcenter-user
 # export VMWARE_password=mypassword
 #
+# Gloablly required variables:
+#
 # Optionally: vcenter_validate_certs: no or export VMWARE_VALIDATE_CERTS=no
-
+# vmware_cluster_id:
+# vmware_datastore:
+# vmware_folder:
+# vmware_resource_pool:
+# vmware_guest_os
+# vmware_hardware_version:
 
 - hosts: localhost
   gather_facts: false
 
   tasks:
-  - name: Ensure required python library for vmware is installed
-    dnf:
-      name: python3-aiohttp
-      state: latest
+  # You don't have to do this in Automation Hub
+  # - name: Ensure required python library for vmware is installed
+  #  dnf:
+  #    name: python3-aiohttp
+  #    state: latest
 
   - name: Output creation dictionary configuration
     debug:
@@ -44,15 +52,20 @@
         - "disk2:{{ item.disk2size }}"
         - "type: {{ item.vmtype }}"
         - "group:{{ item.group }}"
-    loop: "{{ vmw_machines }}"
+    loop: "{{ vmware_machines }}"
 
-  - name: Create GCE VMs
-    include_role:
-      name: gcp_vm_create
-    vars:
-      gcp_vm_name: "{{ item.name }}"
-      gcp_vm_bdisksize: "{{ item.bdisksize }}"
-      gcp_vm_disk2size: "{{ item.disk2size }}"
-      gcp_vm_type: "{{ item.vmtype }}"
-      gcp_vm_awx_group: "{{ item.group }}"
-    loop: "{{ gcp_machines }}"
+  - name: Create VMs
+    vmware.vmware_rest.vcenter_vm:
+      placement:
+        cluster: "{{ vmware_cluster_id }}"
+        datastore: "{{ vmware_datastore }}"
+        folder: "{{ vmware_folder }}"
+        resource_pool: "{{ vmware_resource_pool }}"
+      name: "{{ item.name }}"
+      guest_OS: DEBIAN_8_64
+      hardware_version: VMX_11
+      memory:
+        hot_add_enabled: true
+        size_MiB: 1024
+    register: _result
+    loop: "{{ vmware_machines }}"

@@ -1,4 +1,5 @@
 ---
+# find out the cluster_id for the clusters
 - hosts: localhost
   gather_facts: false
 
@@ -6,5 +7,15 @@
   - name: Build a list of all the clusters
     vmware.vmware_rest.vcenter_cluster_info:
     register: all_the_clusters
+
   - debug:
          var: all_the_clusters
+
+  - task: retrieve detailed info about all clusters
+    vmware.vmware_rest.vcenter_cluster_info:
+      cluster: "{{ item.cluster }}"
+    loop: "{{ all_the_clusters.value }}"
+    register: my_cluster_info
+
+  - debug:
+         var: my_cluster_info
