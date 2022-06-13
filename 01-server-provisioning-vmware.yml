@@ -67,7 +67,7 @@
       folder: "{{ vmware_folder }}"
       state: poweredon
       cluster: "{{ vmware_cluster }}"
-      # annotation: "{{ item.group }}"
+      annotation: "{{ item.group }}"
       customization:
         hostname: "{{ item.name }}"
       disk:
