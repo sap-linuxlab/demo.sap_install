@@ -5,7 +5,7 @@
 # HANA Group for consumption of SAP HANA software
 
 - name: Phase 3-A - Prepare system for SAP HANA Installation
-  hosts: gcp_awx_group_hana
+  hosts: hanas
   become: true
 
   roles:
