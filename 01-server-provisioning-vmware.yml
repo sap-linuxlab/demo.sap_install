@@ -68,12 +68,21 @@
       state: poweredon
       cluster: "{{ vmware_cluster }}"
       annotation: "{{ item.group }}"
+      # fails if network is not set
       # customization:
       #   hostname: "{{ item.name }}"
       disk:
       - datastore: "{{ vmware_datastore }}"
         disk_mode: persistent
+        size_gb: "150"
+        controller_number: 0
+        unit_number: 0
+      - datastore: "{{ vmware_datastore }}"
+        disk_mode: persistent
         size_gb: "{{ item.disk_gb }}"
+        controller_number: 0
+        unit_number: 1
+        type: eagerzeroedthick
       hardware:
         memory_mb: "{{ item.mem_mb | default('16384') }}"
         num_cpus: "{{ item.cpus | default('4') }}"
