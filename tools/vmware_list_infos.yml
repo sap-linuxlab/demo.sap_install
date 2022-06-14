@@ -18,7 +18,8 @@
     register: vm_facts
     loop: "{{ existing_vms.value }}"
 
-  - debug:
+  - name: Debug folder
+    debug:
          var: vm_facts
 
   - name: GuestInfo
@@ -29,6 +30,6 @@
     register: vm_info
     loop: "{{ existing_vms.value }}"
 
-
-  - debug:
+  - name: debug Guest Info
+    debug:
          var: vm_info
