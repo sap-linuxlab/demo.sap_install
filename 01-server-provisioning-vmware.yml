@@ -5,26 +5,28 @@
 # After running this playbook you will have
 # servers with RHEL8 running on VMware
 #
+# This deployment needs to use a vmware template with
+# RHEL8 preinstalled with following additional requirements
+# - network is defined by template and not changed
+# - boot disk needs to be on paravirtual controller 0, unit 0
+
 # For input this playbook needs a dictionary with
 # the following paramters
 
 #   vmw_machines:
 #           - name: server-name
-#             bdisksize: 50
-#             disk2size: 200
-#             vmtype: n1-standard-2
-#             group: label for group
+#             disk_gb: <size of datadisk>
+#             mem_mb: <memory in MB, default 16384>
+#             cpus: <num of cpus, default 2>
+#             group: <group to add server>
 
-# Additional variables which are used for vmware
-# are defined in the inventory
-
-# For using vmware.rest collection the following environment variables
-# need to be defined
+# For using vmware.rest and community.vmware collection the following environment variables
+# need to be defined or VCENTER Credentials added to Automation Controller/AWX
 # export VMWARE_HOST=vcenter.test
 # export VMWARE_USER=myvcenter-user
 # export VMWARE_password=mypassword
 #
-# Gloablly required variables:
+# Globally required variables:
 #
 # Optionally: vcenter_validate_certs: no or export VMWARE_VALIDATE_CERTS=no
 # vmware_cluster:
@@ -32,6 +34,7 @@
 # vmware_datastore:
 # vmware_folder:
 # vmware_template:
+#
 
 - name: phase 1 -- Server Provisioning
   hosts: localhost
@@ -85,6 +88,9 @@
         controller_number: 0
         unit_number: 1
         type: eagerzeroedthick
+      networks:
+        start_connected: true
+
       hardware:
         memory_mb: "{{ item.mem_mb | default('16384') }}"
         num_cpus: "{{ item.cpus | default('4') }}"

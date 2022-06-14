@@ -38,7 +38,7 @@
 # Have a look at the documention of the storage role for more configuration options
 
 - name: Ensure Servers are booted and reachable
-  hosts: all
+  hosts: hanas, s4hanas
   gather_facts: false
   become: false
   tasks:
@@ -53,7 +53,7 @@
     delegate_to: localhost
 
 - name: Phase 2 - basic OS Setup
-  hosts: all
+  hosts: hanas, s4hanas
   become: true
 
   # Default variables for the playbooks can be set here
@@ -100,29 +100,11 @@
       include_role:
         name: redhat.rhel_system_roles.storage
 
-    - name: Ensure GCS Fuse yum repo is created
-      yum_repository:
-              name: "gcsfuse"
-              description: "gcsfuse (packages.cloud.google.com)"
-              baseurl: "https://packages.cloud.google.com/yum/repos/gcsfuse-el7-x86_64"
-              enabled: true
-              gpgcheck: true
-              gpgkey:
-                  - https://packages.cloud.google.com/yum/doc/yum-key.gpg
-                  - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-
     - name: Ensure GCSFuse & NFS client is installed
       dnf:
          name:
-           - gcsfuse
            - nfs-utils
          state: present
-
-    - name: ensure google-cloud-storage Python library is installed
-      pip:
-         name: google-cloud-storage
-         state: present
-
 
          #    - name: Ensure Mountpoint exists
          #      file:

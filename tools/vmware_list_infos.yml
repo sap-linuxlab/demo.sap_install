@@ -14,8 +14,9 @@
   - name: "Find folder"
     community.vmware.vmware_guest_find:
         validate_certs: false
-        name: "test"
+        name: "{{ item.name }}"
     register: vm_facts
+    loop: "{{ vm_facts.value }}"
 
   - debug:
          var: vm_facts
