@@ -68,8 +68,8 @@
       state: poweredon
       cluster: "{{ vmware_cluster }}"
       annotation: "{{ item.group }}"
-      customization:
-        hostname: "{{ item.name }}"
+      # customization:
+      #   hostname: "{{ item.name }}"
       disk:
       - datastore: "{{ vmware_datastore }}"
         disk_mode: persistent
