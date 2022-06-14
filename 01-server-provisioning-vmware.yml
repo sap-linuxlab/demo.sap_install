@@ -77,14 +77,12 @@
         controller_number: 0
         unit_number: 0
         controller_type: 'sata'
-        scsi_type: 'paravirtual'
       - datastore: "{{ vmware_datastore }}"
         disk_mode: persistent
         size_gb: "{{ item.disk_gb }}"
         controller_number: 1
         unit_number: 1
-        controller_type: 'sata'
-        scsi_type: 'paravirtual'
+        controller_type: 'paravirtual'
       hardware:
         memory_mb: "{{ item.mem_mb | default('16384') }}"
         num_cpus: "{{ item.cpus | default('4') }}"
