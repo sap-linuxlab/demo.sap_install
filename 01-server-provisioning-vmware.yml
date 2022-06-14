@@ -90,7 +90,7 @@
         unit_number: 1
         type: eagerzeroedthick
       networks:
-        start_connected: true
+      - start_connected: true
         device_type: vmxnet3
         name: "{{ vmware_network }}"
       hardware:
