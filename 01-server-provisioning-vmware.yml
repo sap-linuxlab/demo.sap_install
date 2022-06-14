@@ -74,14 +74,16 @@
       - datastore: "{{ vmware_datastore }}"
         disk_mode: persistent
         size_gb: "130"
-        scsi_controller: 1
-        unit_number: 1
+        controller_number: 0
+        unit_number: 0
+        controller_type: 'sata'
         scsi_type: 'paravirtual'
       - datastore: "{{ vmware_datastore }}"
         disk_mode: persistent
         size_gb: "{{ item.disk_gb }}"
-        scsi_controller: 2
+        controller_number: 1
         unit_number: 1
+        controller_type: 'sata'
         scsi_type: 'paravirtual'
       hardware:
         memory_mb: "{{ item.mem_mb | default('16384') }}"
