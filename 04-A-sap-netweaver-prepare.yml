@@ -7,6 +7,14 @@
 - name: Prepare for SAP Netweaver Installation
   hosts: s4hanas
   become: true
+
+  pre_tasks:
+     - name: Ensure VMware localhost entry is removed from /etc/hosts
+       lineinfile:
+           path: /etc/hosts
+           state: absent
+           regexp: '127.0.1.1\t{{ ansible_hostname }}.*'
+
   roles:
                - community.sap_install.sap_general_preconfigure
                - community.sap_install.sap_netweaver_preconfigure
