@@ -75,11 +75,13 @@
       - datastore: "{{ vmware_datastore }}"
         disk_mode: persistent
         size_gb: "150"
+        controller_type: 'paravirtual'
         controller_number: 0
         unit_number: 0
       - datastore: "{{ vmware_datastore }}"
         disk_mode: persistent
         size_gb: "{{ item.disk_gb }}"
+        controller_type: 'paravirtual'
         controller_number: 0
         unit_number: 1
         type: eagerzeroedthick
