@@ -20,3 +20,15 @@
 
   - debug:
          var: vm_facts
+
+  - name: GuestInfo
+    community.vmware.vmware_guest_info:
+        validate_certs: false
+        name: "{{ item.name }}"
+        datacenter: "{{ vmware_datacenter }}"
+    register: vm_info
+    loop: "{{ existing_vms.value }}"
+
+
+  - debug:
+         var: vm_info
