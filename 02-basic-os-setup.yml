@@ -98,6 +98,6 @@
       ansible.posix.mount:
         src: "{{ nfs_software_archive_srv }}"
         path: "{{ nfs_software_archive_dir }}"
-        opts: ro
+        opts: rw,sync,hard,noatime
         fstype: nfs
         state: present
