@@ -16,7 +16,7 @@
         validate_certs: false
         name: "{{ item.name }}"
     register: vm_facts
-    loop: "{{ vm_facts.value }}"
+    loop: "{{ existing_vms.value }}"
 
   - debug:
          var: vm_facts

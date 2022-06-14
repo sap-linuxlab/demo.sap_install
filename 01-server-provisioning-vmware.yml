@@ -34,6 +34,7 @@
 # vmware_datastore:
 # vmware_folder:
 # vmware_template:
+# vmware_network:
 #
 
 - name: phase 1 -- Server Provisioning
@@ -90,7 +91,8 @@
         type: eagerzeroedthick
       networks:
         start_connected: true
-
+        device_type: vmxnet3
+        name: "{{ vmware_network }}"
       hardware:
         memory_mb: "{{ item.mem_mb | default('16384') }}"
         num_cpus: "{{ item.cpus | default('4') }}"
