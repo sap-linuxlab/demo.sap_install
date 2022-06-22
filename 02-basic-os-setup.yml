@@ -47,7 +47,6 @@
       host: "{{ ansible_host }}"
       port: 22
       delay: 90
-      search_regex: OpenSSH
       state: started
       timeout: 480
     delegate_to: localhost
