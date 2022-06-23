@@ -39,8 +39,8 @@
 #
 
   roles:
-    - sap_hana_install
-    - sap_ha_install_hana_hsr
-    - sap_ha_prepare_pacemaker
-    - sap_ha_install_pacemaker
-    - sap_ha_set_hana
+    - community.sap_hana_install
+    - community.sap_ha_install_hana_hsr
+    - community.sap_ha_prepare_pacemaker
+    - community.sap_ha_install_pacemaker
+    - community.sap_ha_set_hana
