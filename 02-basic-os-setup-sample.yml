@@ -28,7 +28,7 @@
 
     - name: Ensure system is properly subscribed
       include_role:
-        name: community.sap_operarions.sap_rhsm
+        name: community.sap_operations.sap_rhsm
 
     - name: Ensure storage is configured correctly
       include_role:
