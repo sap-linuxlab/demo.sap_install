@@ -10,6 +10,8 @@ This demo deploys HANA and S/4 servers on a google cloud following this process:
 
 You will find the corresponding playbooks here which implement the steps of the above workflow
 
+### Usage of this repository
+
 ### Demo setup
 
 Follow the Documentation to setup your own demo and learn to use these roles
