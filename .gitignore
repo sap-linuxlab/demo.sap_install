@@ -3,3 +3,5 @@ OLD
 OLD/*
 *.bak
 EXP*
+*tpm2_pkcs11.sqlite3
+*requirements.yml.works
