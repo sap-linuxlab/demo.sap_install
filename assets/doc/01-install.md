@@ -33,6 +33,11 @@ Register and follow the steps to download your copy of RHEL.
 
 ## Configure Access to Red Hat Automation Hub
 
+1. Create a Automation Hub/Galaxy Credential
+2. Assign your credential to the organisation
+3. Assign your organisation to the credential
+
+
 ## AWX
 
 1. Install Fedora or Centos or RHEL 8.4+
