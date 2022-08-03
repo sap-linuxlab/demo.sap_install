@@ -35,5 +35,5 @@ Login to Controller with ....
 
 ## Additional Documentation
 
-- [AWX Project Google Group](https://groups.google.com/g/awx-project)
-- [AWX Project FAQ](https://www.ansible.com/products/awx-project/faq)
+- [AWX Project Google Group](^https://groups.google.com/g/awx-project)
+- [AWX Project FAQ](^https://www.ansible.com/products/awx-project/faq)
