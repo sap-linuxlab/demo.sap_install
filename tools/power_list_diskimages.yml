@@ -26,7 +26,7 @@
 
     - name: Retrieve list of all PowerVC images
       openstack.cloud.image_info:
-        auth: "{{ clouds.devstack.auth | combine( { 'user_domain_name' : 'Default' } ) }}"
+        auth: "{{ clouds.devstack.auth }}"
         validate_certs: "{{ clouds.devstack.verify }}"
       register: power_images
 
