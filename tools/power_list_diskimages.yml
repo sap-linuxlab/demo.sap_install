@@ -16,10 +16,13 @@
         path: "{{ config_file }}"
       register: st
 
+    - name: Debug content of file
+      ansible.builtin.debug:
+        msg: "the configfile content is {{lookup('ansible.builtin.file', configfile) }}"
+
     - name: Include Variables from OpenStack credential file
       include_vars: "{{ config_file }}"
       when: st.stat.exists and st.stat.isreg
-
 
     - name: Retrieve list of all PowerVC images
       openstack.cloud.image_info:
