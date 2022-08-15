@@ -65,6 +65,8 @@ To use this demo you need to have the following information available:
    - Password for this user
    - host authentication URL (e.g. https://my-powervc:5000/v3)
    - Project (Tenant Name)
+   - Project Domain Name: `Default`
+   - Domain Name: `Default`
    - De-select Verify SSL, if you use self-signed certificates in PowerVC
    ![aap-project-screenshot](assets/img/aap-create-OpenStack-Credential.png)
    You get this infomation by logging into PowerVC and by clicking on the user logo in the top right of PowerVC:<BR>
