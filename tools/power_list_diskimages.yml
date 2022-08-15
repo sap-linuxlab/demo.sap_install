@@ -16,6 +16,13 @@
         path: "{{ config_file }}"
       register: st
 
+    - name: add user_domain_name
+      lineinfile:
+        path: "{{ config_file }}"
+        line: "      user_domain_name: Default"
+        regexp: "^      user_domain_name:"
+        insert_after: "^    auth:"
+
     - name: Debug content of file
       ansible.builtin.debug:
         msg: "the configfile content is {{lookup('ansible.builtin.file', config_file) }}"
