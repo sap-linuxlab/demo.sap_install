@@ -18,7 +18,7 @@
 
     - name: Debug content of file
       ansible.builtin.debug:
-        msg: "the configfile content is {{lookup('ansible.builtin.file', configfile) }}"
+        msg: "the configfile content is {{lookup('ansible.builtin.file', config_file) }}"
 
     - name: Include Variables from OpenStack credential file
       include_vars: "{{ config_file }}"
