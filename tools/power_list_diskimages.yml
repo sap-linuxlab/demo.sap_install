@@ -10,7 +10,7 @@
 
     - name: Retrieve list of all PowerVC images
       openstack.cloud.image_info:
-        auth: openstack_auth
+        auth: "{{ openstack_auth }}"
       register: power_images
 
     - debug:
