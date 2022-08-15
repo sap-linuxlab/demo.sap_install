@@ -8,15 +8,13 @@
 # For input this playbook needs a dictionary with
 # the following paramters
 
-#   gcp_machines:
+#   power_machines:
 #           - name: server-name
-#             bdisksize: 50
-#             disk2size: 200
-#             vmtype: n1-standard-2
+#
 #             group: label for group
 
-# Additional variables which are used for the google cloud
-# are defined in the inventory, where all google machines are created
+# Additional variables which are used for PowerVC Environment
+# to be defined in inventory
 
 
 - hosts: localhost
@@ -31,15 +29,15 @@
         - "disk2:{{ item.disk2size }}"
         - "type: {{ item.vmtype }}"
         - "group:{{ item.group }}"
-    loop: "{{ gcp_machines }}"
+    loop: "{{ power_machines }}"
 
   - name: Create GCE VMs
     include_role:
-      name: gcp_vm_create
+      name: power_vm_create
     vars:
-      gcp_vm_name: "{{ item.name }}"
-      gcp_vm_bdisksize: "{{ item.bdisksize }}"
-      gcp_vm_disk2size: "{{ item.disk2size }}"
-      gcp_vm_type: "{{ item.vmtype }}"
-      gcp_vm_awx_group: "{{ item.group }}"
-    loop: "{{ gcp_machines }}"
+      power_vm_name: "{{ item.name }}"
+      power_vm_bdisksize: "{{ item.bdisksize }}"
+      power_vm_disk2size: "{{ item.disk2size }}"
+      power_vm_type: "{{ item.vmtype }}"
+      power_vm_awx_group: "{{ item.group }}"
+    loop: "{{ power_machines }}"
