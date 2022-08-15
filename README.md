@@ -1,5 +1,9 @@
 # demo.sap-install - PowerVC Branch
 
+![WORK IN PROGRESS](assets/img/wip.png)
+
+CAUTION: **Currently this is an usuable copy of the google branch**
+
 This repository contains the demo for deploying on IBM PowerVC with ansible the community.sap_install collection
 and how to use this from [AWX](https://github.com/ansible/awx) or [Red Hat Ansible Controller](https://www.ansible.com/products/controller?hsLang=en-us)
 
