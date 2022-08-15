@@ -1,6 +1,6 @@
-# demo.sap-install
+# demo.sap-install - PowerVC Branch
 
-This repository contains a demo for the community.sap_install collection
+This repository contains the demo for deploying on IBM PowerVC with ansible the community.sap_install collection
 and how to use this from [AWX](https://github.com/ansible/awx) or [Red Hat Ansible Controller](https://www.ansible.com/products/controller?hsLang=en-us)
 
 ## Demo Description
@@ -12,18 +12,35 @@ You will find the corresponding playbooks here which implement the steps of the 
 
 ### Demo setup
 
-Follow the Documentation to setup your own demo and learn to use these roles
+Switch to main branch to read how to deploy Ansible Automation platform on an INtel based server or virtual machine.
 
-  1. [Installation and Basic Configuration of AWX/AAP2](assets/doc/01-install.md)
-  2. [Configure required Credentials](assets/doc/02-credentials.md)
-  3. [Configure Projects](assets/doc/02-credentials.md)
-  4. [Configure Inventories](assets/doc/03-inventories.md)
-  5. [Configure Templates](assets/doc/04-templates.md)
+To use this demo you need to have the following information available:
+
+- Admin Access to your Ansible Automation or AWX Controller
+- Name or IP Adress of PowerVC
+- Access Credentials for PowerVC (to create LPARs and Network)
+- A preconfigured RHEL Image that can be deployed using PowerVC
+- Network Ports of PowerVC need to be reachable by Ansible Execution Environment
+
+#### Openstack Ports used by PowerVC
+
+| Port | OpenStack Component Name |
+|------|--------------------------|
+| 5000 | Keystone                 |
+| 8774 | Nova                     |
+| 9696 | Neutron                  |
+| 9000 | Cinder                   |
+| 9292 | Glance                   |
+
+#### Configure Automation Platform Credentials
+
+#### Required Variables
+
+#### Helpful Tools (playbooks)
 
 ### Run the Demo
 
-Login to Controller with ....
-
+Login to Controller with your admin credentials
 
 
 ## Additional Documentation
