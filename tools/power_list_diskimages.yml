@@ -20,9 +20,10 @@
       include_vars: "{{ config_file }}"
       when: st.stat.exists and st.stat.isreg
 
+
     - name: Retrieve list of all PowerVC images
       openstack.cloud.image_info:
-        auth: "{{ clouds.devstack.auth }}"
+        auth: "{{ clouds.devstack.auth | combine('user_domain_name':'Default') }}"
         validate_certs: "{{ clouds.devstack.verify }}"
       register: power_images
 
