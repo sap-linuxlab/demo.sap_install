@@ -21,7 +21,7 @@
         path: "{{ config_file }}"
         line: "      user_domain_name: Default"
         regexp: "^      user_domain_name:"
-        insert_after: "^    auth:"
+        insertafter: "^    auth:"
 
     - name: Debug content of file
       ansible.builtin.debug:
