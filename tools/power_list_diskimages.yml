@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  gather_facts: false
+
+  tasks:
+
+    - name: Retrieve list of all PowerVC images
+      openstack.cloud.image_info:
+      register: power_images
+
+    - debug:
+        var: power_images

@@ -38,8 +38,9 @@ To use this demo you need to have the following information available:
 
 #### Configure Automation Platform Credentials
 
-#### Required Variables
+#### Required Variables for Inventory
 
+#### Configure
 #### Helpful Tools (playbooks)
 
 ### Run the Demo
