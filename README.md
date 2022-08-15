@@ -36,7 +36,42 @@ To use this demo you need to have the following information available:
 | 9000 | Cinder                   |
 | 9292 | Glance                   |
 
-#### Configure Automation Platform Credentials
+
+#### Configure this project in AAP/AWX Controller
+
+1. Login to your AAP/AWX Controller as admin
+2. Click `Resources -> Projects`
+3. Click `Add`
+4. Enter the following parameters:
+   - Name (e.g. SAP Install Demo PowerVC),
+   - select Organization
+   - select Source Control Type `Git`
+   - Enter Source Url: `https://github.com/sap-linuxlab/demo.sap-install.git`
+   - Enter branch `powervc`
+   - Select options as needed
+   ![aap-project-screenshot](assets/img/aap-create-project.png)
+5.
+
+
+
+
+#### Configure AAP/AWX Credentials fro Power VC
+
+1. Login to your AAP/AWX Controller as admin
+2. Click `Resources -> Credentials`
+3. Click `Add`
+4. Enter a name (e.g. PowerVC), your organization, and select Credential Type `OpenStack`
+5. Enter the following parameters
+   - Your username with permissions to create LPARs etc. in PowerVC
+   - Password for this user
+   - host authentication URL (e.g. https://my-powervc:5000/v3)
+   - Project (Tenant Name)
+
+   You get this infomation by logging into PowerVC and by clicking on the user logo in the top right of PowerVC:
+
+   ![screenshot PowerVC](assets/img/powervc-info.png)
+6. De-select Verify SSL, if you use self-signed certificates in PowerVC
+7. Click Save
 
 #### Required Variables for Inventory
 
