@@ -6,6 +6,7 @@
 
     - name: Retrieve list of all PowerVC images
       openstack.cloud.image_info:
+        validate_certs: false
       register: power_images
 
     - debug:
