@@ -1,0 +1,13 @@
+---
+- name: dump public ssh key injected by Machine Credential
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: get known public ssh keys
+      command: ssh-add -L
+      register: public_ssh_keys
+
+    - name: dump public keys
+      debug:
+        var: public_ssh_keys.stdout
