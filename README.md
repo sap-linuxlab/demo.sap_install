@@ -69,7 +69,7 @@ To use this demo you need to have the following information available:
    - Domain Name: `Default`
    - De-select Verify SSL, if you use self-signed certificates in PowerVC
    ![aap-project-screenshot](assets/img/aap-create-OpenStack-Credential.png)
-   You get this infomation by logging into PowerVC and by clicking on the user logo in the top right of PowerVC:<BR>
+   You get this infomation by logging into PowerVC and by clicking on the user logo in the top right of PowerVC:<BR><br>
    ![screenshot PowerVC](assets/img/powervc-info.png)
 5. Click Save
 
@@ -90,8 +90,22 @@ To use this demo you need to have the following information available:
    - Project: `SAP Install Demo PowerVC`
    - select Playbook: `tools/power_list_diskimages.yml`
    - select Credential `Power VC Credential` from category `OpenStack`
-5. Click `Save`
-6. Click `Launch`
+5. OPTIONAL: if you need `user_domain_name` add the following to the Variables section:
+  <pre>
+     os_add_auth:
+        auth_url: https://powervc:5000/v3/
+        user_domain_name: Default
+  </pre>  
+6. Click `Save`
+7. Click `Launch`
+
+![screenshot AAP Template](assets/img/aap-create-template.png)
+
+| :exclamation:  Please Note              |
+|:----------------------------------------|
+
+> If everything goes well, you can continue with the next steps.
+> If the template fails, you probably have the wrong parameters or you might need to add additional paramters such as `user_domain_name`.
 
 #### Required Variables for Inventory
 
