@@ -1,36 +1,50 @@
-Role Name
+Role Name: powervc_vm_create
 =========
 
-A brief description of the role goes here.
+This role creates a vm aka LPAR in PowerVC
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Credentials for Openstack need  to be configured in AAP/AWX Controller
+
+PowerVC needs to be configured in the following way:
+...
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Variables used , which are defined externally
+
+> os_add_auth: additional parameters which are not defined in OpenStack Credential
+> os_availability_zones: created from host list
+> os_image_filter: Image to deploy from -> can also be moved to local var
+> os_network: Netwrok to deploy to
+
+### name of host to be created -> will be the dns hostname, too
+vm_create_name:
+
+### default vm flavor
+vm_create_flavor: xlarge
+
+### Group name
+vm_group_name:
+
+### Deploy target (defined in availabilty zone)
+vm_create_deploy_target:
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
 
 License
 -------
 
-BSD
+Apache 2.0
 
 Author Information
 ------------------

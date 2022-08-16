@@ -122,16 +122,50 @@ power_machines:
    - vm_create_create_ip: _try without for variable IP
    - vm_create_flavor: OpenStack VM Flavor
    - vm_group_name:
+   - vm_create_deploy_target:
 </pre>
 
 To see what flavors are available, log in to PowerVC console and click -> VirtualMachines -> Compute Templates
 #### Global Variables
 <pre>
-- os_image_filter: _start of image name, e.g rhel86_  (os_image_name -> internal use)
-- os_ssh_pub_key_file: used for access to client => get from machine credential
-- os_deploy_target
+- os_add_auth: ...
+
+- os_image_filter: _start of image name, e.g rhel86  (os_image_name -> internal use)
 - os_availability_zones[os_deploy_target]
--
+- os_network
+</pre>
+
+The dictionary `os_availability_zones` contains a list of groups and hosts as defined in PowerVC.
+To create a group entry select `Hosts` -> `Groups`.
+The entry will be ` "_host group_" : "_host group_"`
+To greate a host entry select -> `Hosts` -> `Host list` -> `Hostname`
+The entry will be `_Hostname_ : ":_MTMS_`
+
+**Example Definition**
+
+```yaml
+os_availability_zones:
+  "Default Group": "Default Group"
+  SERVER1: ":900922A_78AD123"
+  SERVER2: ":922322H_78C1234"
+  SERVER3: ":922322H_78C2345"
+
+os_default_deploy_target: "Default Group" #not implemented yet
+```
+
+
+  openstack.cloud.networks_info:
+    auth:
+      auth_url: https://identity.example.com
+      username: user
+      password: password
+      project_name: someproject
+  register: result
+
+availability_zones:
+
+
+
 #### Configure
 #### Helpful Tools (playbooks)
 

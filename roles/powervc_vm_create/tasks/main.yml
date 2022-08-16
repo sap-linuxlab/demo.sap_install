@@ -14,16 +14,21 @@
     query: "openstack_image[?starts_with(name, '{{ os_image_filter }}')].name"
   delegate_to: localhost
 
-## TODO: Get Info from machine credential added
-# check if ansible_ssh_private_key_file is defined, when machine credential is added
+# Ansible controller starts ssh-agent, when a machine credential is added to the template
+# So the public key from that credential can be found
+# this snippet currently assumes there is only one key - if there are more the playbook need
+# to loop over the stdout_lines
+- name: get public ssh key injected my machine credential
+  command: ssh-add -L
+  register: public_ssh_keys
+  changed_when: false
+
 - name: Create an SSH key pair
   openstack.cloud.keypair:
     auth: "{{ os_add_auth | default(omit) }}"
     state: present
-    name: ansible-ssh-key
-    public_key_file: "{{ os_ssh_pub_key_file }}"
-  delegate_to: localhost
-  throttle: 1
+    name: awx-machine-credential
+    public_key: "{{ public_ssh_keys.stdout_lines[0] }}"
 
 - name: Create a network port
   openstack.cloud.port:
@@ -39,8 +44,8 @@
     name: "{{ vm_create_name }}"
     image: "{{ os_image_name }}"
     flavor: "{{ vm_create_flavor_name }}"
-    availability_zone: "{{ os_availability_zones[os_deploy_target] }}"
-    key_name: ansible-ssh-key
+    availability_zone: "{{ os_availability_zones[vm_create_deploy_target] }}"
+    key_name: awx-machine-credential
     nics:
       - port-name: "{{ vm_create_name }}-port1"
     meta:

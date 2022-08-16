@@ -3,19 +3,23 @@
 # Phase 1: server provisioning
 #
 # After running this playbook you will have
-# servers with RHEL8 running on Google Cloud
+# servers with RHEL8 running on Power LPARs
 #
 # For input this playbook needs a dictionary with
 # the following paramters
 
 #   power_machines:
 #           - name: server-name
-#
+#             flavor:
+#             deploy_target:
 #             group: label for group
 
 # Additional variables which are used for PowerVC Environment
 # to be defined in inventory
-
+#  - os_add_auth: ...
+# - os_image_filter: _start of image name, e.g rhel86  (os_image_name -> internal use)
+# - os_availability_zones[os_deploy_target]
+# - os_network
 
 - hosts: localhost
   gather_facts: false
@@ -24,20 +28,18 @@
   - name: Output creation dictionary configuration
     debug:
       msg:
-        - "Name: {{ item.name }}"
-        - "boot: {{ item.bdisksize }}"
-        - "disk2:{{ item.disk2size }}"
-        - "type: {{ item.vmtype }}"
+        - "Name  : {{ item.name }}"
+        - "Flavor: {{ item.flavor }}"
+        - "Target: {{ item.deploy_target }}"
         - "group:{{ item.group }}"
     loop: "{{ power_machines }}"
 
-  - name: Create GCE VMs
+  - name: Create LPARs
     include_role:
-      name: power_vm_create
+      name: powervc_vm_create
     vars:
-      power_vm_name: "{{ item.name }}"
-      power_vm_bdisksize: "{{ item.bdisksize }}"
-      power_vm_disk2size: "{{ item.disk2size }}"
-      power_vm_type: "{{ item.vmtype }}"
-      power_vm_awx_group: "{{ item.group }}"
+      vm_create_name: "{{ item.name }}"
+      vm_create_flavor: "{{ item.flavor }}"
+      vm_create_deploy_target: "{{ item.deploy_target }}"
+      vm_create:group: "{{ item.group }}"
     loop: "{{ power_machines }}"

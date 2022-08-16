@@ -1,22 +1,23 @@
 ---
-# defaults file for gcp_vm_create_tower
+# defaults file for powervc_vm_create
 #
-# Credentials for GCP and Tower/Controller needs to be configured in Tower/Controller
+# Credentials for Openstack need  to be configured in AAP/AWX Controller
+#
+# Variables used , which are defined externally
+#
+# os_add_auth: additional parameters which are not defined in OpenStack Credential
+# os_availability_zones: created from host list
+# os_image_filter: Image to deploy from -> can also be moved to local var
+# os_network: Netwrok to deploy to
+#
+# name of host to be created -> will be the dns hostname, too
+vm_create_name:
 
-# Define the google vm  type to be rolled out
-gcp_vm_type: n1-standard-2
-# define the google region
-gcp_vm_zone: us-central1-a
-# define the name of VM to be created
-# This name is also used in the inventory
-gcp_vm_name:
-# Image to use for the deployment
-gcp_vm_image_source: projects/centos-cloud/global/images/family/centos-8
-# Define Image diskspace in GiB for bootdisk
-gcp_vm_bdisksize: 50
-# Define the size of the second disk
-gcp_vm_disk2size: 100
-# Define the network name to use (leave empty for default)
-gcp_vm_vpc:
-# Define network tags (firewall rule) to use
-gcp_vm_network_tags:
+# default vm flavor
+vm_create_flavor: xlarge
+
+# Group name
+vm_group_name:
+
+# Deploy target (defined in availabilty zone)
+vm_create_deploy_target:

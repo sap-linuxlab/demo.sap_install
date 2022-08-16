@@ -7,14 +7,16 @@
     - name: get known public ssh keys
       command: ssh-add -L
       register: public_ssh_keys
+      changed_when: false
 
     - name: dump public keys
       debug:
-        var: public_ssh_keys.stdout
+        var: public_ssh_keys.stdout_lines[0]
 
     - name: read directory of ANSIBLE_SSH_CONTROL_PATH_DIR
-      command: ls $ANSIBLE_SSH_CONTROL_PATH_DIR
+      command: echo $ANSIBLE_SSH_CONTROL_PATH_DIR
       register: ssh_control_dir
+      become: true
 
     - name: ls ANSIBLE_SSH_CONTROL_PATH_DIR
       debug:
