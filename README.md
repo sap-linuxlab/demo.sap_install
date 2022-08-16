@@ -75,22 +75,7 @@ To use this demo you need to have the following information available:
 
 | :exclamation:  Please Note              |
 |-----------------------------------------|
-| In the AAP/AWX credentials you can only define the following paramters for authentication:<BR><pre> auth_url
-     username
-     password
-     project_name
-     project_domain_name
-     domain_name
-     region_name
-  </pre>
-  You have to define the following dictionary in addition to  the OpenStack credential in case you need additional parameters for authentication.
-  <pre>
-   os_add_auth:
-      auth_url: https://powervc:5000/v3/ # mandatory to repeat
-      user_domain_name: Default          # additional parameters for auth section
-  </pre>
-  then add the line <pre>auth: "{{ os_add_auth | default(omit) }}"</pre> to all openstack.cloud modules |
-
+| In the AAP/AWX credentials you can only define the following previous parameters for authentication. <BR>  You have to define the following dictionary in addition to  the OpenStack credential in case you need additional parameters for authentication to your template: <BR><pre>     os_add_auth:<br>      auth_url: https://powervc:5000/v3/ # mandatory to repeat<br>      user_domain_name: Default          # additional parameters for auth section </pre> |
 
 
 #### Test the connection by listing disk images from PowerVC
