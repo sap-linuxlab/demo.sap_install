@@ -41,5 +41,5 @@
       vm_create_name: "{{ item.name }}"
       vm_create_flavor: "{{ item.flavor }}"
       vm_create_deploy_target: "{{ item.deploy_target }}"
-      vm_create:group: "{{ item.group }}"
+      vm_create_group: "{{ item.group }}"
     loop: "{{ power_machines }}"
