@@ -75,7 +75,10 @@ To use this demo you need to have the following information available:
 
 | :exclamation:  Please Note              |
 |:----------------------------------------|
-| In the AAP/AWX credentials you can only define the previous parameters for authentication. <BR>  Define the following dictionary in addition to  the OpenStack credential in case you need additional parameters, e.g. `user_domain_name` for authentication: <BR><pre>     os_add_auth:<br>      auth_url: https://powervc:5000/v3/ # mandatory to repeat<br>      user_domain_name: Default          # additional parameters for auth section </pre> |
+> In the AAP/AWX credentials you can only define the previous parameters for authentication.
+> Define the following dictionary in addition to  the OpenStack credential in case you need additional parameters, e.g. `user_domain_name` for authentication:
+> <pre>
+>      os_add_auth:<br>      auth_url: https://powervc:5000/v3/ # mandatory to repeat<br>      user_domain_name: Default          # additional parameters for auth section </pre>
 
 
 #### Test the connection by listing disk images from PowerVC
