@@ -75,10 +75,14 @@ To use this demo you need to have the following information available:
 
 | :exclamation:  Please Note              |
 |:----------------------------------------|
+
 > In the AAP/AWX credentials you can only define the previous parameters for authentication.
 > Define the following dictionary in addition to  the OpenStack credential in case you need additional parameters, e.g. `user_domain_name` for authentication:
 > <pre>
->      os_add_auth:<br>      auth_url: https://powervc:5000/v3/ # mandatory to repeat<br>      user_domain_name: Default          # additional parameters for auth section </pre>
+>     os_add_auth:
+>       auth_url: https://powervc:5000/v3/ # mandatory to repeat
+>       user_domain_name: Default          # additional parameters for auth section
+> </pre>
 
 
 #### Test the connection by listing disk images from PowerVC
@@ -93,12 +97,12 @@ To use this demo you need to have the following information available:
    - Project: `SAP Install Demo PowerVC`
    - select Playbook: `tools/power_list_diskimages.yml`
    - select Credential `Power VC Credential` from category `OpenStack`
-5. OPTIONAL: if you need `user_domain_name` add the following to the Variables section:
-  <pre>
-     os_add_auth:
+5. OPTIONAL: if you need `user_domain_name` for authentication add the following to the Variables section (or define an additional custom credential in AAP/AWX Controller):
+    <pre>
+      os_add_auth:
         auth_url: https://powervc:5000/v3/
         user_domain_name: Default
-  </pre>  
+    </pre>  
 6. Click `Save`
 7. Click `Launch`
 
@@ -112,6 +116,22 @@ To use this demo you need to have the following information available:
 
 #### Required Variables for Inventory
 
+<pre>
+power_machines:
+   - vm_create_name: _hostname_
+   - vm_create_create_ip: _try without for variable IP
+   - vm_create_flavor: OpenStack VM Flavor
+   - vm_group_name:
+</pre>
+
+To see what flavors are available, log in to PowerVC console and click -> VirtualMachines -> Compute Templates
+#### Global Variables
+<pre>
+- os_image_filter: _start of image name, e.g rhel86_  (os_image_name -> internal use)
+- os_ssh_pub_key_file: used for access to client => get from machine credential
+- os_deploy_target
+- os_availability_zones[os_deploy_target]
+-
 #### Configure
 #### Helpful Tools (playbooks)
 
