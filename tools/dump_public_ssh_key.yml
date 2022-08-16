@@ -11,3 +11,11 @@
     - name: dump public keys
       debug:
         var: public_ssh_keys.stdout
+
+    - name: read directory of ANSIBLE_SSH_CONTROL_PATH_DIR
+      command: ls $ANSIBLE_SSH_CONTROL_PATH_DIR
+      register: ssh_control_dir
+
+    - name: ls ANSIBLE_SSH_CONTROL_PATH_DIR
+      debug:
+        var: ssh_control_dir.stdout
