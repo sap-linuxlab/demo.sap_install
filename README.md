@@ -75,8 +75,7 @@ To use this demo you need to have the following information available:
 
 | :exclamation:  Please Note              |
 |-----------------------------------------|
-| In the AAP/AWX credentials you can only define the following paramters for authentication:
-  <pre>
+| In the AAP/AWX credentials you can only define the following paramters for authentication:<BR><pre>
      auth_url
      username
      password
