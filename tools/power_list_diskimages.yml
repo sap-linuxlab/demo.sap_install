@@ -1,40 +1,30 @@
 ---
 - hosts: localhost
-  gather_facts: true
+  gather_facts: false
 
-  vars:
-    config_file: "{{ lookup('env', 'OS_CLIENT_CONFIG_FILE') }}"
+  #   The OpenStack Credential only defines the following parameters for authentication:
+  #       auth_url
+  #       username
+  #       password
+  #       project_name
+  #       project_domain_name
+  #       domain_name
+  #
+  #   You have to define the following variables in addition to
+  #   the OpenStack credential in case you need additional parameters for
+  #   authentication.
+  #
+  #   os_add_auth:
+  #      auth_url: https://powervc:5000/v3/ # mandatory to repeat
+  #      user_domain_name: Default          # additional parameters for auth section
+  #
+  #   then add the line auth: `"{{ os_add_auth | default(omit) }}"` to all openstack.cloud modules
 
   tasks:
 
-    - name: Check if Config file is defined
-      debug:
-        msg: "{{ config_file }}"
-
-    - name: Check if file exists
-      stat:
-        path: "{{ config_file }}"
-      register: st
-
-    - name: add user_domain_name
-      lineinfile:
-        path: "{{ config_file }}"
-        line: "      user_domain_name: Default"
-        regexp: "^      user_domain_name:"
-        insertafter: "^    auth:"
-
-    - name: Debug content of file
-      ansible.builtin.debug:
-        msg: "the configfile content is {{lookup('ansible.builtin.file', config_file) }}"
-
-    - name: Include Variables from OpenStack credential file
-      include_vars: "{{ config_file }}"
-      when: st.stat.exists and st.stat.isreg
-
     - name: Retrieve list of all PowerVC images
       openstack.cloud.image_info:
-        auth: "{{ clouds.devstack.auth }}"
-        validate_certs: "{{ clouds.devstack.verify }}"
+        auth: "{{ os_add_auth | default(omit) }}"
       register: power_images
 
     - debug:
