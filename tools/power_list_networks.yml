@@ -1,5 +1,6 @@
 ---
-- hosts: localhost
+- name: Gather Networking Info
+  hosts: localhost
   gather_facts: false
 
   #   The OpenStack Credential only defines the following parameters for authentication:
@@ -23,13 +24,11 @@
   tasks:
 
     - name: Retrieve list of all PowerVC images
-      openstack.cloud.image_info:
+      openstack.cloud.networks_info:
         auth: "{{ os_add_auth | default(omit) }}"
         validate_certs: false
-      register: power_images
+      register: network
 
-    - name: print image list
+    - name: print flavor list
       debug:
-         msg: "{{ power_images | json_query('openstack_image[*].
-              {name: name, id: id, os_distro: os_distro, status: status,
-              project: location.project.name}') }}"
+        var: network.openstack_networks

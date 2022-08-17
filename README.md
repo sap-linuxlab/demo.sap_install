@@ -176,5 +176,6 @@ Login to Controller with your admin credentials
 
 ## Additional Documentation
 
+- [Automating PowerVC using Ansible](https://developer.ibm.com/tutorials/automating-powervc-using-ansible/)
 - [AWX Project Google Group](https://groups.google.com/g/awx-project)
 - [AWX Project FAQ](https://www.ansible.com/products/awx-project/faq)

@@ -1,0 +1,24 @@
+---
+- name: Find Disk Image by Name
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    os_image_filter: rhel
+
+  tasks:
+
+    - name: Retrieve list of all PowerVC images
+      openstack.cloud.image_info:
+        auth: "{{ os_add_auth | default(omit) }}"
+        validate_certs: false
+      register: power_images
+
+    - name: Get latest image matching os_image_filter variable
+      ansible.builtin.set_fact:
+         os_image_name: "{{ power_images | to_json | from_json | json_query(query) | sort(reverse=True) | first }}"
+      vars:
+        query: "openstack_image[?starts_with(name, '{{ os_image_filter }}')].name"
+
+    - debug:
+        var: os_image_name

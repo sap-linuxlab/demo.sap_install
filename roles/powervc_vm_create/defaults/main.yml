@@ -21,3 +21,7 @@ vm_group_name:
 
 # Deploy target (defined in availabilty zone)
 vm_create_deploy_target:
+
+# Network Provisioning method
+# Possible values are `sriov` and `sea`
+vm_create_network_type: sriov

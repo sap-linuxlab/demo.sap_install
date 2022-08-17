@@ -23,13 +23,14 @@
   tasks:
 
     - name: Retrieve list of all PowerVC images
-      openstack.cloud.image_info:
+      openstack.cloud.compute_flavor_info:
         auth: "{{ os_add_auth | default(omit) }}"
         validate_certs: false
-      register: power_images
+        vcpus: ">=4"   # Optional filters
+        ram: ">16000"  # See module docs for more options
+      register: flavors
 
-    - name: print image list
+    - name: print flavor list
       debug:
-         msg: "{{ power_images | json_query('openstack_image[*].
-              {name: name, id: id, os_distro: os_distro, status: status,
-              project: location.project.name}') }}"
+        msg: "{{ flavors | json_query('openstack_flavors[?is_public==`true`].
+              {name: name, id: id, ram: ram, vcpus: vcpus}') }}"
