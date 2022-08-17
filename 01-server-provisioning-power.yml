@@ -61,5 +61,5 @@
       vm_create_flavor: "{{ item.flavor|default(omit) }}"
       vm_create_deploy_target: "{{ item.deploy_target|default(omit) }}"
       vm_create_group: "{{ item.group }}"
-      vm_create_binding_vnic_type: "{{ os_network_binding_type |default(omit) }}"
+      vm_create_binding_vnic_type: "{{ os_network_vnic_type |default(omit) }}"
     loop: "{{ power_machines }}"

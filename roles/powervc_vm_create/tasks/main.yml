@@ -66,9 +66,13 @@
       hostname: "{{ vm_create_name }}"
       group: "{{ vm_create_group }}"
     timeout: 300
-  register: vm
+  register: new_lpar
   when:
    - not os_serverlist.openstack_servers
+
+- name: Print Info on created LPAR
+  debug:
+    var: new_lpar
 
 - name: Remove old ssh host keys from known hosts
   ansible.builtin.known_hosts:
