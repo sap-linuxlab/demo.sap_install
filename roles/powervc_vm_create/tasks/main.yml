@@ -71,7 +71,7 @@
       - port-name: "{{ vm_create_name }}-port1"
     meta:
       hostname: "{{ vm_create_name }}"
-      group: "{{ vm_group_name }}"
+      group: "{{ vm_create_group }}"
     timeout: 300
   register: vm
   when:
@@ -91,7 +91,7 @@
       - net-name: "{{ os_network }}"
     meta:
       hostname: "{{ vm_create_name }}"
-      group: "{{ vm_group_name }}"
+      group: "{{ vm_create_group }}"
     timeout: 300
   register: vm
   when:

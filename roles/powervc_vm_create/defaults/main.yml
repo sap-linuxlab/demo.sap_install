@@ -17,7 +17,7 @@ vm_create_name:
 vm_create_flavor: xlarge
 
 # Group name
-vm_group_name:
+vm_create_group:
 
 # Deploy target (defined in availabilty zone)
 vm_create_deploy_target:
