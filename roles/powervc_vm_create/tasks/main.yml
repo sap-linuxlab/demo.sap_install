@@ -59,6 +59,7 @@
     flavor: "{{ vm_create_flavor }}"
     # auto_ip: false
     # availability_zone: "{{ os_availability_zones[vm_create_deploy_target] }}"
+    availability_zone: "Default Group"
     key_name: awx-machine-credential1
     nics:
       - port-name: "{{ vm_create_name }}-port1"
@@ -79,6 +80,7 @@
     image: "{{ os_image_name }}"
     flavor: "{{ vm_create_flavor }}"
     # availability_zone: "{{ os_availability_zones[vm_create_deploy_target] }}"
+    availability_zone: "Default Group"
     key_name: awx-machine-credential1
     network: "{{ os_network }}"
     # nics:
