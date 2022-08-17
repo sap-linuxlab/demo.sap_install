@@ -35,6 +35,7 @@
 
 - name: Create a network port with fixed ip - need network permissions
   openstack.cloud.port:
+    auth: "{{ os_add_auth | default(omit) }}"
     state: present
     name: "{{ vm_create_name }}-port1"
     network: "{{ os_network }}"
@@ -47,6 +48,7 @@
 
 - name: Create a network port without ip - need network permissions and DHCP on the network
   openstack.cloud.port:
+    auth: "{{ os_add_auth | default(omit) }}"
     state: present
     name: "{{ vm_create_name }}-port1"
     network: "{{ os_network }}"
@@ -58,6 +60,7 @@
 # hence we assume the first key in the list
 - name: Create a new server instance
   openstack.cloud.server:
+    auth: "{{ os_add_auth | default(omit) }}"
     state: present
     name: "{{ vm_create_name }}"
     image: "{{ os_image_name }}"
@@ -76,6 +79,7 @@
 
 - name: Create a new server instance
   openstack.cloud.server:
+    auth: "{{ os_add_auth | default(omit) }}"
     state: present
     name: "{{ vm_create_name }}"
     image: "{{ os_image_name }}"
@@ -96,6 +100,7 @@
 - name: Dump info on created vm
   debug:
     var: vm
+
 - name: Remove old ssh host keys from known hosts
   ansible.builtin.known_hosts:
     name: "{{  vm_create_name }}"
