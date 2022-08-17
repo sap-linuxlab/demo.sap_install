@@ -35,7 +35,7 @@
   loop_control:
     loop_var: sshkey
 
-- name: Create a network port with fixed ip - need network permissions
+- name: Create a network port with fixed ip
   openstack.cloud.port:
     auth: "{{ os_add_auth | default(omit) }}"
     state: present
@@ -50,14 +50,14 @@
 
 # we can only inject one SSH-Key
 # hence we assume the first key in the list
-- name: Create a new server instance
+- name: Create a new server instance with fixed IP
   openstack.cloud.server:
     auth: "{{ os_add_auth | default(omit) }}"
     state: present
     name: "{{ vm_create_name }}"
     image: "{{ os_image_name }}"
     flavor: "{{ vm_create_flavor }}"
-    auto_ip: false
+    # auto_ip: false
     # availability_zone: "{{ os_availability_zones[vm_create_deploy_target] }}"
     key_name: awx-machine-credential1
     nics:
