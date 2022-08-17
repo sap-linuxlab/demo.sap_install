@@ -25,6 +25,16 @@
   gather_facts: false
 
   tasks:
+
+  - name: Ensure pythonpreqs are met
+    ansible.builtin.pip:
+      name:
+       - ansible-lint
+       - dnspython
+       - jmespath
+       - openstacksdk==0.61.0
+       - requests
+
   - name: Output creation dictionary configuration
     debug:
       msg:
