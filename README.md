@@ -26,7 +26,7 @@ To use this demo you need to have the following information available:
 - A preconfigured RHEL Image that can be deployed using PowerVC
 - Network Ports of PowerVC need to be reachable by Ansible Execution Environment
 
-#### Openstack Ports used by PowerVC
+**Openstack Ports used by PowerVC**
 
 | Port | OpenStack Component Name |
 |------|--------------------------|
@@ -36,7 +36,14 @@ To use this demo you need to have the following information available:
 | 9000 | Cinder                   |
 | 9292 | Glance                   |
 
+#### Follow these configuration steps
 
+1. Configure PowerVC
+2. Configure AAP/AWX to interact with PowerVC
+3. Configure AAP/AWX for SAP HANA Deployment
+4. Configure AAP/AWX for SAP S/4HANA Deployment
+
+l
 #### Configure this project in AAP/AWX Controller
 
 1. Login to your AAP/AWX Controller as admin
@@ -116,6 +123,7 @@ To use this demo you need to have the following information available:
 
 #### Required Variables for Inventory
 
+
 <pre>
 power_machines:
    - vm_create_name: _hostname_
@@ -135,24 +143,24 @@ To see what flavors are available, log in to PowerVC console and click -> Virtua
 - os_network
 </pre>
 
-The dictionary `os_availability_zones` contains a list of groups and hosts as defined in PowerVC.
-To create a group entry select `Hosts` -> `Groups`.
-The entry will be ` "_host group_" : "_host group_"`
-To greate a host entry select -> `Hosts` -> `Host list` -> `Hostname`
-The entry will be `_Hostname_ : ":_MTMS_`
+##### Availability Zones
+
+availabiltiy zones are optional to create in PowerVC. In case you want use ability zones configure them in PowerVC and create an array with your availability zones.
 
 **Example Definition**
 
 ```yaml
 os_availability_zones:
-  "Default Group": "Default Group"
+  "AllServers": "AllServers"
   SERVER1: ":900922A_78AD123"
   SERVER2: ":922322H_78C1234"
   SERVER3: ":922322H_78C2345"
-
-os_default_deploy_target: "Default Group" #not implemented yet
 ```
 
+To deploy a server in an availability zone and the following line to your creation dictionary:
+```yaml
+- vm_create_deploy_target: SERVER1
+```
 
   openstack.cloud.networks_info:
     auth:

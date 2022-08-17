@@ -29,9 +29,11 @@
   openstack.cloud.keypair:
     auth: "{{ os_add_auth | default(omit) }}"
     state: present
-    name: "{{ item.split(' ')[2] }}"
-    public_key: "{{ item }}"
+    name: "{{ sshkey.split(' ')[2] }}"
+    public_key: "{{ sshkey }}"
   loop: "{{ public_ssh_keys.stdout_lines|list }}"
+  loop_control:
+    loop_var: sshkey
 
 - name: Create a network port with fixed ip - need network permissions
   openstack.cloud.port:
@@ -42,19 +44,9 @@
     fixed_ips:
       - ip_address: "{{ vm_create_ip }}"
   when:
-   - vm_create_network_type == 'sea'
+   # vm_create_network_type == 'sea'
    - vm_create_ip is defined
    - vm_create_ip != ''
-
-- name: Create a network port without ip - need network permissions and DHCP on the network
-  openstack.cloud.port:
-    auth: "{{ os_add_auth | default(omit) }}"
-    state: present
-    name: "{{ vm_create_name }}-port1"
-    network: "{{ os_network }}"
-  when:
-   - vm_create_network_type == 'sea'
-   - vm_create_ip is undefined
 
 # we can only inject one SSH-Key
 # hence we assume the first key in the list
@@ -65,7 +57,8 @@
     name: "{{ vm_create_name }}"
     image: "{{ os_image_name }}"
     flavor: "{{ vm_create_flavor }}"
-    availability_zone: "{{ os_availability_zones[vm_create_deploy_target] }}"
+    auto_ip: false
+    # availability_zone: "{{ os_availability_zones[vm_create_deploy_target] }}"
     key_name: awx-machine-credential1
     nics:
       - port-name: "{{ vm_create_name }}-port1"
@@ -75,7 +68,8 @@
     timeout: 300
   register: vm
   when:
-   - vm_create_network_type == 'sea'
+   - vm_create_ip is defined
+   - vm_create_ip != ''
 
 - name: Create a new server instance
   openstack.cloud.server:
@@ -86,16 +80,16 @@
     flavor: "{{ vm_create_flavor }}"
     # availability_zone: "{{ os_availability_zones[vm_create_deploy_target] }}"
     key_name: awx-machine-credential1
-    # network: "{{ os_network }}"
-    nics:
-      - net-name: "{{ os_network }}"
+    network: "{{ os_network }}"
+    # nics:
+    #  - net-name: "{{ os_network }}"
     meta:
       hostname: "{{ vm_create_name }}"
       group: "{{ vm_create_group }}"
     timeout: 300
   register: vm
   when:
-   - vm_create_network_type == 'sriov'
+   - vm_create_ip is undefined
 
 - name: Dump info on created vm
   debug:

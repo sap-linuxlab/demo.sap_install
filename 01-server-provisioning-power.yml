@@ -29,9 +29,10 @@
     debug:
       msg:
         - "Name  : {{ item.name }}"
-        - "Flavor: {{ item.flavor }}"
-        - "Target: {{ item.deploy_target }}"
-        - "group:{{ item.group }}"
+        - "IP    : {{ item.ip|default(omit) }}"
+        - "Flavor: {{ item.flavor|default(omit) }}"
+        - "Target: {{ item.deploy_target|default(omit) }}"
+        - "Group : {{ item.group }}"
     loop: "{{ power_machines }}"
 
   - name: Create LPARs
@@ -39,7 +40,8 @@
       name: powervc_vm_create
     vars:
       vm_create_name: "{{ item.name }}"
-      vm_create_flavor: "{{ item.flavor }}"
-      vm_create_deploy_target: "{{ item.deploy_target }}"
+      vm_create_ip: "{{ item.ip }}"
+      vm_create_flavor: "{{ item.flavor|default(omit) }}"
+      vm_create_deploy_target: "{{ item.deploy_target|default(omit) }}"
       vm_create_group: "{{ item.group }}"
     loop: "{{ power_machines }}"
