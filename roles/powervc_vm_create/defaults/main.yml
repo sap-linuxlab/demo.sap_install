@@ -23,5 +23,7 @@ vm_create_group:
 vm_create_deploy_target:
 
 # Network Provisioning method
-# Possible values are `sriov` and `sea`
-vm_create_network_type: sriov
+# Possible values are 'direct' for SRIOV and 'normal' for SEA
+vm_create_binding_vnic_type: 'normal'
+
+vm_create_port_binding_profile: "capacity='0.02', delete_with_instance='1', vnic_required_vfs='2'"

@@ -1,0 +1,14 @@
+---
+# tasks file for powervc_vm_delete
+
+- name: Ensure LPAR "{{ vm_delete_name }}" is removed
+  openstack.cloud.server:
+    auth: "{{ os_add_auth | default(omit) }}"
+    state: absent
+    name: "{{ vm_delete_name }}"
+
+- name: Ensure network port is removed
+  openstack.cloud.port:
+    auth: "{{ os_add_auth | default(omit) }}"
+    state: absent
+    name: "{{ vm_delete_name }}-port1"

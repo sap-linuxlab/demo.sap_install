@@ -20,6 +20,9 @@
 # - os_image_filter: _start of image name, e.g rhel86  (os_image_name -> internal use)
 # - os_availability_zones[os_deploy_target]
 # - os_network
+#
+# Optional:
+# - os_network_binding_type: 'direct' # Use if Network is SRIOV
 
 - hosts: localhost
   gather_facts: false
@@ -45,6 +48,10 @@
         - "Group : {{ item.group }}"
     loop: "{{ power_machines }}"
 
+  - name: Create SSH Keypairs to inject into hosts
+    include_role:
+      name: powervc_keypair_create
+
   - name: Create LPARs
     include_role:
       name: powervc_vm_create
@@ -54,4 +61,5 @@
       vm_create_flavor: "{{ item.flavor|default(omit) }}"
       vm_create_deploy_target: "{{ item.deploy_target|default(omit) }}"
       vm_create_group: "{{ item.group }}"
+      vm_create_binding_vnic_type: "{{ os_network_binding_type |default(omit) }}"
     loop: "{{ power_machines }}"
