@@ -61,7 +61,7 @@
     state: present
     name: "{{ vm_create_name }}"
     image: "{{ os_image_name }}"
-    flavor: "{{ vm_create_flavor_name }}"
+    flavor: "{{ vm_create_flavor }}"
     availability_zone: "{{ os_availability_zones[vm_create_deploy_target] }}"
     key_name: awx-machine-credential1
     nics:
