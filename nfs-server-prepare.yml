@@ -1,10 +1,9 @@
 ---
 # This playbook configures a server with
 #  - nfs-service
-#  - avantra server software
 
 - name: Install nfs Server
-  hosts: gcp_awx_group_management
+  hosts: fileserver
   become: true
 
   vars:
