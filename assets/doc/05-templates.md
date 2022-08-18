@@ -10,6 +10,8 @@ How to create workflows woill be described in detail in the different branches o
 
 ### Test your configuration
 
+NOTE: this only works with vmware 7+
+
 To check proper connection to your VCenter create the following template:
 
 1. Go to `Resources` -> `Templates`
