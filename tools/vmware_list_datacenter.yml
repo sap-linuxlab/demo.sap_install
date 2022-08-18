@@ -3,13 +3,6 @@
   gather_facts: false
 
   tasks:
-  - name: Ensure iso8859-1 locale is installed - for some vmware versions
-    yum:
-      name:
-        - langpacks-en
-        - glibc-all-langpacks
-      state: present
-
   - name: Collect the list of the datacenters
     vmware.vmware_rest.vcenter_datacenter_info:
     register: my_datacenters
