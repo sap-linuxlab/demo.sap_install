@@ -4,7 +4,7 @@
 
   tasks:
   - name: Ensure iso8859-1 locale is installed - for some vmware versions
-    dnf:
+    yum:
       name:
         - langpacks-en
         - glibc-all-langpacks
