@@ -124,14 +124,14 @@ l
 #### Required Variables for Inventory
 
 
-<pre>
+```yaml
 power_machines:
    - vm_create_name: _hostname_
-   - vm_create_create_ip: _try without for variable IP
-   - vm_create_flavor: OpenStack VM Flavor
+   - vm_create_create_ip: _try without for variable IP_
+   - vm_create_flavor: _OpenStack VM Flavor_
    - vm_group_name:
    - vm_create_deploy_target:
-</pre>
+```
 
 To see what flavors are available, log in to PowerVC console and click -> VirtualMachines -> Compute Templates
 #### Global Variables
