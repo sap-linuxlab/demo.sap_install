@@ -36,8 +36,6 @@
       include_role:
         name: redhat.rhel_system_roles.storage
 
-               - mk-ansible-roles.subscribe_rhn
-
     - name: Ensure nfs-server is configured correctly
       include_role:
          name: mk-ansible-roles.setup_nfs_server
