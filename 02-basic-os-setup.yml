@@ -16,7 +16,7 @@
 # for each machine. Hence we need to extend the dictionary "gcp_machines"
 # with its individual storage configuration for the second disk, e.g.:
 
-#   gcp_machines:
+#   vmware_machines:
 #           - name: server-name
 #             [...]
 #             storage_pools:

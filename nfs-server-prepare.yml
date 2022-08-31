@@ -17,8 +17,8 @@
 
     # RHN Server
     exportdirs:
-      - /export/sap-software: '10.0.0.0/8(ro)'
-      - /export/hana/shared: '10.0.0.0/8(rw)'
+      - /export/sap-software: '*(ro)'
+      - /export/hana/shared: '*(rw)'
 
   tasks:
     # TODO:
