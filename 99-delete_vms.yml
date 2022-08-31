@@ -28,7 +28,7 @@
       state: absent
     become: true
     ignore_unreachable: true
-    when: name in vmware_machines|map(attribute="name")
+    when: inventory_hostname in vmware_machines|map(attribute="name")
 
   - name: Delete VM
     community.vmware.vmware_guest:
@@ -36,11 +36,11 @@
       # username: "{{ vcenter_username }}"
       # password: "{{ vcenter_password }}"
       validate_certs: "{{ vcenter_validate_certs }}"
-      name: "{{ item.name }}"
+      name: "{{ inventory_hostname }}"
       # datacenter: "{{ vmware_datacenter }}"
       # datastore: "{{ vmware_datastore }}"
       # folder: "{{ vmware_folder }}"
       state: absent
       # cluster: "{{ vmware_cluster }}"
     delegate_to: localhost
-    when: name in vmware_machines|map(attribute="name")
+    when: inventory_hostname in vmware_machines|map(attribute="name")
