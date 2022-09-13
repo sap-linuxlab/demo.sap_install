@@ -46,7 +46,7 @@
     wait_for:
       host: "{{ ansible_host }}"
       port: 22
-      delay: 90
+      delay: 10
       state: started
       timeout: 480
     delegate_to: localhost
@@ -73,6 +73,7 @@
       include_role:
         name: mk-ansible-roles.subscribe_rhn
 
+    # This picks the correct storage configuration for host inventory_hostname out of the vmware_machines dict
     - name: get storage pool setup from server definition
       set_fact:
          storage_pools: "{{ vmware_machines | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
