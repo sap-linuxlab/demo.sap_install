@@ -30,9 +30,14 @@
 #    sap_ha_set_hana_vip1: 10.0.0.200
 #
 #    sap_pacemaker_stonith_devices:
-#      - name: "fence_name_for_rhevm"
-#        agent: "fence_rhevm"
-#        parameters: "disable_http_filter=1 ipaddr=rhev-manager.example.com login='rhevuser@internal' password=rhevuser-pw pcmk_host_map='hana1:hana1;hana2:hana2' power_wait=3 ssl=1 ssl_insecure=1"
+#      - name: "fence_name_for_vmware"
+#        agent: "fence_vmware_rest"
+#        parameters: >
+#           "pcmk_host_list='rhd-hana1,rhd-hana2' ssl_insecure=1 ssl=1
+#           "ipaddr={{ lookup('env', 'VMWARE_HOST')}}"
+#           "login={{lookup('env','VMWARE_USER')}}"
+#           "passwd={{lookup('env','VMWARE_PASSWORD')}}"
+#
 
 # Access the IP Address of a particular hostname:
 # hostvars[inventory_hostname].ansible_host
