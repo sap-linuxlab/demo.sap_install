@@ -9,6 +9,19 @@
   become: true
 
   tasks:
+    # In Ansible Tower you cannot pass a survey variable to another
+    # so that in the e2e workflow we force sap_hana_sid and sap_hana_instance_number
+    # to be used
+    - name: Overwrite sap_swpm_db_sid with sap_hana_sid
+      ansible.builtin.set_fact:
+        sap_swpm_db_sid: "{{sap_hana_sid}}"
+      when: sap_hana_sid is defined
+
+    - name: Overwrite sap_swpm_db_instance_nr with sap_hana_instance_number
+      ansible.builtin.set_fact:
+        sap_swpm_db_instance_nr: "{{sap_hana_instance_number}}"
+      when: sap_hana_instance_number is defined
+
     - name: execute the SWPM Installation
       include_role:
         name: community.sap_install.sap_swpm
