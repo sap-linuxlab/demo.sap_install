@@ -22,6 +22,11 @@
         sap_swpm_db_instance_nr: "{{sap_hana_instance_number}}"
       when: sap_hana_instance_number is defined
 
+    - name: Output all variables
+      debug:
+        var: hostvars[inventory_hostname]
+        verbosity: 1
+
     - name: execute the SWPM Installation
       include_role:
         name: community.sap_install.sap_swpm
