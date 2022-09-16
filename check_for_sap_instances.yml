@@ -49,40 +49,40 @@
           msg: "SID {{ sap_hana_deployment_installed_sid }} is already installed with different instance number"
   when:
          - sap_hana_deployment_installed_sid is defined
-         - sap_hana_deployment_installed_sid == sap_hana_deployment_hana_sid
-         - sap_hana_deployment_installed_num != sap_hana_deployment_hana_instance_number
+         - sap_hana_deployment_installed_sid == sap_hana_sid
+         - sap_hana_deployment_installed_num != sap_hana_instance_number
 
 - name: Fail if instance number is used by other SAP component
   fail:
           msg: "The instance number {{ sap_hana_deployment_installed_num }} is already used on this system"
   when:
          - sap_hana_deployment_installed_num is defined
-         - sap_hana_deployment_installed_num == sap_hana_deployment_hana_instance_number
-         - sap_hana_deployment_installed_sid != sap_hana_deployment_hana_sid
+         - sap_hana_deployment_installed_num == sap_hana_instance_number
+         - sap_hana_deployment_installed_sid != sap_hana_sid
 
 - name: Fail if you try to install HANA with same SID/Instance than other SAP system
   fail:
           msg: "There is a non-HANA software with the same SID/instance number running"
   when:
          - sap_hana_deployment_installed_typ is defined
-         - sap_hana_deployment_installed_sid == sap_hana_deployment_hana_sid
-         - sap_hana_deployment_installed_num == sap_hana_deployment_hana_instance_number
-         - sap_hana_deployment_installed_typ != "HDB"+sap_hana_deployment_hana_instance_number
+         - sap_hana_deployment_installed_sid == sap_hana_sid
+         - sap_hana_deployment_installed_num == sap_hana_instance_number
+         - sap_hana_deployment_installed_typ != "HDB"+sap_hana_instance_number
 
 - name: Info if HANA is already installed
   debug:
           msg: "The HANA Database is already running on the system"
   when:
          - sap_hana_deployment_installed_typ is defined
-         - sap_hana_deployment_installed_sid == sap_hana_deployment_hana_sid
-         - sap_hana_deployment_installed_num == sap_hana_deployment_hana_instance_number
-         - sap_hana_deployment_installed_typ == "HDB"+sap_hana_deployment_hana_instance_number
+         - sap_hana_deployment_installed_sid == sap_hana_sid
+         - sap_hana_deployment_installed_num == sap_hana_instance_number
+         - sap_hana_deployment_installed_typ == "HDB"+sap_hana_instance_number
 
 - name: skip installation if HANA is already installed
   set_fact:
           sap_hana_deployment_skip: true
   when:
          - sap_hana_deployment_installed_typ is defined
-         - sap_hana_deployment_installed_sid == sap_hana_deployment_hana_sid
-         - sap_hana_deployment_installed_num == sap_hana_deployment_hana_instance_number
-         - sap_hana_deployment_installed_typ == "HDB"+sap_hana_deployment_hana_instance_number
+         - sap_hana_deployment_installed_sid == sap_hana_sid
+         - sap_hana_deployment_installed_num == sap_hana_instance_number
+         - sap_hana_deployment_installed_typ == "HDB"+sap_hana_instance_number
