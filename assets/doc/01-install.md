@@ -56,6 +56,17 @@ If you want to use the Red Hat Subscriptions for free you have a couple of optio
    `git clone https://github.com/ansible/awx-operator`
 4. Deploy AWX - Follow the instructions on the github page
 
+## Configuration Changes
+
+If you want to use surveys and want the variables you pass to the survey being evaluated in the playbook extra variables you have to make the following change:
+
+1. Click on `Settings`
+2. Click On `Jobs`
+3. Verify that the question `When can extra variables contain Jinja templates?` is set to `always`
+4. If not. click edit and change to `always`
+
+NOTE: This change might introduce a security risk, by jinja2 code injection through the survey
+
 
 ## References
 
