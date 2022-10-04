@@ -10,5 +10,5 @@ collections:
         - name: community.sap_operations
         - name: https://github.com/sap-linuxlab/community.sap_install.git,dev
           type: git
-        - name: https://github.com/sap-linuxlab/community.sap_launchpad.git
+        - name: https://github.com/sap-linuxlab/community.sap_launchpad.git,dev
           type: git
