@@ -1,0 +1,75 @@
+![Work in Progress](../img/wip.png)
+
+# Installation of Ansible Automation Controller or AWX
+
+This document explains ho to install Ansible Automation Controller or AWX on single server, that is suitable for a demo.
+Refer to the documention for HA or more complex setup scenarions.
+
+## System Requirements
+
+The following settings are recommended
+
+- x86-64 syste,
+- 4 vCpus
+- 16GB memory
+- &gt;20GB in `/home/awx`
+- &gt;40GB in `/var`
+
+For a single demo this can be also smaller. For sizing details or distributed setups see [2].
+
+## Ansible Automation Controller
+
+### Get the required Red Hat Subscriptions
+
+If you want to use the Red Hat Subscriptions for free you have a couple of options
+
+1. You are a Red Hat Partner and you can obtain free test subscriptions (so called NFRs) from the [partner center](https://partnercenter.redhat.com/NFRPageLayout)  according to your partner level.
+2. Apply for your free 16-node developer subscription [here](https://developers.redhat.com/products/rhel/overview).  This free developer subscription grants access to RHEL and Ansible Automation Hub.
+3. You or your company has bought the subscriptions for RHEL and Ansible Automation Platform
+
+### Installation steps
+
+1. Make sure your subscriptions are available and activated at the [Red Hat Service Portal](https://access.redhat.com/management/). When you click on the developer subscriptiion you should see this screen followed by a list of products. Among them is `Red Hat Enterprise Linux` and `Ansible Automation Platform`:
+![Overview of developer subscription](../img/RedhatDeveloperSubscription.png)
+2. If not done, download RHEL 8.4 or later from [here](https://access.redhat.com/downloads/content/479)
+3. Install and register RHEL on your server. You will find the [Installation Guide](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/performing_a_standard_rhel_9_installation/index) at [1]
+4. Download Ansible Automation platform [here](https://access.redhat.com/downloads/content/480)
+5. Attach your Ansible Automation Subscription to the server
+6. Create credentials for the Red Hat Registry
+7. Create your Automation Hub Credentials
+8. Update your Inventory file
+9.  run `setup.sh -i inventory`
+10. Login in and confirm subscription
+
+## Configure Access to Red Hat Automation Hub
+
+1. Create a Automation Hub/Galaxy Credential
+2. Assign your credential to the organisation
+3. Assign your organisation to the credential
+
+
+## AWX
+
+1. Install Fedora or Centos Stream or RHEL 8.4+
+2. [Install Microshift (RPM version)](https://microshift.io/docs/getting-started/)
+3. Clone GitHub Operator for AWX
+   `git clone https://github.com/ansible/awx-operator`
+4. Deploy AWX - Follow the instructions on the github page
+
+## Configuration Changes
+
+If you want to use surveys and want the variables you pass to the survey being evaluated in the playbook extra variables you have to make the following change:
+
+1. Click on `Settings`
+2. Click On `Jobs`
+3. Verify that the question `When can extra variables contain Jinja templates?` is set to `always`
+4. If not. click edit and change to `always`
+
+NOTE: This change might introduce a security risk, by jinja2 code injection through the survey
+
+
+## References
+
+[1] [Product Documentation for Red Hat Enterprise Linux](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9)
+
+[2] [Red Hat Ansible Automation Platform Installation Guide](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.2/html-single/red_hat_ansible_automation_platform_installation_guide/index)

@@ -1,0 +1,100 @@
+---
+########################################################
+# Phase 1: server provisioning
+#
+# After running this playbook you will have
+# servers with RHEL8 running on VMware
+#
+# This deployment needs to use a vmware template with
+# RHEL8 preinstalled with following additional requirements
+# - network is defined by template and not changed
+# - boot disk needs to be on paravirtual controller 0, unit 0
+
+# For input this playbook needs a dictionary with
+# the following paramters
+
+#   vmw_machines:
+#           - name: server-name
+#             disk_gb: <size of datadisk>
+#             mem_mb: <memory in MB, default 16384>
+#             cpus: <num of cpus, default 2>
+#             group: <group to add server>
+
+# For using vmware.rest and community.vmware collection the following environment variables
+# need to be defined or VCENTER Credentials added to Automation Controller/AWX
+# export VMWARE_HOST=vcenter.test
+# export VMWARE_USER=myvcenter-user
+# export VMWARE_password=mypassword
+#
+# Globally required variables:
+#
+# Optionally: vcenter_validate_certs: no or export VMWARE_VALIDATE_CERTS=no
+# vmware_cluster:
+# vmware_datacenter:
+# vmware_datastore:
+# vmware_folder:
+# vmware_template:
+# vmware_network:
+#
+
+- name: phase 1 -- Server Provisioning
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+  # You don't have to do this in Automation Hub
+  # - name: Ensure required python library for vmware is installed
+  #  dnf:
+  #    name: python3-aiohttp
+  #    state: latest
+
+  - name: Output creation dictionary configuration
+    debug:
+      msg:
+        - "Name: {{ item.name }}"
+        - "disk2:{{ item.disk_gb }} GB"
+        - "memory: {{ item.mem_mb | default('16384') }} MB"
+        - "cpus: {{ item.cpus | default('4') }}"
+        - "group:{{ item.group }}"
+    loop: "{{ vmware_machines }}"
+
+  - name: Create VM from template
+    community.vmware.vmware_guest:
+      # hostname: "{{ vcenter_ip }}"
+      # username: "{{ vcenter_username }}"
+      # password: "{{ vcenter_password }}"
+      validate_certs: "{{ vcenter_validate_certs }}"
+      name: "{{ item.name }}"
+      template: "{{ vmware_template }}"
+      datacenter: "{{ vmware_datacenter }}"
+      datastore: "{{ vmware_datastore }}"
+      folder: "{{ vmware_folder }}"
+      state: poweredon
+      cluster: "{{ vmware_cluster }}"
+      annotation: "{{ item.group }}"
+      # fails if network is not set
+      # customization:
+      #   hostname: "{{ item.name }}"
+      disk:
+      - datastore: "{{ vmware_datastore }}"
+        disk_mode: persistent
+        size_gb: "150"
+        controller_type: 'paravirtual'
+        controller_number: 0
+        unit_number: 0
+      - datastore: "{{ vmware_datastore }}"
+        disk_mode: persistent
+        size_gb: "{{ item.disk_gb }}"
+        controller_type: 'paravirtual'
+        controller_number: 0
+        unit_number: 1
+        type: eagerzeroedthick
+      networks:
+      - start_connected: true
+        device_type: vmxnet3
+        name: "{{ vmware_network }}"
+      hardware:
+        memory_mb: "{{ item.mem_mb | default('16384') }}"
+        num_cpus: "{{ item.cpus | default('4') }}"
+      wait_for_ip_address: true
+    loop: "{{ vmware_machines }}"

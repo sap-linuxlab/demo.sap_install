@@ -1,0 +1,103 @@
+---
+####################################################
+#
+# Phase 2: Basic OS Setup
+#
+# This playbook covers the following configuration steps
+#  - subscription and repositories
+#  - network setup
+#  - storage customization
+
+# For our demo, we do not need to install additional packages,
+# configure special services, monitoring and backup etc.
+# we are good with what the standard image provides
+
+# We need to provide this script the storage configuration
+# for each machine. Hence we need to extend the dictionary "gcp_machines"
+# with its individual storage configuration for the second disk, e.g.:
+
+#   vmware_machines:
+#           - name: server-name
+#             [...]
+#             storage_pools:
+#               - name: volume_name
+#                 disks:
+#                  - sdb
+#                 volumes:
+#                   - name: data
+#                     size: "128 GiB"
+#                     mount_point: "/hana/data"
+#                     fs_type: xfs
+#                     state: present
+#                   - name: log
+#                     size: "64 GiB"
+#                     mount_point: "/hana/log"
+#                     fs_type: xfs
+#                     state: present
+
+# Have a look at the documention of the storage role for more configuration options
+
+- name: Ensure Servers are booted and reachable
+  hosts: hanas, s4hanas
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Wait for SSH to come up
+    wait_for:
+      host: "{{ ansible_host }}"
+      port: 22
+      delay: 10
+      state: started
+      timeout: 480
+    delegate_to: localhost
+
+- name: Phase 2 - basic OS Setup
+  hosts: hanas, s4hanas
+  become: true
+
+  # Default variables for the playbooks can be set here
+  # and can be overwritten in the template file
+  vars:
+    reg_activation_key: "{{ sap_rhsm_activationkey }}"
+    reg_organization_id: "{{ sap_rhsm_org_id }}"
+    reg_osrelease: 8.4
+    repositories:
+      - rhel-8-for-x86_64-baseos-e4s-rpms
+      - rhel-8-for-x86_64-appstream-e4s-rpms
+      - rhel-8-for-x86_64-sap-solutions-e4s-rpms
+      - rhel-8-for-x86_64-sap-netweaver-e4s-rpms
+      - rhel-8-for-x86_64-highavailability-e4s-rpms
+
+  tasks:
+    - name: Ensure Correct subscription and repositories
+      include_role:
+        name: mk-ansible-roles.subscribe_rhn
+
+    # This picks the correct storage configuration for host inventory_hostname out of the vmware_machines dict
+    - name: get storage pool setup from server definition
+      set_fact:
+         storage_pools: "{{ vmware_machines | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
+
+    - name: Ensure storage is configured correctly
+      include_role:
+        name: redhat.rhel_system_roles.storage
+
+    - name: NFS client is installed
+      dnf:
+         name:
+           - nfs-utils
+         state: present
+
+    - name: Ensure Mountpoint exists
+      file:
+         path: "{{ nfs_software_archive_dir }}"
+         state: directory
+         mode: '0755'
+
+    - name: Ensure NFS Server with SAP Software is mounted
+      ansible.posix.mount:
+        src: "{{ nfs_software_archive_srv }}"
+        path: "{{ nfs_software_archive_dir }}"
+        opts: rw,sync,hard,noatime
+        fstype: nfs
+        state: present
