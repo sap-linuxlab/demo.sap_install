@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  gather_facts: false
+
+  tasks:
+  - name: Collect the list of the existing VM
+    vmware.vmware_rest.vcenter_vm_info:
+    register: existing_vms
+    until: existing_vms is not failed
+
+  - debug:
+         var: existing_vms
+
+  - name: "Find folder"
+    community.vmware.vmware_guest_find:
+        validate_certs: false
+        name: "{{ item.name }}"
+    register: vm_facts
+    loop: "{{ existing_vms.value }}"
+
+  - name: Debug folder
+    debug:
+         var: vm_facts
+
+  - name: GuestInfo
+    community.vmware.vmware_guest_info:
+        validate_certs: false
+        name: "{{ item.name }}"
+        datacenter: "{{ vmware_datacenter }}"
+    register: vm_info
+    loop: "{{ existing_vms.value }}"
+
+  - name: debug Guest Info
+    debug:
+         var: vm_info

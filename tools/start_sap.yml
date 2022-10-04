@@ -1,0 +1,60 @@
+---
+- name: Start SAP HANA Database  Server
+  hosts: gcp_awx_group_hana
+  become: true
+
+  # Source:  https://help.sap.com/doc/saphelp_nw73ehp1/7.31.19/en-US/47/1d6feeff6e0d46e10000000a155369/content.htm?no_cache=true
+  vars:
+     installed_num: []
+
+  tasks:
+    - name: Search for installed SAP Systems
+      shell: |
+        if [ -x /usr/sap/hostctrl/exe/saphostctrl ]; then
+              /usr/sap/hostctrl/exe/saphostctrl -function GetCIMObject -enuminstances SAPInstance
+        fi
+      register: sap_hana_deployment_sap_systems_list
+
+    - name: Display installed SAP Systems
+      debug:
+          var: sap_hana_deployment_sap_systems_list
+
+    - name: Add found Instance to list
+      set_fact:
+        installed_num: "{{ installed_num + [ item.split(',').2|trim ]  }}"
+      loop: "{{ sap_hana_deployment_sap_systems_list.stdout_lines|list }}"
+      when: item is search("^ SystemNumber")
+
+    - name: Start SAP instances
+      command: /usr/sap/hostctrl/exe/sapcontrol -nr {{ item }} -function StartSystem
+      loop: "{{ installed_num }}"
+
+- name: Start SAP Netweaver Server
+  hosts: gcp_awx_group_s4
+  become: true
+
+  # Source:  https://help.sap.com/doc/saphelp_nw73ehp1/7.31.19/en-US/47/1d6feeff6e0d46e10000000a155369/content.htm?no_cache=true
+  vars:
+     installed_num: []
+
+  tasks:
+    - name: Search for installed SAP Systems
+      shell: |
+        if [ -x /usr/sap/hostctrl/exe/saphostctrl ]; then
+              /usr/sap/hostctrl/exe/saphostctrl -function GetCIMObject -enuminstances SAPInstance
+        fi
+      register: sap_hana_deployment_sap_systems_list
+
+    - name: Display installed SAP Systems
+      debug:
+          var: sap_hana_deployment_sap_systems_list
+
+    - name: Add found Instance to list
+      set_fact:
+        installed_num: "{{ installed_num + [ item.split(',').2|trim ]  }}"
+      loop: "{{ sap_hana_deployment_sap_systems_list.stdout_lines|list }}"
+      when: item is search("^ SystemNumber")
+
+    - name: Start SAP instances
+      command: /usr/sap/hostctrl/exe/sapcontrol -nr {{ item }} -function StartSystem
+      loop: "{{ installed_num }}"

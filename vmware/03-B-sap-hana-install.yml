@@ -5,11 +5,14 @@
 # Then it calls the installation of SAP HANA with the configured paramters
 
 - name: Phase 3-B - Install Hana
-  hosts: gcp_awx_group_hana
+  hosts: hanas
   become: true
 
   tasks:
+    - name: Detect Existing HANA installation
+      include_tasks: check_for_sap_instances.yml
 
     - name: execute the SAP Hana Installation
       include_role:
         name: community.sap_install.sap_hana_install
+      when: not sap_hana_deployment_skip

@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  gather_facts: false
+
+  tasks:
+  - name: Collect the list of the datacenters
+    vmware.vmware_rest.vcenter_datacenter_info:
+      vcenter_validate_certs: false
+    register: my_datacenters
+
+  - debug:
+         var: my_datacenters

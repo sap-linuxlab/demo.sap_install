@@ -5,7 +5,7 @@
   tasks:
   - name: Print hello world
     debug:
-            msg: "Hello World from {{ name }}"
+            msg: "Hello World from {{ name | default('the unknown server') }}"
 
   - name: Check connection
     ping:
