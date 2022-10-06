@@ -3,19 +3,18 @@
 This repository contains demos for the community.sap_install collection
 and how to use this from [AWX](https://github.com/ansible/awx) or [Red Hat Ansible Controller](https://www.ansible.com/products/controller?hsLang=en-us)
 
-This page is the main branch and the files you see in this branch are only templates for implemention.
-
 ## Demo Description
 
-This demo deploys HANA and S/4 servers on a google cloud following this process:
+This demo deploys HANA and S/4 servers following this process:
  ![Picture of workflow here](assets/img/workflow.png)
 
-You will find the corresponding playbooks in this repository which implement the steps of the above workflow
+You will find the corresponding playbooks in this repository which implement the steps of the above workflow in the subdirectories named like the platform.
 
-For a usable demo please switch to the branch for the platform of your choice. These branches will list more details on the configuration.
+Currently we have demos for the following platforms:
 
-
-### Usage of this repository
+* VMware (vCenter Version 6 and 7+)
+* GCP (WIP)
+* PowerVC (WIP)
 
 ### Demo setup
 

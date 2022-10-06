@@ -1,15 +1,13 @@
-![Work in Progress](../img/wip.png)
-
 # Installation of Ansible Automation Controller or AWX
 
 This document explains ho to install Ansible Automation Controller or AWX on single server, that is suitable for a demo.
-Refer to the documention for HA or more complex setup scenarions.
+Refer to the documentation for HA or more complex setup scenarios.
 
 ## System Requirements
 
 The following settings are recommended
 
-- x86-64 syste,
+- x86-64 system,
 - 4 vCpus
 - 16GB memory
 - &gt;20GB in `/home/awx`
@@ -29,7 +27,7 @@ If you want to use the Red Hat Subscriptions for free you have a couple of optio
 
 ### Installation steps
 
-1. Make sure your subscriptions are available and activated at the [Red Hat Service Portal](https://access.redhat.com/management/). When you click on the developer subscriptiion you should see this screen followed by a list of products. Among them is `Red Hat Enterprise Linux` and `Ansible Automation Platform`:
+1. Make sure your subscriptions are available and activated at the [Red Hat Service Portal](https://access.redhat.com/management/). When you click on the developer subscription you should see this screen followed by a list of products. Among them is `Red Hat Enterprise Linux` and `Ansible Automation Platform`:
 ![Overview of developer subscription](../img/RedhatDeveloperSubscription.png)
 2. If not done, download RHEL 8.4 or later from [here](https://access.redhat.com/downloads/content/479)
 3. Install and register RHEL on your server. You will find the [Installation Guide](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/performing_a_standard_rhel_9_installation/index) at [1]
@@ -44,17 +42,17 @@ If you want to use the Red Hat Subscriptions for free you have a couple of optio
 ## Configure Access to Red Hat Automation Hub
 
 1. Create a Automation Hub/Galaxy Credential
-2. Assign your credential to the organisation
-3. Assign your organisation to the credential
+2. Assign your credential to the organization
+3. Assign your organization to the credential
 
 
 ## AWX
 
-1. Install Fedora or Centos Stream or RHEL 8.4+
+1. Install Fedora or CentOS Stream or RHEL 8.4+
 2. [Install Microshift (RPM version)](https://microshift.io/docs/getting-started/)
 3. Clone GitHub Operator for AWX
    `git clone https://github.com/ansible/awx-operator`
-4. Deploy AWX - Follow the instructions on the github page
+4. Deploy AWX - Follow the instructions on the GitHub page
 
 
 ## References
