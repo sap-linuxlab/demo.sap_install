@@ -12,7 +12,7 @@ You will find the corresponding playbooks in this repository which implement the
 
 Currently we have demos for the following platforms:
 
-* VMWare (Vcenter Version 6 and 7+)
+* VMware (vCenter Version 6 and 7+)
 * GCP (WIP)
 * PowerVC (WIP)
 

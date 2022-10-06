@@ -3,7 +3,7 @@
 There are two kinds of templates:
 
 1. Job Templates - these are connections to the playbooks. You add the credentials, the inventory, variables etc. on which this playbook should run
-2. Workflow templates - these are used to orchestrate Job templates, and pedefined jobs, such as inventory refresh,  based on success or failure of the previous template
+2. Workflow templates - these are used to orchestrate Job templates, and predefined jobs, such as inventory refresh,  based on success or failure of the previous template
 
 
 ## Test your configuration
@@ -14,41 +14,41 @@ To check proper connection to your VCenter create the following template:
 
 1. Go to `Resources` -> `Templates`
 2. Click `Add` -> `Add Job Template`
-3. Add the following paramters
+3. Add the following parameters
    - Name: tool - list datacenter
    - Inventory - your demo inventory
-   - Project - your github project
+   - Project - your GitHub project
    - Playbook - tools/vmware_list_datacenters.yml
-   - Credentials - Vcenter Credentials
+   - Credentials - vCenter Credentials
 4. Click `Save`
 5. Click `Launch`
 
 If you have self-signed certificates make sure the variable `vcenter_validate_certs: false` is set. You should have done this in your inventory
 
-If everything goes well you get the name of your Datacenters (in the same way it has to be put in the inventory variable)
+If everything goes well you get the name of your datacenters (in the same way it has to be put in the inventory variable)
 
-There are some more playbookls like this in the tools directory of this repository to get information on the VMware environment. You can use these playbooks to figure out some of the variables that need to be configured in the inventory.
+There are some more playbooks like this in the tools directory of this repository to get information on the VMware environment. You can use these playbooks to figure out some of the variables that need to be configured in the inventory.
 
 ## Set up the provisioning playbooks
 
 ### Step 1
 1. Go to `Resources` -> `Templates`
 2. Click `Add` -> `Add Job Template`
-3. Add the following paramters
+3. Add the following parameters
    - Name: 01 - provision Servers
    - Inventory - your demo inventory
-   - Project - your github project
+   - Project - your GitHub project
    - Playbook - 01-server-provisioning-vmware.yml
-   - Credentials - Vcenter Credentials
+   - Credentials - vCenter Credentials
 4. Click `Save`
 
 ### Step 2
 
 1. Click `Add` -> `Add Job Template`
-2. Add the following paramters
+2. Add the following parameters
    - Name: 01 - provision Servers
    - Inventory - your demo inventory
-   - Project - your github project
+   - Project - your GitHub project
    - Playbook - 02-basic-os-setup.yml
    - Credentials
       - Cloud: Vcenter Credentials
@@ -68,10 +68,10 @@ Repeat Step 2 with proper for the following playbooks:
 ### Combine these job templates in a workflow template:
 
 1.  Click `Add` -> `Add Workflow Template`
-2.  Add the following paramters
+2.  Add the following parameters
    - Name: End-2-End S/4 HANA deployment
    - Inventory - your demo inventory
-   - Project - your github project
+   - Project - your GitHub project
    - Variables (adopt the variables as you like)
    ```
 ---
@@ -265,7 +265,7 @@ sap_swpm_db_instance_nr: "{{ sap_hana_instance_number }}"
    4. on `02 basic OS Setup` select job template `03-A Hana preparation` on success
    5. on `02 basic OS Setup` select job template `04-A Netweaver preparation` on success
    6. on `03-A Hana preparation` select job template `03-B HANA install` on success
-   7. on `03-B HANA install` select jo template `03-CD- HANA HSR and Cluster` on success
+   7. on `03-B HANA install` select to template `03-CD- HANA HSR and Cluster` on success
    8. on `03-CD- HANA HSR and Cluster` select `04 - SAP S/4HANA install` on success
    9. on `04-A Netweaver Preparation`, click the chain symbol and connect it to the existing `04 - SAP S/4HANA install` tile
    10. Click `Save`
