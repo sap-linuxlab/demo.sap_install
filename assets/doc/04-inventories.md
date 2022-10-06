@@ -6,7 +6,7 @@ Those files can be preloaded from github, staticly or dynamically created
 Depending on the demo we use dynamic or static inventories.
 It is recommended to store environment or connection specific variables here:
 
-// Need to be done before project setup !!!
+<!-- Need to be done before project setup ? -->
 
 # localhost entry
 
