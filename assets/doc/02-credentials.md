@@ -2,12 +2,12 @@
 # Credentials
 
 In Automation Controller/AWX credentials are stored encrypted.
-In addition to the standard credentials, the following custom credentials may be needed:
+In addition to the standard credential types, the following custom credential types may be needed:
 
  - Credentials to register Red Hat subsciptions with an activation key
  - Credentials to download SAP software
 
-## Configure Custom Credentials
+## Configure Custom Credential Types
 
 Go to `Administration` -> `Credential Types`
 
