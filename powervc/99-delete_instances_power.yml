@@ -1,0 +1,20 @@
+---
+########################################################
+# Delete created LPARS
+#
+# After running this playbook you will have
+# all LPARS deleted that are defined in:
+#   power_machines:
+#           - name: server-name
+
+- name: 99 - Delete all hosts from power_machines dict
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+  - name: delete LPARs
+    include_role:
+      name: powervc_vm_delete
+    vars:
+      vm_delete_name: "{{ item.name }}"
+    loop: "{{ power_machines }}"

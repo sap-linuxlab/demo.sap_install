@@ -1,0 +1,13 @@
+---
+# These variables are valid for all hosts in the VMware environment
+vcenter_validate_certs: no
+vmware_cluster: "MyCluster"
+vmware_datacenter: "MyDatacenter"
+vmware_datastore: "MyDatastore"
+vmware_folder: "/MyDatacenter/vm/RedHat/SAP"
+vmware_template: "template_rhel8.2"
+vmware_network: "MYNetwork"
+
+# NFS Share with installation Software
+nfs_software_archive_srv: 1.2.3.4:/mynfsserver/saparchive
+nfs_software_archive_dir: /sapinst

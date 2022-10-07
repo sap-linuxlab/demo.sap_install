@@ -1,0 +1,19 @@
+---
+- name: get openstacksdk version
+  hosts: localhost
+  gather_facts: true
+
+  vars:
+    pipcmd: "pip3"
+
+  tasks:
+    - name: run pip command in shell
+      shell: |
+        set -o pipefail
+        {{ pipcmd }} list | grep openstacksdk
+      register: res_openstacksdk
+      changed_when: false
+
+    - name: Display Openstack Version
+      debug:
+        var: res_openstacksdk.stdout

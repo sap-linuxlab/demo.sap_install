@@ -1,0 +1,26 @@
+---
+# tasks file for powervc_createkeypair
+#
+# Ansible controller starts ssh-agent, when a machine credential is added to the template
+# So the public key from that credential can be found
+# The description of the ssh-key is replaced because it is dynamically created by every run
+# Hence the playbook fails once the key exists
+#
+# This works also on the shell -- but a lot of keys might be generated
+#
+- name: get public ssh key injected my machine credential
+  shell: |
+    set -o pipefail
+    ssh-add -L | awk '{print $1" "$2" awx-machine-credential"NR}'
+  register: public_ssh_keys
+  changed_when: false
+
+- name: Create an SSH key pair for each key
+  openstack.cloud.keypair:
+    auth: "{{ os_add_auth | default(omit) }}"
+    state: present
+    name: "{{ sshkey.split(' ')[2] }}"
+    public_key: "{{ sshkey }}"
+  loop: "{{ public_ssh_keys.stdout_lines|list }}"
+  loop_control:
+    loop_var: sshkey
