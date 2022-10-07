@@ -28,6 +28,7 @@
         validate_certs: false
       register: power_images
 
+## buggy select
     - name: print image list
       debug:
          msg: "{{ power_images | json_query('openstack_image[*].

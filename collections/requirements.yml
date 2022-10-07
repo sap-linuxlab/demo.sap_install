@@ -1,11 +1,12 @@
 ---
 collections:
         - name: vmware.vmware_rest
+          # source: https://cloud.redhat.com/api/automation-hub/
         - name: community.vmware
         - name: openstack.cloud
         - name: redhat.rhel_system_roles
           # version: 1.7.3
-          source: https://cloud.redhat.com/api/automation-hub/
+          # source: https://cloud.redhat.com/api/automation-hub/
         - name: community.general
         - name: ansible.posix
         - name: community.sap_libs
