@@ -28,13 +28,15 @@ Follow the Documentation to setup your own demo and learn to use these roles
 
 ### Run the Demo
 
-Login to Controller with ....
+- Login to Controller with the admin user and password you created.
+- Click on `Resources` -> `Templates`
+- Launch the `End-2-End S/4 HANA deployment` workflow template
 
-<img src="assets/img/wip.png" width="100">
 
+<!-- img src="assets/img/wip.png" width="100" -->
 
 
 ## Additional Documentation
 
-- [AWX Project Google Group](https://groups.google.com/g/awx-project)
+rm - [AWX Project Google Group](https://groups.google.com/g/awx-project)
 - [AWX Project FAQ](https://www.ansible.com/products/awx-project/faq)
