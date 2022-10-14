@@ -22,6 +22,11 @@
 
   tasks:
 
+    - name: Ensure jmespath is installed for using json_query
+      pip:
+        name: jmespath
+        state: present
+
     - name: Retrieve list of all PowerVC images
       openstack.cloud.image_info:
         auth: "{{ os_add_auth | default(omit) }}"
