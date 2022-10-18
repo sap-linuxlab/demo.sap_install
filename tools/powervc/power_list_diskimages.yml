@@ -33,9 +33,11 @@
         validate_certs: false
       register: power_images
 
+    - name: debug variable output
+      debug:
+        var: power_images
+
 ## buggy select
     - name: print image list
       debug:
-         msg: "{{ power_images | json_query('openstack_image[*].
-              {name: name, id: id, os_distro: os_distro, status: status,
-              project: location.project.name}') }}"
+         msg: "{{ power_images | json_query('openstack_image[*].{name: name, id: id, os_distro: os_distro, status: status,project: location.project.name}') }}"

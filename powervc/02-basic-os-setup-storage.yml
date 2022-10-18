@@ -28,6 +28,8 @@
         hana_mem_size: "{{ (ansible_memtotal_mb / 1024) | round(0, 'ceil') | int }}"
         hana_vol_prefix: "{{ ansible_hostname + '-' + hana_sid | lower + '-' }}"
 
+    - name:
+
     - name: Create SAN volumes for server instance
       openstack.cloud.volume:
         state: present
