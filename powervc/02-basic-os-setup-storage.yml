@@ -97,7 +97,7 @@
 
 ### Start a new play to configure the storage to ensure all handlers are run
 - name: Create HANA file systems
-  hosts: hana
+  hosts: hanas
 
   roles:
     - role: redhat.rhel_system_roles.storage  # noqa role-name
