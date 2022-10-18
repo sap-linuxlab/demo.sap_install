@@ -22,10 +22,10 @@
 
   tasks:
 
-    - name: Ensure jmespath is installed for using json_query
-      pip:
-        name: jmespath==0.10.0
-        state: present
+    # - name: Ensure jmespath is installed for using json_query
+    #   pip:
+    #     name: jmespath==0.10.0
+    #     state: present
 
     - name: Retrieve list of all PowerVC images
       openstack.cloud.image_info:
@@ -33,10 +33,6 @@
         validate_certs: false
       register: power_images
 
-    - name: debug variable output
-      copy:
-        content: '{{ power_images | to_nice_json }}'
-        dest: /tmp/pi.json
     - name: print image list
       debug:
          msg: "{{ power_images | community.general.json_query('openstack_image[*].{name: name, id: id, os_distro: os_distro, status: status,project: location.project.name}') }}"
