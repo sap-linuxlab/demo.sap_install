@@ -1,6 +1,6 @@
 ---
 - name: Create PowerVC volumes for HANA and map to server instance
-  hosts: hana
+  hosts: hanas
 
   tasks:
     - name: Ensure SG3-Utils are installed
