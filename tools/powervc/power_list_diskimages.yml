@@ -24,7 +24,7 @@
 
     - name: Ensure jmespath is installed for using json_query
       pip:
-        name: jmespath
+        name: jmespathi==1.0.1
         state: present
 
     - name: Retrieve list of all PowerVC images
