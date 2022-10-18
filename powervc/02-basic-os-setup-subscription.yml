@@ -38,7 +38,7 @@
 # Have a look at the documention of the storage role for more configuration options
 
 - name: Ensure Servers are booted and reachable
-  hosts: hanas,s4hanas
+  hosts: all
   gather_facts: false
   become: false
   tasks:
