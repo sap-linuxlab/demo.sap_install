@@ -50,33 +50,3 @@
       state: started
       timeout: 480
     delegate_to: localhost
-
-- name: Phase 2 - basic OS Setup
-  hosts: all
-  become: true
-
-  # Default variables for the playbooks can be set here
-  # and can be overwritten in the template file
-  vars:
-    reg_activation_key: "{{ sap_rhsm_activationkey }}"
-    reg_organization_id: "{{ sap_rhsm_org_id }}"
-    reg_osrelease: 8.4
-    repositories:
-      - rhel-8-for-ppc64le-baseos-e4s-rpms
-      - rhel-8-for-ppc64le-appstream-e4s-rpms
-      - rhel-8-for-ppc64le-sap-solutions-e4s-rpms
-      - rhel-8-for-ppc64le-sap-netweaver-e4s-rpms
-      - rhel-8-for-ppc64le-highavailability-e4s-rpms
-
-  tasks:
-    - name: Ensure Correct subscription and repositories
-      include_role:
-        name: mk-ansible-roles.subscribe_rhn
-
-    - name: get storage pool setup from server definition
-      set_fact:
-         storage_pools: "{{ gcp_machines | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
-
-#    - name: Ensure storage is configured correctly
-#      include_role:
-#        name: redhat.rhel_system_roles.storage
