@@ -94,3 +94,13 @@
         prompt: "rescan-scsi-bus.sh: pause a moment while device names are generated "
         seconds: 10
       listen: rescan_scsi_bus
+
+### Start a new play to configure the storage to ensure all handlers are run
+- name: Create HANA file systems
+  hosts: hana
+
+  roles:
+    - role: redhat.rhel_system_roles.storage  # noqa role-name
+      vars:
+        storage_pools: "{{ ansible_local.hana_volume_wwns | hana_storage_pools(hana_sid, pvc_config) }}"
+      become: true
