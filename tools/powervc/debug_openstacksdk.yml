@@ -10,7 +10,7 @@
     - name: run pip command in shell
       shell: |
         set -o pipefail
-        {{ pipcmd }} list | grep openstacksdk
+        {{ pipcmd }} list | egrep "openstacksdk|jmespath"
       register: res_openstacksdk
       changed_when: false
 
