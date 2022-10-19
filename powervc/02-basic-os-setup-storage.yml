@@ -9,7 +9,7 @@
         state: present
       become: true
 
-    - name: Change multipath config file
+    - name: Ensure correct v7000 multipath config file exists
       ansible.builtin.copy:
         src: files/multipath.conf.v7000
         dest: /etc/multipath.conf
@@ -28,11 +28,7 @@
         hana_mem_size: "{{ (ansible_memtotal_mb / 1024) | round(0, 'ceil') | int }}"
         hana_vol_prefix: "{{ ansible_hostname + '-' + hana_sid | lower + '-' }}"
 
-    - name: Debug Variables
-      ansible.builtin.debug:
-        var: os_server_volumes
-
-    - name: Create SAN volumes for server instance
+    - name: Ensure SAN volumes for server instance exist
       openstack.cloud.volume:
         state: present
         display_name: "{{ item.name }}"
@@ -41,7 +37,7 @@
       loop: "{{ os_server_volumes }}"
       delegate_to: localhost
 
-    - name: Map SAN volumes to server instance
+    - name: Ensure SAN volumes are mapped to server instance
       openstack.cloud.server_volume:
         state: present
         server: "{{ inventory_hostname_short }}"
@@ -64,14 +60,14 @@
         query: "volumes[?name.contains(@, '{{ ansible_hostname }}')].{name: name, size: size, wwn: metadata.volume_wwn}"
       delegate_to: localhost
 
-    - name: Create directory for ansible custom facts
+    - name: Ensure  directory for ansible custom factsi exist
       ansible.builtin.file:
         state: directory
         recurse: true
         path: /etc/ansible/facts.d
       become: true
 
-    - name: Create custom fact with volume wwns
+    - name: Ensure custom facts with volume wwns exist
       ansible.builtin.copy:
         content: "{{ volume_wwns }}"
         dest: /etc/ansible/facts.d/hana_volume_wwns.fact

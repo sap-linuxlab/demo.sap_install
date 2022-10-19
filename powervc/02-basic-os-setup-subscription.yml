@@ -70,3 +70,9 @@
     - name: Ensure Correct subscription and repositories
       include_role:
         name: mk-ansible-roles.subscribe_rhn
+
+    - name: Ensure timeserver is configured
+      include_role:
+        name: redhat.redhat_system_roles.timesync
+      when:
+        - timesync_ntp_servers is defined

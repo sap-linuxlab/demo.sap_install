@@ -5,7 +5,7 @@
 # for consumption of SAP Netweaver software
 
 - name: Prepare for SAP Netweaver Installation
-  hosts: gcp_awx_group_s4
+  hosts: s4hanas
   become: true
   roles:
                - community.sap_install.sap_general_preconfigure
