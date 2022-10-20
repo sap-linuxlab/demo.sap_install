@@ -26,7 +26,7 @@
         os_server_volumes: "{{ hana_mem_size | int | hana_os_volumes(hana_vol_prefix, pvc_config)  }}"
       vars:
         hana_mem_size: "{{ (ansible_memtotal_mb / 1024) | round(0, 'ceil') | int }}"
-        hana_vol_prefix: "{{ ansible_hostname + '-' + hana_sid | lower + '-' }}"
+        hana_vol_prefix: "{{ ansible_hostname + '-' + sap_hana_sid | lower + '-' }}"
 
     - name: Ensure SAN volumes for server instance exist
       openstack.cloud.volume:
@@ -98,5 +98,5 @@
   roles:
     - role: redhat.rhel_system_roles.storage  # noqa role-name
       vars:
-        storage_pools: "{{ ansible_local.hana_volume_wwns | hana_storage_pools(hana_sid, pvc_config) }}"
+        storage_pools: "{{ ansible_local.hana_volume_wwns | hana_storage_pools(sap_hana_sid, pvc_config) }}"
       become: true
