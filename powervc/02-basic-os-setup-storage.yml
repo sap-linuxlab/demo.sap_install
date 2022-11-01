@@ -9,6 +9,15 @@
         state: present
       become: true
 
+    - name: Ensure that modified multipath config is always promoted to initrd
+      ansible.builtin.copy:
+        content: 'add_dracutmodules+=" multipath "'
+        dest: /etc/dracut.conf.d/multipath.conf
+        mode: "0644"
+      notify:
+        - rebuild_initrd
+      become: true
+
     - name: Ensure correct v7000 multipath config file exists
       ansible.builtin.copy:
         src: files/multipath.conf.v7000
@@ -60,7 +69,7 @@
         query: "volumes[?name.contains(@, '{{ ansible_hostname }}')].{name: name, size: size, wwn: metadata.volume_wwn}"
       delegate_to: localhost
 
-    - name: Ensure  directory for ansible custom factsi exist
+    - name: Ensure  directory for ansible custom facts exist
       ansible.builtin.file:
         state: directory
         recurse: true
@@ -90,6 +99,11 @@
         prompt: "rescan-scsi-bus.sh: pause a moment while device names are generated "
         seconds: 10
       listen: rescan_scsi_bus
+
+    - name: rebuild_initrd
+      ansible.builtin.command: dracut -f
+      become: true
+      listen: restart_multipathd
 
 ### Start a new play to configure the storage to ensure all handlers are run
 - name: Create HANA file systems
