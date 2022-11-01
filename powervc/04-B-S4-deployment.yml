@@ -9,6 +9,19 @@
   become: true
 
   tasks:
+    - name: Ensure NFS Server with SAP Software is mounted
+      ansible.posix.mount:
+        src: "{{ nfs_software_archive_srv }}"
+        path: "{{ nfs_software_archive_dir }}"
+        opts: rw,sync,hard,noatime
+        fstype: nfs
+        state: mounted
+
     - name: execute the SWPM Installation
       include_role:
         name: community.sap_install.sap_swpm
+
+    - name: Ensure NFS Server with SAP Software is unmounted
+      ansible.posix.mount:
+        path: "{{ nfs_software_archive_dir }}"
+        state: absent
