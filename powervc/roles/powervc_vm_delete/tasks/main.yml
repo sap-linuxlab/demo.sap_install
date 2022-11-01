@@ -16,8 +16,10 @@
 
 - name: Get SAN volume ids of server instances
   ansible.builtin.set_fact:
-    volume_ids: "{{ volume_ids|d([]) + [ item ] }}"
+    volume_ids: "{{ volume_ids|d([]) + [ vol_item ] }}"
   loop: "{{ result | json_query(query) }}"
+  loop_control:
+    loop_var: vol_item
   vars:
     query: 'openstack_servers[]."os-extended-volumes:volumes_attached"[?!delete_on_termination].id | []'
 
@@ -36,7 +38,9 @@
 
 - name: Delete SAN volumes of server instances
   openstack.cloud.volume:
-    name: "{{ item }}"
+    name: "{{ vol_item }}"
     state: absent
   loop: "{{ volume_ids }}"
+  loop_control:
+    loop_var: vol_item
   when: volume_ids | length > 0
