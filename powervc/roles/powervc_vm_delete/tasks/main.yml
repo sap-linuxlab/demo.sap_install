@@ -1,14 +1,41 @@
 ---
 # tasks file for powervc_vm_delete
 
+- name: Unregister system from RHN
+  ansible.builtin.command: /usr/bin/subscription-manager unregister
+  delegate_to: "{{ vm_delete_name }}"
+  failed_when: false
+
+- name: Retrieve server instances info
+  openstack.cloud.server_info:
+    server: "{{ vm_delete_name }}"
+    detailed: true
+  register: result
+  delegate_to: localhost
+
+- name: Get SAN volume ids of server instances
+  ansible.builtin.set_fact:
+    volume_ids: "{{ volume_ids + [ item ] }}"
+  loop: "{{ result | json_query(query) }}"
+  vars:
+    query: 'openstack_servers[]."os-extended-volumes:volumes_attached"[?!delete_on_termination].id | []'
+
 - name: Ensure LPAR "{{ vm_delete_name }}" is removed
   openstack.cloud.server:
     auth: "{{ os_add_auth | default(omit) }}"
     state: absent
     name: "{{ vm_delete_name }}"
+    timeout: 600
 
 - name: Ensure network port is removed
   openstack.cloud.port:
     auth: "{{ os_add_auth | default(omit) }}"
     state: absent
     name: "{{ vm_delete_name }}-port1"
+
+- name: Delete SAN volumes of server instances
+  openstack.cloud.volume:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ volume_ids }}"
+  when: volume_ids | length > 0
