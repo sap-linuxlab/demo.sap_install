@@ -1,7 +1,19 @@
+exclude_paths:
+  - .cache/
+  - .github/
+  - changelogs/
+  - vmware/
+  - tools/
+  - misc/
+  - generic/
+# enable_list:
+#  - yaml
 skip_list:
-     - empty-string-compare
-     - meta-incorrect
-     - meta-no-info
-     - indentation
-     - no-changed-when
-     - line-length
+  - experimental
+  - empty-string-compare
+  - meta-incorrect
+  - meta-no-info
+  - indentation
+  - no-changed-when
+  - line-length
+  - jinja[invalid]

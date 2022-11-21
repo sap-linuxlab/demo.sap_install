@@ -30,6 +30,7 @@
 #    sap_ha_set_hana_vip1: 10.0.0.200
 #
 ## To be changed for power
+# pcs stonith describe fence_openstack
 #    sap_pacemaker_stonith_devices:
 #      - name: "fence_name_for_vmware"
 #        agent: "fence_vmware_rest"

@@ -23,7 +23,7 @@
   vars:
     query: 'openstack_servers[]."os-extended-volumes:volumes_attached"[?!delete_on_termination].id | []'
 
-- name: Ensure LPAR "{{ vm_delete_name }}" is removed
+- name: "Ensure LPAR is removed {{ vm_delete_name }}"
   openstack.cloud.server:
     auth: "{{ os_add_auth | default(omit) }}"
     state: absent
