@@ -16,8 +16,8 @@
 
     - name: Set variables to keep SELinux State disabled
       ansible.builtin.set_fact:
-        - sap_general_preconfigure_selinux_state: disabled
-        - sap_general_preconfigure_modify_selinux_labels: false
+        sap_general_preconfigure_selinux_state: "disabled"
+        sap_general_preconfigure_modify_selinux_labels: false
       when: _selinux_state.stdout | lower == "disabled"
 
     - name: Execute the Preconfigure Roles
