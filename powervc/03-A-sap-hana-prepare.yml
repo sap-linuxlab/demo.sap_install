@@ -8,6 +8,24 @@
   hosts: hanas
   become: true
 
-  roles:
-     - community.sap_install.sap_general_preconfigure
-     - community.sap_install.sap_hana_preconfigure
+  tasks:
+    - name: Get SELinux Status
+      ansible.builtin.command: getenforce
+      register: _selinux_state
+      check_mode: no
+      changed_when: false
+
+    - name: Set variables to keep SELinux State disabled
+      ansible.builtin.set_fact:
+        - sap_general_preconfigure_selinux_state: disabled
+        - sap_general_preconfigure_modify_selinux_labels: false
+      when: _selinux_state.stdout | lower == "disabled"
+
+    - name: Execute the Preconfigure Roles
+      include_role: "{{ preconfig_role }}"
+      loop:
+        - community.sap_install.sap_general_preconfigure
+        - community.sap_install.sap_hana_preconfigure
+      loop_control:
+        label: "{{ preconfig_role }}"
+        loop_var: preconfig_role
