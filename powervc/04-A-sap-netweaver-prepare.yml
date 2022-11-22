@@ -21,7 +21,8 @@
       when: _selinux_state.stdout | lower == "disabled"
 
     - name: Execute the Preconfigure Roles
-      ansible.builtin.include_role: "{{ preconfig_role }}"
+      ansible.builtin.include_role:
+        name: "{{ preconfig_role }}"
       loop:
         - community.sap_install.sap_general_preconfigure
         - community.sap_install.sap_netweaver_preconfigure
