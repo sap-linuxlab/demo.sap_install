@@ -12,7 +12,7 @@
     - name: Get SELinux Status
       ansible.builtin.command: /usr/sbin/getenforce
       register: _selinux_state
-      check_mode: no
+      check_mode: false
       changed_when: false
 
     - name: Set variables to keep SELinux State disabled
@@ -23,7 +23,7 @@
       when: _selinux_state.stdout | lower == "disabled"
 
     - name: Execute the Preconfigure Roles
-      include_role: "{{ preconfig_role }}"
+      ansible.builtin.include_role: "{{ preconfig_role }}"
       loop:
         - community.sap_install.sap_general_preconfigure
         - community.sap_install.sap_hana_preconfigure

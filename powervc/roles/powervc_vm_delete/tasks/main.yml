@@ -5,6 +5,7 @@
   ansible.builtin.command: /usr/bin/subscription-manager unregister
   delegate_to: "{{ vm_delete_name }}"
   failed_when: false
+  changed_when: true
   ignore_unreachable: true
 
 - name: Retrieve server instances info

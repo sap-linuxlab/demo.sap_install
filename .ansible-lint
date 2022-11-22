@@ -10,10 +10,10 @@ exclude_paths:
 #  - yaml
 skip_list:
   - experimental
-  - empty-string-compare
+  # empty-string-compare
   - meta-incorrect
   - meta-no-info
-  - indentation
-  - no-changed-when
+  # indentation
+  # no-changed-when
   - line-length
   - jinja[invalid]
