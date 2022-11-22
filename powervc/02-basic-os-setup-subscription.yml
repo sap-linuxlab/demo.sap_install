@@ -71,8 +71,20 @@
       include_role:
         name: mk-ansible-roles.subscribe_rhn
 
+    - name: Ensure EPEL is disabled because it conflicts with minor release pinning
+      ansible.builtin.yum_repository:
+        name: 'epel'
+        state: absent
+      notify: Yum-clean-metadata
+
     - name: Ensure timeserver is configured
       include_role:
         name: redhat.redhat_system_roles.timesync
       when:
         - timesync_ntp_servers is defined
+
+  handlers:
+    - name: Yum-clean-metadata
+      ansible.builtin.command: yum clean metadata
+      args:
+        warn: false
