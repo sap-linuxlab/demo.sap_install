@@ -1,4 +1,4 @@
-name: Demo of sap_install collection
+title: Demo of sap_install collection
 description: demo of sap_install collection
 url: "http://sap-linuxlab.github.io/demo.sap_install"
 markdown: kramdown
