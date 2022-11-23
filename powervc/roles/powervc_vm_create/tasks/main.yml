@@ -1,0 +1,85 @@
+---
+# tasks file for powervc_vm_create
+#
+
+- name: Retrieve list of all PowerVC images
+  openstack.cloud.image_info:
+    auth: "{{ os_add_auth | default(omit) }}"
+  register: result
+
+- name: Get latest image matching os_image_filter variable
+  ansible.builtin.set_fact:
+    os_image_name: "{{ result | to_json | from_json | json_query(query) | sort(reverse=True) | first }}"
+  vars:
+    query: "openstack_image[?starts_with(name, '{{ os_image_filter }}')].name"
+  delegate_to: localhost
+
+- name: Create a network port with fixed ip
+  openstack.cloud.port:
+    auth: "{{ os_add_auth | default(omit) }}"
+    state: present
+    name: "{{ vm_create_name }}-port1"
+    network: "{{ os_network }}"
+    binding_profile: "{{ vm_create_port_binding_profile }}"
+    vnic_type: "{{ vm_create_binding_vnic_type }}"
+    fixed_ips:
+      - ip_address: "{{ vm_create_ip }}"
+  when:
+    - vm_create_ip is defined
+    - vm_create_ip != ''
+
+- name: Create a network port without ip
+  openstack.cloud.port:
+    auth: "{{ os_add_auth | default(omit) }}"
+    state: present
+    name: "{{ vm_create_name }}-port1"
+    network: "{{ os_network }}"
+    binding_profile: "{{ vm_create_port_binding_profile }}"
+    vnic_type: "{{ vm_create_binding_vnic_type }}"
+  when:
+    - vm_create_ip is undefined
+
+- name: Get info if server exists
+  openstack.cloud.server_info:
+    auth: "{{ os_add_auth | default(omit) }}"
+    server: "{{ vm_create_name }}"
+    filters:
+      vm_state: active
+  register: os_serverlist
+
+# we can only inject one SSH-Key
+# hence we assume the first key in the list
+- name: Create a new server instance with fixed IP
+  openstack.cloud.server:
+    auth: "{{ os_add_auth | default(omit) }}"
+    state: present
+    name: "{{ vm_create_name }}"
+    image: "{{ os_image_name }}"
+    flavor: "{{ vm_create_flavor }}"
+    # auto_ip: false
+    availability_zone: "{{ os_availability_zones[vm_create_deploy_target] }}"
+    # availability_zone: "Default Group"
+    key_name: awx-machine-credential1
+    nics:
+      - port-name: "{{ vm_create_name }}-port1"
+    meta:
+      hostname: "{{ vm_create_name }}"
+      group: "{{ vm_create_group }}"
+    timeout: 300
+  register: new_lpar
+  when:
+    - not os_serverlist.openstack_servers
+
+- name: Print Info on created LPAR
+  ansible.builtin.debug:
+    var: new_lpar
+
+- name: Remove old ssh host keys from known hosts
+  ansible.builtin.known_hosts:
+    name: "{{ vm_create_name }}"
+    state: absent
+  when:
+    - tower_job_id is undefined
+    - not os_serverlist.openstack_servers
+  throttle: 1
+  failed_when: false

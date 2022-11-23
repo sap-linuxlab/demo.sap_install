@@ -1,0 +1,13 @@
+---
+# Parameters for OpenStack API, please change appropriately
+os_add_auth:
+   user_domain_name: Default
+os_image_filter: rhel86
+os_network: "mynetwork"
+os_network_vnic_type: 'direct'  # Optional
+
+#os_availability_zones:
+#  "Default Group": "Default Group"
+#  ALPHA: ":900922A_78DC770"
+#  BETA: ":900922A_78DC780"
+#  GAMMA: ":900922A_78DC790"

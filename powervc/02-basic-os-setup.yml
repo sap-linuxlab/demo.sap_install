@@ -1,0 +1,52 @@
+---
+####################################################
+#
+# Phase 2: Basic OS Setup
+#
+# This playbook covers the following configuration steps
+#  - subscription and repositories
+#  - network setup
+#  - storage customization
+
+# For our demo, we do not need to install additional packages,
+# configure special services, monitoring and backup etc.
+# we are good with what the standard image provides
+
+# We need to provide this script the storage configuration
+# for each machine. Hence we need to extend the dictionary "gcp_machines"
+# with its individual storage configuration for the second disk, e.g.:
+
+#   gcp_machines:
+#           - name: server-name
+#             [...]
+#             storage_pools:
+#               - name: volume_name
+#                 disks:
+#                  - sdb
+#                 volumes:
+#                   - name: data
+#                     size: "128 GiB"
+#                     mount_point: "/hana/data"
+#                     fs_type: xfs
+#                     state: present
+#                   - name: log
+#                     size: "64 GiB"
+#                     mount_point: "/hana/log"
+#                     fs_type: xfs
+#                     state: present
+
+# Have a look at the documention of the storage role for more configuration options
+
+- name: Ensure Servers are booted and reachable
+  hosts: all
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Wait for SSH to come up
+    wait_for:
+      host: "{{ ansible_host }}"
+      port: 22
+      delay: 30
+      state: started
+      timeout: 480
+    delegate_to: localhost

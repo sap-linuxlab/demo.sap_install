@@ -1,0 +1,116 @@
+---
+- name: Create PowerVC volumes for HANA and map to server instance
+  hosts: hanas
+
+  tasks:
+    - name: Ensure SG3-Utils are installed
+      ansible.builtin.yum:
+        name: sg3_utils
+        state: present
+      become: true
+
+    - name: Ensure that modified multipath config is always promoted to initrd
+      ansible.builtin.copy:
+        content: 'add_dracutmodules+=" multipath "'
+        dest: /etc/dracut.conf.d/multipath.conf
+        mode: "0644"
+      notify:
+        - rebuild_initrd
+      become: true
+
+    - name: Ensure correct v7000 multipath config file exists
+      ansible.builtin.copy:
+        src: files/multipath.conf.v7000
+        dest: /etc/multipath.conf
+        mode: "0664"
+      notify:
+        - restart_multipathd
+      become: true
+
+    - name: Flush notified storage handlers
+      ansible.builtin.meta: flush_handlers
+
+    - name: Generate variable with list of volumes based on server memory size
+      ansible.builtin.set_fact:
+        os_server_volumes: "{{ hana_mem_size | int | hana_os_volumes(hana_vol_prefix, pvc_config)  }}"
+      vars:
+        hana_mem_size: "{{ (ansible_memtotal_mb / 1024) | round(0, 'ceil') | int }}"
+        hana_vol_prefix: "{{ ansible_hostname + '-' + sap_hana_sid | lower + '-' }}"
+
+    - name: Ensure SAN volumes for server instance exist
+      openstack.cloud.volume:
+        state: present
+        display_name: "{{ item.name }}"
+        size: "{{ item.size }}"
+        volume_type: "{{ os_volume_type }}"
+      loop: "{{ os_server_volumes }}"
+      delegate_to: localhost
+
+    - name: Ensure SAN volumes are mapped to server instance
+      openstack.cloud.server_volume:
+        state: present
+        server: "{{ inventory_hostname_short }}"
+        volume: "{{ item.name }}"
+      loop: "{{ os_server_volumes }}"
+      delegate_to: localhost
+      notify: rescan_scsi_bus
+
+    - name: Retrieve SAN volume info
+      openstack.cloud.volume_info:
+        details: true
+      register: result
+      delegate_to: localhost
+
+    - name: Filter SAN volume info for target server
+      ansible.builtin.set_fact:
+        volume_wwns: "{{ volume_wwns | default([]) + [{ 'name' : item.name, 'size' : item.size, 'wwn' : item.wwn }] }}"
+      loop: "{{ result | to_json | from_json | json_query(query) }}"
+      vars:
+        query: "volumes[?name.contains(@, '{{ ansible_hostname }}')].{name: name, size: size, wwn: metadata.volume_wwn}"
+      delegate_to: localhost
+
+    - name: Ensure  directory for ansible custom facts exist
+      ansible.builtin.file:
+        state: directory
+        recurse: true
+        path: /etc/ansible/facts.d
+      become: true
+
+    - name: Ensure custom facts with volume wwns exist
+      ansible.builtin.copy:
+        content: "{{ volume_wwns }}"
+        dest: /etc/ansible/facts.d/hana_volume_wwns.fact
+        mode: '0644'
+      become: true
+
+  handlers:
+    - name: restart_multipathd
+      ansible.builtin.service:
+        name: multipathd
+        state: restarted
+      become: true
+
+    - name: rescan_scsi_bus
+      ansible.builtin.command: "/usr/bin/rescan-scsi-bus.sh"
+      become: true
+
+    - name: rscan_scsi_bus_pause
+      ansible.builtin.pause:
+        prompt: "rescan-scsi-bus.sh: pause a moment while device names are generated "
+        seconds: 10
+      listen: rescan_scsi_bus
+
+    - name: rebuild_initrd
+      ansible.builtin.command: dracut -f
+      become: true
+      listen: restart_multipathd
+
+### Start a new play to configure the storage to ensure all handlers are run
+- name: Create HANA file systems
+  hosts: hanas
+
+  roles:
+    - role: redhat.rhel_system_roles.storage  # noqa role-name
+      vars:
+        storage_pools: "{{ ansible_local.hana_volume_wwns | hana_storage_pools(sap_hana_sid, pvc_config) }}"
+      become: true

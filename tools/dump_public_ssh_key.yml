@@ -1,0 +1,28 @@
+---
+- name: dump public ssh key injected by Machine Credential
+  hosts: localhost
+  gather_facts: true
+
+  tasks:
+    - name: get known public ssh keys
+      shell: |
+        set -o pipefail
+        ssh-add -L | awk '{print $1" "$2" key"NR}'
+      register: public_ssh_keys
+      changed_when: false
+
+    - name: dump public keys
+      debug:
+        msg:
+          - "{{ item.split(' ')[2] }} : {{ item }}"
+          - "=========="
+      loop: '{{ public_ssh_keys.stdout_lines|list }}'
+
+    - name: read directory of ANSIBLE_SSH_CONTROL_PATH_DIR
+      command: echo $ANSIBLE_SSH_CONTROL_PATH_DIR
+      register: ssh_control_dir
+      become: true
+
+    - name: ls ANSIBLE_SSH_CONTROL_PATH_DIR
+      debug:
+        var: ssh_control_dir.stdout

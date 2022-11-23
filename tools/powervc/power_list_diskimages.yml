@@ -1,0 +1,38 @@
+---
+- hosts: localhost
+  gather_facts: false
+
+  #   The OpenStack Credential only defines the following parameters for authentication:
+  #       auth_url
+  #       username
+  #       password
+  #       project_name
+  #       project_domain_name
+  #       domain_name
+  #
+  #   You have to define the following variables in addition to
+  #   the OpenStack credential in case you need additional parameters for
+  #   authentication.
+  #
+  #   os_add_auth:
+  #      auth_url: https://powervc:5000/v3/ # mandatory to repeat
+  #      user_domain_name: Default          # additional parameters for auth section
+  #
+  #   then add the line auth: `"{{ os_add_auth | default(omit) }}"` to all openstack.cloud modules
+
+  tasks:
+
+    # - name: Ensure jmespath is installed for using json_query
+    #   pip:
+    #     name: jmespath==0.10.0
+    #     state: present
+
+    - name: Retrieve list of all PowerVC images
+      openstack.cloud.image_info:
+        auth: "{{ os_add_auth | default(omit) }}"
+        validate_certs: false
+      register: power_images
+
+    - name: print image list
+      debug:
+         msg: "{{ power_images | community.general.json_query('openstack_image[*].{name: name, id: id, os_distro: os_distro, status: status,project: location.project.name}') }}"

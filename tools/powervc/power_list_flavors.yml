@@ -1,0 +1,36 @@
+---
+- hosts: localhost
+  gather_facts: false
+
+  #   The OpenStack Credential only defines the following parameters for authentication:
+  #       auth_url
+  #       username
+  #       password
+  #       project_name
+  #       project_domain_name
+  #       domain_name
+  #
+  #   You have to define the following variables in addition to
+  #   the OpenStack credential in case you need additional parameters for
+  #   authentication.
+  #
+  #   os_add_auth:
+  #      auth_url: https://powervc:5000/v3/ # mandatory to repeat
+  #      user_domain_name: Default          # additional parameters for auth section
+  #
+  #   then add the line auth: `"{{ os_add_auth | default(omit) }}"` to all openstack.cloud modules
+
+  tasks:
+
+    - name: Retrieve list of all PowerVC images
+      openstack.cloud.compute_flavor_info:
+        auth: "{{ os_add_auth | default(omit) }}"
+        validate_certs: false
+        vcpus: ">=4"   # Optional filters
+        ram: ">16000"  # See module docs for more options
+      register: flavors
+
+    - name: print flavor list
+      debug:
+        msg: "{{ flavors | json_query('openstack_flavors[?is_public==`true`].
+              {name: name, id: id, ram: ram, vcpus: vcpus}') }}"

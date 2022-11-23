@@ -1,0 +1,19 @@
+---
+#
+# The role sap_swpm unpacks thes software found in {{ sap_swpm_software_path }}
+# Then it calls the installation of sapinst with the configured paramters
+#
+
+- name: Install S4
+  hosts: s4hanas
+  become: true
+
+  tasks:
+    - name: Output all variables
+      debug:
+        var: hostvars[inventory_hostname]
+        verbosity: 1
+
+    - name: execute the SWPM Installation
+      include_role:
+        name: community.sap_install.sap_swpm

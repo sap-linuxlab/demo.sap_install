@@ -1,0 +1,33 @@
+---
+# Phase 3 - step A
+#
+# This playbook configures all systems in the
+# HANA Group for consumption of SAP HANA software
+
+- name: Phase 3-A - Prepare system for SAP HANA Installation
+  hosts: hanas
+  become: true
+
+  tasks:
+    - name: Get SELinux Status
+      ansible.builtin.command: /usr/sbin/getenforce
+      register: _selinux_state
+      check_mode: false
+      changed_when: false
+
+    - name: Set variables to keep SELinux State disabled
+      ansible.builtin.set_fact:
+        sap_general_preconfigure_selinux_state: "disabled"
+        sap_general_preconfigure_modify_selinux_labels: false
+        sap_hana_preconfigure_modify_selinux_labels: false
+      when: _selinux_state.stdout | lower == "disabled"
+
+    - name: Execute the Preconfigure Roles
+      ansible.builtin.include_role:
+        name: "{{ preconfig_role }}"
+      loop:
+        - community.sap_install.sap_general_preconfigure
+        - community.sap_install.sap_hana_preconfigure
+      loop_control:
+        label: "{{ preconfig_role }}"
+        loop_var: preconfig_role

@@ -144,7 +144,7 @@ In order to use the token properly go to `Organizations`
 - Click `Save`
 
 
-### Configure your credential to access vCenter
+### VMware vCenter Credential
 
 For connections to VMware this credential is required
 
@@ -159,3 +159,36 @@ For connections to VMware this credential is required
 
 It injects the environment variables `VMWARE_HOST`, `VMWARE_USER` and `VMWARE_PASSWORD` to a template.
 These variables are used by the VMware collections used in this examples
+
+### IBM PowerVC Credential
+
+IBM PowerVC implements the OpenStack API.
+For connections to PowerVC this credential is required
+
+1. Click `Resources -> Credentials`
+2. Click `Add`
+3. Enter the following parameters
+   - name: `PowerVC Credential`
+   - organization `Default`
+   - select Credential Type `OpenStack`
+   - Username: user with permissions to create LPARs etc. in PowerVC
+   - Password: password for this user
+   - host authentication URL (e.g. https://my-powervc:5000/v3)
+   - Project: (Tenant Name)
+   - Project Domain Name: `Default`
+   - Domain Name: `Default`
+   - De-select Verify SSL, if you use self-signed certificates in PowerVC
+   ![aap-project-screenshot](assets/img/aap-create-OpenStack-Credential.png)
+   You get this infomation by logging into PowerVC and by clicking on the user logo in the top right of PowerVC:<BR><br>
+   ![screenshot PowerVC](assets/img/powervc-info.png)
+4. Click Save
+
+| :exclamation:  Please Note              |
+|:----------------------------------------|
+
+> In the AAP/AWX credentials you can only define the previous parameters for authentication.
+> Define the following dictionary in addition to  the OpenStack credential in case you need additional parameters, e.g. `user_domain_name` for authentication in your inventory or template definition:
+> <pre>
+>     os_add_auth:  
+>       user_domain_name: Default          # additional parameters for auth section
+> </pre>

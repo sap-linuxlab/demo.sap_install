@@ -1,0 +1,29 @@
+---
+# defaults file for powervc_vm_create
+#
+# Credentials for Openstack need  to be configured in AAP/AWX Controller
+#
+# Variables used , which are defined externally
+#
+# os_add_auth: additional parameters which are not defined in OpenStack Credential
+# os_availability_zones: created from host list
+# os_image_filter: Image to deploy from -> can also be moved to local var
+# os_network: Netwrok to deploy to
+#
+# name of host to be created -> will be the dns hostname, too
+vm_create_name:
+
+# default vm flavor
+vm_create_flavor: xlarge
+
+# Group name
+vm_create_group:
+
+# Deploy target (defined in availabilty zone)
+vm_create_deploy_target:
+
+# Network Provisioning method
+# Possible values are 'direct' for SRIOV and 'normal' for SEA
+vm_create_binding_vnic_type: 'normal'
+
+vm_create_port_binding_profile: "capacity='0.02', delete_with_instance='1', vnic_required_vfs='2'"

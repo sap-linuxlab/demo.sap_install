@@ -1,0 +1,20 @@
+defaults {
+  fast_io_fail_tmo     5
+  user_friendly_names  no
+}
+
+
+devices {
+  device {
+    vendor                 "IBM"
+    product                "2145"
+    failback               "immediate"
+    no_path_retry          "fail"
+    dev_loss_tmo           120
+    path_checker           "tur"
+    path_grouping_policy   group_by_prio
+    path_selector          "service-time 0"
+    prio                   "alua"
+    rr_min_io_rq           10
+  }
+}

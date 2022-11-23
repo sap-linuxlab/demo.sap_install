@@ -1,0 +1,66 @@
+---
+########################################################
+# Phase 1: server provisioning
+#
+# After running this playbook you will have
+# servers with RHEL8 running on Power LPARs
+#
+# For input this playbook needs a dictionary with
+# the following paramters
+
+#   power_machines:
+#           - name: server-name
+#             flavor:
+#             deploy_target:
+#             group: label for group
+
+# Additional variables which are used for PowerVC Environment
+# to be defined in inventory
+#  - os_add_auth: ...
+# - os_image_filter: _start of image name, e.g rhel86  (os_image_name -> internal use)
+# - os_availability_zones[os_deploy_target]
+# - os_network
+#
+# Optional:
+# - os_network_binding_type: 'direct' # Use if Network is SRIOV
+
+- name: Phase 1 - server provisioning
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+
+  - name: Ensure pythonpreqs are met
+    ansible.builtin.pip:
+      name:
+        - ansible-lint
+        - dnspython
+        - jmespath
+        - openstacksdk==0.61.0
+        - requests
+
+  - name: Dictionary configuration
+    debug:
+      msg:
+        - "Name  : {{ item.name }}"
+        - "IP    : {{ item.ip|default(omit) }}"
+        - "Flavor: {{ item.flavor|default(omit) }}"
+        - "Target: {{ item.deploy_target|default(omit) }}"
+        - "Group : {{ item.group }}"
+    loop: "{{ power_machines }}"
+
+  - name: Create SSH Keypairs to inject into hosts
+    include_role:
+      name: powervc_keypair_create
+
+  - name: Create LPARs
+    include_role:
+      name: powervc_vm_create
+    vars:
+      vm_create_name: "{{ item.name }}"
+      vm_create_ip: "{{ item.ip }}"
+      vm_create_flavor: "{{ item.flavor|default(omit) }}"
+      vm_create_deploy_target: "{{ item.deploy_target|default(omit) }}"
+      vm_create_group: "{{ item.group }}"
+      vm_create_binding_vnic_type: "{{ os_network_vnic_type |default(omit) }}"
+    loop: "{{ power_machines }}"

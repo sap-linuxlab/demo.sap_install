@@ -12,9 +12,11 @@ You will find the corresponding playbooks in this repository which implement the
 
 Currently we have demos for the following platforms:
 
-* VMware (vCenter Version 6 and 7+)
-* GCP (WIP)
-* PowerVC (WIP)
+* [VMware (vCenter Version 6 and 7+)](assets/doc/00-prerequisites-vmware.md)
+* [GCP (WIP)](assets/doc/00-prerequisites-gcp.md)
+* [PowerVC (WIP)](assets/doc/00-prerequisites-power.md)
+
+Click on each platform to explore the prerequisites
 
 ### Demo setup
 
@@ -28,13 +30,15 @@ Follow the Documentation to setup your own demo and learn to use these roles
 
 ### Run the Demo
 
-Login to Controller with ....
+- Login to Controller with the admin user and password you created.
+- Click on `Resources` -> `Templates`
+- Launch the `End-2-End S/4 HANA deployment` workflow template
 
-<img src="assets/img/wip.png" width="100">
 
+<!-- img src="assets/img/wip.png" width="100" -->
 
 
 ## Additional Documentation
 
-- [AWX Project Google Group](https://groups.google.com/g/awx-project)
+rm - [AWX Project Google Group](https://groups.google.com/g/awx-project)
 - [AWX Project FAQ](https://www.ansible.com/products/awx-project/faq)
