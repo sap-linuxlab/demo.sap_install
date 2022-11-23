@@ -23,6 +23,17 @@
         fstype: nfs
         state: mounted
 
+    - name: Get SELinux Status
+      ansible.builtin.command: /usr/sbin/getenforce
+      register: _selinux_state
+      check_mode: false
+      changed_when: false
+
+    - name: Set variables to keep SELinux State disabled
+      ansible.builtin.set_fact:
+        sap_hana_install_modify_selinux_labels: false
+      when: _selinux_state.stdout | lower == "disabled"
+
     - name: execute the SAP Hana Installation
       include_role:
         name: community.sap_install.sap_hana_install
