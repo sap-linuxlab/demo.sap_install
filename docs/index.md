@@ -41,5 +41,5 @@ Follow the Documentation to setup your own demo and learn to use these roles
 
 ## Additional Documentation
 
-rm - [AWX Project Google Group](https://groups.google.com/g/awx-project)
+- [AWX Project Google Group](https://groups.google.com/g/awx-project)
 - [AWX Project FAQ](https://www.ansible.com/products/awx-project/faq)
