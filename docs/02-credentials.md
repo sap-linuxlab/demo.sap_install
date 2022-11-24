@@ -23,8 +23,8 @@ The variables defined here are used in the role `mk_ansible_roles.subscribe_rhn`
 
 1. Click `Add`
 2. Enter the following:
-    - `Name`: SAP S-User
-    - Input Configuration:
+    - **Name**: SAP S-User
+    - **Input Configuration**:
 
       ```yaml
       fields:
@@ -40,7 +40,7 @@ The variables defined here are used in the role `mk_ansible_roles.subscribe_rhn`
         - activationkey
         - orgid
       ```
-    - Injector Creation:
+    - **Injector Creation**:
       ```yaml
       ---
       extra_vars:
@@ -186,11 +186,11 @@ For connections to PowerVC this credential is required.
    - **Domain Name**: `Default`
    - De-select Verify SSL, if you use self-signed certificates in PowerVC
    ![aap-project-screenshot](assets/img/aap-create-OpenStack-Credential.png)
-   You get this infomation by logging into PowerVC and by clicking on the user logo in the top right of PowerVC:<BR><br>
+   You get the information on username and project by logging into PowerVC and by clicking on the user logo in the top right of PowerVC:<BR><br>
    ![screenshot PowerVC](assets/img/powervc-info.png)
 3. Click Save
 
-| :exclamation:  Please Note              |
+| **Please Note**                         |
 |:----------------------------------------|
 
 > In the AAP/AWX credentials you can only define the previous parameters for authentication.
