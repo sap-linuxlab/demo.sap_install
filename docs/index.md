@@ -22,9 +22,9 @@ Each playbook is prefixed with number of the steps above.
 
 Currently we have demos for the following platforms:
 
-* [VMware (vCenter Version 6 and 7+)](00-prerequisites/vmware.md)
 * [GCP (WIP)](00-prerequisites/google.md)
 * [PowerVC](00-prerequisites/power.md)
+* [VMware (vCenter Version 6 and 7+)](00-prerequisites/vmware.md)
 
 Click on each platform to explore the prerequisites
  
@@ -49,5 +49,6 @@ Follow the Documentation to setup your own demo and learn to use these roles
 
 ## Additional Documentation
 
+- [Red Hat Ansible Automation Pllatform](https://www.redhat.com/en/technologies/management/ansible)
 - [AWX Project Google Group](https://groups.google.com/g/awx-project)
 - [AWX Project FAQ](https://www.ansible.com/products/awx-project/faq)
