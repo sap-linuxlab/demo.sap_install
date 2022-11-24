@@ -1,5 +1,6 @@
-title: How to Use Ansible Collection `community.sap_install`
-description: "DEMO"
+
+title: SAP Install
+description: How to Use Ansible Collection `community.sap_install`
 url: "http://sap-linuxlab.github.io/demo.sap_install"
 markdown: kramdown
 remote_theme: just-the-docs/just-the-docs
@@ -8,7 +9,7 @@ remote_theme: just-the-docs/just-the-docs
 aux_links:
   "Main Page":
     - "//sap-linuxlab.github.io"
-  "Playbook examples"
+  "Playbook examples":
     - "//github.com/sap-linuxlab/demo.sap_install"
 aux_links_new_tab: true
 
