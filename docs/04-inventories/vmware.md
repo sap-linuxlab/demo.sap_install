@@ -3,7 +3,7 @@
 layout: default
 title: AAP VMWare Inventory Config
 nav_order: 3
-parent: "AAP Inventory Config"
+parent: AAP Inventory Config
 ---
 
 # Inventory configuration for VMware

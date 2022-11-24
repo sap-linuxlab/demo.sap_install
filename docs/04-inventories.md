@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "AAP Inventory Config"
+title: AAP Inventory Config
 nav_order: 4
 has_children: true
 ---
@@ -28,4 +28,4 @@ ansible_python_interpreter: '{{ ansible_playbook_python }}'
 Select infrastructure specific setup
 
 - [VMware](04-inventories/vmware.md)
-- [PowerVC](04-inventories/power.md)
+- [PowerVC](04-inventories/powervc.md)
