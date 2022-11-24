@@ -35,7 +35,7 @@ If you want to use the Red Hat Subscriptions for free you have a couple of optio
 ### Installation steps
 
 1. Make sure your subscriptions are available and activated at the [Red Hat Service Portal](https://access.redhat.com/management/). When you click on the developer subscription you should see this screen followed by a list of products. Among them is `Red Hat Enterprise Linux` and `Ansible Automation Platform`:
-![Overview of developer subscription](../img/RedhatDeveloperSubscription.png)
+![Overview of developer subscription](assets/img/RedhatDeveloperSubscription.png)
 2. If not done, download RHEL 8.4 or later from [here](https://access.redhat.com/downloads/content/479)
 3. Install and register RHEL on your server. You will find the [Installation Guide](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/performing_a_standard_rhel_9_installation/index) at [1]
 4. Download Ansible Automation platform [here](https://access.redhat.com/downloads/content/480)
