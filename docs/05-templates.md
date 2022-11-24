@@ -2,7 +2,7 @@
 layout: default
 title: AAP Template Config
 nav_order: 5
-has_children: false
+has_children: true
 ---
 
 # Templates

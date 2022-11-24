@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Home
-nav_order: 1
+nav_order: 0
 has_children: true
 permalink: /
 ---
@@ -27,7 +27,7 @@ Currently we have demos for the following platforms:
 * [PowerVC](00-prerequisites/power.md)
 
 Click on each platform to explore the prerequisites
-
+ 
 ### Demo setup
 
 Follow the Documentation to setup your own demo and learn to use these roles
