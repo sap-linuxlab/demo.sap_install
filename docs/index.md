@@ -1,3 +1,12 @@
+---
+layout: default
+title: Home
+nav_order: 1
+permalink: /
+---
+
+#  How to Use Ansible Collection `community.sap_install`
+
 This is a desciption how you can use the collection `community.sap_install` from [AWX](https://github.com/ansible/awx) or [Red Hat Ansible Controller](https://www.ansible.com/products/controller?hsLang=en-us). 
 
 The playbooks used in this description can be found in the github repository at [`https://github.com/sap-linuxlab/demo.sap_install`](`https://github.com/sap-linuxlab/demo.sap_install)
