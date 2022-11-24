@@ -5,7 +5,7 @@ url: "http://sap-linuxlab.github.io/demo.sap_install"
 markdown: kramdown
 remote_theme: just-the-docs/just-the-docs
 # https://just-the-docs.github.io/just-the-docs/docs/configuration/
-#logo: "assets/img/logo.png"
+logo: "assets/img/logo-RHAAP.png"
 aux_links:
   "Main Page":
     - "//sap-linuxlab.github.io"
