@@ -1,6 +1,6 @@
 ---
 layout: default
-title: AAP Inventory Config
+title: "AAP Inventory Config"
 nav_order: 4
 has_children: true
 ---

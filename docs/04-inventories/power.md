@@ -3,7 +3,7 @@
 layout: default
 title: AAP Power Inventory Config
 nav_order: 2
-parent: AAP Inventory Config
+parent: "AAP Inventory Config"
 ---
 
 # Inventory configuration for PowerVC
