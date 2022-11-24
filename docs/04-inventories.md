@@ -1,3 +1,9 @@
+---
+layout: default
+title: "AAP Inventory Config"
+nav_order: 4
+has_children: true
+---
 
 # Inventories
 Inventories store information on the hosts we want to run our playbooks against.
@@ -21,4 +27,5 @@ ansible_python_interpreter: '{{ ansible_playbook_python }}'
 
 Select infrastructure specific setup
 
-- [VMware](04-inventories-vmware.md)
+- [VMware](04-inventories/vmware.md)
+- [PowerVC](04-inventories/power.md)

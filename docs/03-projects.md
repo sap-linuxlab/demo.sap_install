@@ -1,3 +1,9 @@
+---
+layout: default
+title: AAP Project Config
+nav_order: 3
+has_children: false
+---
 
 # Create the project for this Repository
 

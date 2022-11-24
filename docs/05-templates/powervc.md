@@ -1,3 +1,10 @@
+---
+layout: default
+title: AAP PowerVC Template Config
+nav_order: 2
+parent: AAP Template Config
+---
+
 # Template Creation for PowerVC
 
 There are two kinds of templates:

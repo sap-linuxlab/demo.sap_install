@@ -1,6 +1,12 @@
 
-# Inventory configuration for VMware
+---
+layout: default
+title: AAP VMWare Inventory Config
+nav_order: 3
+parent: "AAP Inventory Config"
+---
 
+# Inventory configuration for VMware
 
 ## Base configuration
 1. Click `Resources` -> `Inventories`

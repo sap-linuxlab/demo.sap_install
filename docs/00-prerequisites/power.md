@@ -1,3 +1,9 @@
+---
+layout: default
+title: Power Prerequisites
+parent: Home
+nav_order: 2
+---
 ## Prerequisites for the Power Platform
 
 To create this demo you need to have the following information available:

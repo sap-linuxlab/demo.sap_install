@@ -1,3 +1,10 @@
+---
+layout: default
+title: AAP Installation
+nav_order: 1
+has_children: false
+---
+
 # Installation of Ansible Automation Controller or AWX
 
 This document explains ho to install Ansible Automation Controller or AWX on single server, that is suitable for a demo.

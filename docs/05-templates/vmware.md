@@ -1,3 +1,10 @@
+---
+layout: default
+title: AAP Vmware Template Config
+nav_order: 3
+parent: AAP Template Config
+---
+
 # Template Creation for VMware
 
 There are two kinds of templates:
