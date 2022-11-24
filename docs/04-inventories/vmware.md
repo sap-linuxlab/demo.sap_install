@@ -1,4 +1,3 @@
-
 ---
 layout: default
 title: AAP VMWare Inventory Config
