@@ -22,9 +22,9 @@ Each playbook is prefixed with number of the steps above.
 
 Currently we have demos for the following platforms:
 
-* [VMware (vCenter Version 6 and 7+)](assets/doc/00-prerequisites-vmware.md)
-* [GCP (WIP)](assets/doc/00-prerequisites-gcp.md)
-* [PowerVC (WIP)](assets/doc/00-prerequisites-power.md)
+* [VMware (vCenter Version 6 and 7+)](00-prerequisites/vmware.md)
+* [GCP (WIP)](00-prerequisites/google.md)
+* [PowerVC](00-prerequisites/power.md)
 
 Click on each platform to explore the prerequisites
 
@@ -32,11 +32,11 @@ Click on each platform to explore the prerequisites
 
 Follow the Documentation to setup your own demo and learn to use these roles
 
-  1. [Installation and Basic Configuration of AWX/AAP2](assets/doc/01-install.md)
-  2. [Configure required Credentials](assets/doc/02-credentials.md)
-  3. [Configure Projects](assets/doc/03-projects.md)
-  4. [Configure Inventories](assets/doc/04-inventories.md)
-  5. [Configure Templates](assets/doc/05-templates.md)
+  1. [Installation and Basic Configuration of AWX/AAP2](01-install.md)
+  2. [Configure required Credentials](02-credentials.md)
+  3. [Configure Projects](03-projects.md)
+  4. [Configure Inventories](04-inventories.md)
+  5. [Configure Templates](05-templates.md)
 
 ### Run the Demo
 
