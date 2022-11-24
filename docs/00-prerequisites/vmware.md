@@ -1,7 +1,7 @@
 ---
 layout: default
 title: VMWare Prerequisites
-parent: Home
+parent: Platform Prerequisites
 nav_order: 3
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: GCP Prerequisites
-parent: Home
+parent: Platform Prerequisites
 nav_order: 1
 ---
 

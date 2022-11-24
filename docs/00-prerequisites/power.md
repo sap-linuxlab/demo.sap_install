@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Power Prerequisites
-parent: Home
+parent: Platform Prerequisites
 nav_order: 2
 ---
 ## Prerequisites for the Power Platform

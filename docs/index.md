@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Home
+title: Platform Prerequisites
 nav_order: 0
 has_children: true
 permalink: /
