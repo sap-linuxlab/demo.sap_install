@@ -8,13 +8,13 @@ permalink: /
 
 #  How to Use Ansible Collection `community.sap_install`
 
-This is a desciption how you can use the collection `community.sap_install` from [AWX](https://github.com/ansible/awx) or [Red Hat Ansible Controller](https://www.ansible.com/products/controller?hsLang=en-us). 
+This is a desciption how you can use the collection `community.sap_install` from [AWX](https://github.com/ansible/awx) or [Red Hat Ansible Controller](https://www.ansible.com/products/controller?hsLang=en-us).
 
 The playbooks used in this description can be found in the github repository at [`https://github.com/sap-linuxlab/demo.sap_install`](`https://github.com/sap-linuxlab/demo.sap_install)
 
 ## Description
 
-The following diagram shows the typical installation workflow of SAP HANA and S/4HANA. 
+The following diagram shows the typical installation workflow of SAP HANA and S/4HANA.
  ![Picture of workflow here](assets/img/workflow.png)
 
 You will find the corresponding playbooks in this repository which implement the steps of the above workflow in the subdirectories named like the platform.
@@ -27,7 +27,7 @@ Currently we have demos for the following platforms:
 * [VMware (vCenter Version 6 and 7+)](00-prerequisites/vmware.md)
 
 Click on each platform to explore the prerequisites
- 
+
 ### Demo setup
 
 Follow the Documentation to setup your own demo and learn to use these roles

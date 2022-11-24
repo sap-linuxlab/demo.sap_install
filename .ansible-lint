@@ -1,13 +1,15 @@
+---
 exclude_paths:
   - .cache/
   - .github/
   - changelogs/
+  - docs/
   - vmware/
   - tools/
   - misc/
   - generic/
-# enable_list:
-#  - yaml
+enable_list:
+  - yaml
 skip_list:
   - experimental
   # empty-string-compare
