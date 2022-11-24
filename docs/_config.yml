@@ -1,4 +1,4 @@
-title: Demo of sap_install collection
+title: How to Use Ansible Collection `community.sap_install`
 description: demo of sap_install collection
 url: "http://sap-linuxlab.github.io/demo.sap_install"
 markdown: kramdown
