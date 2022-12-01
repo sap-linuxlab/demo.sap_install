@@ -17,21 +17,21 @@
         fstype: nfs
         state: mounted
 
-    - name: Workaround for S/4 HANA 2022 - create directory
-      ansible.builtin.file:
-        path: /usr/sap/lib
-        state: directory
-        mode: '0755'
-        owner: root
-        group: root
+#    - name: Workaround for S/4 HANA 2022 - create directory
+#      ansible.builtin.file:
+#        path: /usr/sap/lib
+#        state: directory
+#        mode: '0755'
+#        owner: root
+#        group: root
 
-    - name: Workaround for S/4 HANA 2022 - create link
-      ansible.builtin.file:
-        src: /opt/rh/SAP/lib64/compat-sap-c++-10.so
-        dest: /usr/sap/lib/libstdc++.so.6
-        state: link
-        owner: root
-        group: root
+#    - name: Workaround for S/4 HANA 2022 - create link
+#      ansible.builtin.file:
+#        src: /opt/rh/SAP/lib64/compat-sap-c++-10.so
+#        dest: /usr/sap/lib/libstdc++.so.6
+#        state: link
+#        owner: root
+#        group: root
 
     - name: execute the SWPM Installation
       include_role:

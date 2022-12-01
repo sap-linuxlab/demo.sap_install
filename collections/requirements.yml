@@ -14,7 +14,7 @@ collections:
         - name: community.sap_libs
         - name: community.sap_operations
         # name: https://github.com/sap-linuxlab/community.sap_install.git,dev
-        - name: https://github.com/mk-ansible-roles/community.sap_install.git,new-hana-exist-check
+        - name: https://github.com/berndfinger/community.sap_install.git,issue-263
           type: git
         - name: https://github.com/sap-linuxlab/community.sap_launchpad.git,dev
           type: git
