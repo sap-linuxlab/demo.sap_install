@@ -5,7 +5,8 @@ url: "http://sap-linuxlab.github.io/demo.sap_install"
 markdown: GFM
 remote_theme: just-the-docs/just-the-docs
 # https://just-the-docs.github.io/just-the-docs/docs/configuration/
-logo: "assets/img/logo-RHAAP.png"
+#logo: "assets/img/logo-RHAAP.png"
+logo: "assets/img/logo-awx.png"
 aux_links:
   "Main Page":
     - "//sap-linuxlab.github.io"
