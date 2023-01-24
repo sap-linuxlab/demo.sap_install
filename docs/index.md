@@ -23,7 +23,10 @@ Each playbook is prefixed with number of the steps above.
 Currently we have demos for the following platforms:
 
 * [GCP (WIP)](00-prerequisites/google.md)
+* Azure - planned
 * [PowerVC](00-prerequisites/power.md)
+* Dell - WIP
+* HPE - WIP
 * [VMware (vCenter Version 6 and 7+)](00-prerequisites/vmware.md)
 
 Click on each platform to explore the prerequisites
