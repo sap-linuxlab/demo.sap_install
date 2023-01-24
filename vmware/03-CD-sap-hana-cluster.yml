@@ -43,6 +43,11 @@
 # hostvars[inventory_hostname].ansible_host
 #
 
+  pre_tasks:
+    - name: Info on configured fencing method
+      debug:
+        var: sap_pacemaker_stonith_devices
+
   roles:
     - community.sap_install.sap_ha_install_hana_hsr
     - community.sap_install.sap_ha_prepare_pacemaker
