@@ -101,3 +101,12 @@
         opts: rw,sync,hard,noatime
         fstype: nfs
         state: present
+
+    # VMWare image provisioning leaves an unusal /etc/hosts entry, that needs to be removed
+    # Otherwise it impacts deployment negatively
+    - name: Ensure VMware localhost entry is removed from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: '127.0.1.1\t{{ ansible_hostname }}.*'
+

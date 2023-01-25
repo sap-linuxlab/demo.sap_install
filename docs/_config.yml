@@ -2,10 +2,11 @@
 title: SAP Install
 description: How to Use Ansible Collection `community.sap_install`
 url: "http://sap-linuxlab.github.io/demo.sap_install"
-markdown: kramdown
+markdown: GFM
 remote_theme: just-the-docs/just-the-docs
 # https://just-the-docs.github.io/just-the-docs/docs/configuration/
-logo: "assets/img/logo-RHAAP.png"
+#logo: "assets/img/logo-RHAAP.png"
+logo: "assets/img/logo-awx.png"
 aux_links:
   "Main Page":
     - "//sap-linuxlab.github.io"
@@ -43,4 +44,3 @@ search:
   # Version of mermaid library
   # Pick an available version from https://cdn.jsdelivr.net/npm/mermaid/
   #version: "9.2.2"
-

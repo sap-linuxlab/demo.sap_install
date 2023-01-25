@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Home
+title: Platform Prerequisites
 nav_order: 0
 has_children: true
 permalink: /
@@ -8,13 +8,13 @@ permalink: /
 
 #  How to Use Ansible Collection `community.sap_install`
 
-This is a desciption how you can use the collection `community.sap_install` from [AWX](https://github.com/ansible/awx) or [Red Hat Ansible Controller](https://www.ansible.com/products/controller?hsLang=en-us). 
+This is a desciption how you can use the collection `community.sap_install` from [AWX](https://github.com/ansible/awx) or [Red Hat Ansible Controller](https://www.ansible.com/products/controller?hsLang=en-us).
 
 The playbooks used in this description can be found in the github repository at [`https://github.com/sap-linuxlab/demo.sap_install`](`https://github.com/sap-linuxlab/demo.sap_install)
 
 ## Description
 
-The following diagram shows the typical installation workflow of SAP HANA and S/4HANA. 
+The following diagram shows the typical installation workflow of SAP HANA and S/4HANA.
  ![Picture of workflow here](assets/img/workflow.png)
 
 You will find the corresponding playbooks in this repository which implement the steps of the above workflow in the subdirectories named like the platform.
@@ -22,12 +22,15 @@ Each playbook is prefixed with number of the steps above.
 
 Currently we have demos for the following platforms:
 
-* [VMware (vCenter Version 6 and 7+)](00-prerequisites/vmware.md)
 * [GCP (WIP)](00-prerequisites/google.md)
+* Azure - planned
 * [PowerVC](00-prerequisites/power.md)
+* Dell - WIP
+* HPE - WIP
+* [VMware (vCenter Version 6 and 7+)](00-prerequisites/vmware.md)
 
 Click on each platform to explore the prerequisites
- 
+
 ### Demo setup
 
 Follow the Documentation to setup your own demo and learn to use these roles
@@ -49,5 +52,6 @@ Follow the Documentation to setup your own demo and learn to use these roles
 
 ## Additional Documentation
 
+- [Red Hat Ansible Automation Pllatform](https://www.redhat.com/en/technologies/management/ansible)
 - [AWX Project Google Group](https://groups.google.com/g/awx-project)
 - [AWX Project FAQ](https://www.ansible.com/products/awx-project/faq)

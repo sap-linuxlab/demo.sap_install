@@ -23,8 +23,9 @@ The variables defined here are used in the role `mk_ansible_roles.subscribe_rhn`
 
 1. Click `Add`
 2. Enter the following:
-    - `Name`: SAP S-User
-    - Input Configuration
+    - **Name**: SAP S-User
+    - **Input Configuration**:
+
       ```yaml
       fields:
         - id: activationkey
@@ -39,7 +40,7 @@ The variables defined here are used in the role `mk_ansible_roles.subscribe_rhn`
         - activationkey
         - orgid
       ```
-    - Injector Creation:
+    - **Injector Creation**:
       ```yaml
       ---
       extra_vars:
@@ -58,8 +59,9 @@ S-User credentials are needed  to download SAP Software
 
 1. Click `Add`
 2. Enter the following:
-    - `Name`: SAP S-User
-    - Input Configuration
+    - **Name**: SAP S-User
+    - **Input Configuration**:
+
       ```yaml
       fields:
         - id: suser_id
@@ -74,7 +76,7 @@ S-User credentials are needed  to download SAP Software
         - suser_id
         - suser_password
       ```
-    - Injector Creation:
+    - **Injector Creation**:
       ```yaml
       ---
       extra_vars:
@@ -95,13 +97,13 @@ To configure credentials go to  `Resources` -> `credentials`
 
 The machine credential is used to login to a server and to gain privilege escalation.
 1. click `Add`  and enter the following:
-    - Name: _name of your credential_
-    - Organization: Select your Organization
-    - Credential Type: Machine
-    - `Username` and login credentials (e.g., password, ssh-key etc.) of the connection user
-    - `Privilege Escalation Username`: root
-    - `Privilege  Escalation Password`: if required
-    - `Privilege Escalation Method`: if required, e.g. if you use `root` as your connection user you need to change this to `su`.
+    - **Name**: _name of your credential_
+    - **Organization**: Select your Organization
+    - **Credential Type**: Machine
+    - **Username** and login credentials (e.g., password, ssh-key etc.) of the connection user
+    - **Privilege Escalation Username**: root
+    - **Privilege  Escalation Password**: if required
+    - **Privilege Escalation Method**: if required, e.g. if you use `root` as your connection user you need to change this to `su`.
 2. Click `Save`
 
 
@@ -110,11 +112,11 @@ The machine credential is used to login to a server and to gain privilege escala
 The credential type has been created in the previous section
 
 1. click `Add`  and enter the following:
-    - Name: RHN Activation Key
-    - Organization: Select your Organization
-    - Credential Type: RHN Activation Key
-    - Activation Key: _Your Activation Key_
-    - Organization ID: _Your Organization ID_
+    - **Name**: RHN Activation Key
+    - **Organization**: Select your Organization
+    - **Credential Type**: RHN Activation Key
+    - **Activation Key**: _Your Activation Key_
+    - **Organization ID**: _Your Organization ID_
 2. Click `Save`
 
 ### S-User Credentials
@@ -122,11 +124,11 @@ The credential type has been created in the previous section
 The credential type has been created in the previous section and is used to download SAP software
 
  1. click `Add`  and enter the following:
-    - Name: SAP S-User
-    - Organization: Select your Organization
-    - Credential Type: SAP S-User
-    - SAP S-User ID: _S1234567_
-    - SAP S-User Password: _Your Password_
+    - **Name**: SAP S-User
+    - **Organization**: Select your Organization
+    - **Credential Type**: SAP S-User
+    - **SAP S-User ID**: _S1234567_
+    - **SAP S-User Password**: _Your Password_
 2. Click `Save`
 
 ### Ansible Automation Hub
@@ -134,12 +136,12 @@ The credential type has been created in the previous section and is used to down
 For downloading credentials from Ansible Automation Hub this credential is needed:
 
 1. Click `add` and enter the following:
-  - Name: Ansible Automaton
-    - Organization: Select your Organization
-    - Credential Type: Ansible Galaxy/Automation Hub API Token
-    - Galaxy Server URL:  _copy from https://console.redhat.com/ansible/automation-hub/token_
-    - Auth Server URL: _copy from https://console.redhat.com/ansible/automation-hub/token_
-    - API Token: Access Token generated at https://console.redhat.com/ansible/automation-hub/token
+  - **Name**: Ansible Automaton
+  - **Organization**: Select your Organization
+  - **Credential Type**: Ansible Galaxy/Automation Hub API Token
+  - **Galaxy Server URL**:  _copy from https://console.redhat.com/ansible/automation-hub/token_
+  - **Auth Server URL**: _copy from https://console.redhat.com/ansible/automation-hub/token_
+  - **API Token**: Access Token generated at https://console.redhat.com/ansible/automation-hub/token
 2. Click `Save`
 
 In order to use the token properly go to `Organizations`
@@ -155,41 +157,40 @@ In order to use the token properly go to `Organizations`
 For connections to VMware this credential is required
 
 1. click `Add`  and enter the following:
-   - Name: _name of your credential_
-   - Organization: Select your Organization
-   - Credential Type: VMware vCenter
-   - VCenter Host: _IP Address  or Hostname of vCenter Server_
-   - Username: _User with administrative permissions_
-   - Password: _ Password for t
+   - **Name**: _name of your credential_
+   - **Organization**: Select your Organization
+   - **Credential Type**: VMware vCenter
+   - **VCenter Host**: _IP Address  or Hostname of vCenter Server_
+   - **Username**: _User with administrative permissions_
+   - **Password**: _ Password for t
 2. Click `Save`
 
-It injects the environment variables `VMWARE_HOST`, `VMWARE_USER` and `VMWARE_PASSWORD` to a template.
-These variables are used by the VMware collections used in this examples
+It injects the environment variables `VMWARE_HOST`, `VMWARE_USER` and `VMWARE_PASSWORD` to the playbook in a template. 
+These variables are used by the VMware collections, that are used in these examples
 
 ### IBM PowerVC Credential
 
 IBM PowerVC implements the OpenStack API.
-For connections to PowerVC this credential is required
+For connections to PowerVC this credential is required.
 
-1. Click `Resources -> Credentials`
-2. Click `Add`
-3. Enter the following parameters
-   - name: `PowerVC Credential`
-   - organization `Default`
-   - select Credential Type `OpenStack`
-   - Username: user with permissions to create LPARs etc. in PowerVC
-   - Password: password for this user
-   - host authentication URL (e.g. https://my-powervc:5000/v3)
-   - Project: (Tenant Name)
-   - Project Domain Name: `Default`
-   - Domain Name: `Default`
+1. Click `Add`
+2. Enter the following parameters
+   - **Name**: `PowerVC Credential`
+   - **Organization**: `Default`
+   - **Credential Type**: `OpenStack`
+   - **Username**: user with permissions to create LPARs etc. in PowerVC
+   - **Password**: password for this user
+   - **host authentication URL** (e.g. https://my-powervc:5000/v3)
+   - **Project**: (Tenant Name)
+   - **Project Domain Name**: `Default`
+   - **Domain Name**: `Default`
    - De-select Verify SSL, if you use self-signed certificates in PowerVC
    ![aap-project-screenshot](assets/img/aap-create-OpenStack-Credential.png)
-   You get this infomation by logging into PowerVC and by clicking on the user logo in the top right of PowerVC:<BR><br>
+   You get the information on username and project by logging into PowerVC and by clicking on the user logo in the top right of PowerVC:<BR><br>
    ![screenshot PowerVC](assets/img/powervc-info.png)
-4. Click Save
+3. Click Save
 
-| :exclamation:  Please Note              |
+| **Please Note**                         |
 |:----------------------------------------|
 
 > In the AAP/AWX credentials you can only define the previous parameters for authentication.
