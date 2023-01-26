@@ -6,34 +6,6 @@
 # This playbook covers the following configuration steps
 #  - subscription and repositories
 #  - network setup
-#  - storage customization
-
-# For our demo, we do not need to install additional packages,
-# configure special services, monitoring and backup etc.
-# we are good with what the standard image provides
-
-# We need to provide this script the storage configuration
-# for each machine. Hence we need to extend the dictionary "gcp_machines"
-# with its individual storage configuration for the second disk, e.g.:
-
-#   gcp_machines:
-#           - name: server-name
-#             [...]
-#             storage_pools:
-#               - name: volume_name
-#                 disks:
-#                  - sdb
-#                 volumes:
-#                   - name: data
-#                     size: "128 GiB"
-#                     mount_point: "/hana/data"
-#                     fs_type: xfs
-#                     state: present
-#                   - name: log
-#                     size: "64 GiB"
-#                     mount_point: "/hana/log"
-#                     fs_type: xfs
-#                     state: present
 
 # Have a look at the documention of the storage role for more configuration options
 
@@ -65,16 +37,33 @@
       - rhel-8-for-ppc64le-sap-solutions-e4s-rpms
       - rhel-8-for-ppc64le-sap-netweaver-e4s-rpms
       - rhel-8-for-ppc64le-highavailability-e4s-rpms
+    ibm_power_tools_url: https://public.dhe.ibm.com/software/server/POWER/Linux/yum/OSS/RHEL/8/ppc64le
+    ibm_at_url: https://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/redhat/RHEL8
 
   tasks:
     - name: Ensure Correct subscription and repositories
       include_role:
         name: mk-ansible-roles.subscribe_rhn
 
+    - name: Update System to the required RHEL release
+      dnf:
+        name: *
+        state: latest
+
     - name: Ensure EPEL is disabled because it conflicts with minor release pinning
       ansible.builtin.yum_repository:
         name: 'epel'
         state: absent
+      notify: Yum-clean-metadata
+
+    - name: Ensure correct IBM Powertools repository is configured
+      ansible.builtin.yum_repository:
+        name: IBM_Power_Tools
+        description: "IBM_Power_Tools for RHEL 8"
+        baseurl: "{{ ibm_power_tools_url }}"
+        gpgcheck: false
+        enabled: true
+        file: ibm-power
       notify: Yum-clean-metadata
 
     - name: Ensure timeserver is configured
