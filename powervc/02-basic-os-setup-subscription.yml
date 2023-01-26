@@ -47,7 +47,7 @@
 
     - name: Update System to the required RHEL release
       dnf:
-        name: *
+        name: '*'
         state: latest
 
     - name: Ensure EPEL is disabled because it conflicts with minor release pinning
