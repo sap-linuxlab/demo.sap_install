@@ -13,8 +13,6 @@ collections:
         - name: ansible.posix
         - name: community.sap_libs
         - name: community.sap_operations
-        # name: https://github.com/sap-linuxlab/community.sap_install.git,dev
-        - name: https://github.com/berndfinger/community.sap_install.git,issue-273
-          type: git
+        - name: community.sap_install
         - name: https://github.com/sap-linuxlab/community.sap_launchpad.git,dev
           type: git
