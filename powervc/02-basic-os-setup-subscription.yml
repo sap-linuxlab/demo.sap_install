@@ -61,10 +61,10 @@
         file: ibm-power
       notify: Yum-clean-metadata
 
-    - name: Update System to the required RHEL release
-      dnf:
-        name: '*'
-        state: latest
+    # - name: Update System to the required RHEL release
+    #  dnf:
+    #    name: '*'
+    #    state: latest
 
     - name: Ensure timeserver is configured
       include_role:
