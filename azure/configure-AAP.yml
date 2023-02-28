@@ -5,6 +5,7 @@
   vars:
     controller_validate_certs: false
     myorg: "SAP Demo"
+    prefix: "RHDS "
   collections:
     - ansible.controller
     - redhat_cop.controller_configuration
@@ -136,7 +137,7 @@
 
     - name: Ensure machine credential for Azure User exists
       ansible.controller.credential:
-        name: "RHDS Azure Machine Credential"
+        name: "{{ prefix }}Azure Machine Credential"
         description: "used for login into Azure VMs"
         organization:  "{{myorg}}"
         credential_type: Machine
@@ -148,7 +149,7 @@
 
     - name: Ensure S-User credential
       ansible.controller.credential:
-        name: "RHDS Azure SAP S-User Credential"
+        name: "{{ prefix }}Azure SAP S-User Credential"
         description: "used for downloading SAP-Software"
         organization:  "{{myorg}}"
         credential_type: "SAP S-User"
@@ -159,7 +160,7 @@
         validate_certs: "{{ controller_validate_certs }}"
     - name: Ensure Azure cloud credential 
       ansible.controller.credential:
-        name: "RHDS Azure credential"
+        name: "{{ prefix }}Azure credential"
         organization: "{{myorg}}"
         credential_type: "Microsoft Azure Resource Manager"
         inputs:
@@ -173,7 +174,7 @@
 
     - name: Ensure Ansible Automation Hub credential
       ansible.controller.credential:
-        name: "RHDS Automation Hub Credential"
+        name: "{{ prefix }}Automation Hub Credential"
         organization: "{{myorg}}"
         credential_type: "Ansible Galaxy/Automation Hub API Token"
         inputs:
@@ -186,20 +187,20 @@
       ansible.controller.organization:
         name: "{{myorg}}"
         galaxy_credentials:
-          - "RHDS Automation Hub Credential"
+          - "{{ prefix }}Automation Hub Credential"
         state: present
         validate_certs: "{{ controller_validate_certs }}"
 
     - name: Ensure project for sap demo exists 
       ansible.controller.project:
-        name: "SAP Demo Project"
+        name: "{{ prefix }}SAP Demo Project"
         organization: "{{myorg}}"
         state: present
         scm_type: git
         scm_branch: azure
         scm_url: https://github.com/sap-linuxlab/demo.sap_install.git
-        scm_clean: true
-        update_project: true
+        #scm_clean: true
+        #scm_delete_on_update: true
         validate_certs: "{{ controller_validate_certs }}"
     
     # name: Ensure SAP Demo inventory exists
