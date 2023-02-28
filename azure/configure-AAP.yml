@@ -188,6 +188,7 @@
         name: "{{myorg}}"
         galaxy_credentials:
           - "{{ prefix }}Automation Hub Credential"
+          - "Ansible Galaxy"
         state: present
         validate_certs: "{{ controller_validate_certs }}"
 
@@ -199,8 +200,8 @@
         scm_type: git
         scm_branch: azure
         scm_url: https://github.com/sap-linuxlab/demo.sap_install.git
-        #scm_clean: true
-        #scm_delete_on_update: true
+        scm_clean: true
+        scm_delete_on_update: true
         validate_certs: "{{ controller_validate_certs }}"
     
     # name: Ensure SAP Demo inventory exists
