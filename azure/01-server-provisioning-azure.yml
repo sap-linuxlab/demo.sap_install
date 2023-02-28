@@ -1,0 +1,58 @@
+---
+########################################################
+# Phase 1: server provisioning
+#
+# After running this playbook you will have
+# servers with ??? running on Azure
+#
+
+# For input this playbook needs a dictionary with
+# the following paramters
+#
+#vars:
+#   az_machines:
+#           - name: test1
+#             disk_gb: 150
+#
+# Authentication:
+#
+# Using this playbook from AAP requires Azure credentials to be created
+# From CLI:
+# - login with `az login`A or
+# - use a profile stored in ~/.azure/credentials and set AZURE_PROFILE if not using "default"
+# - or set the foillowing environment vars:
+#    AZURE_SUBSCRIPTION_ID: subscription_id
+#    AZURE_CLIENT_ID:       client_id
+#    AZURE_SECRET:          secret 
+#    AZURE_TENANT:          tenant
+#
+# Global variables:
+#   az_vm_create_vm_admin_password (try to get from AAP machine credential)
+#   az_vm_create_vm_admin:
+#
+#   see az_create_vm for details on possible variables
+
+- name: phase 1 -- Server Provisioning
+  hosts: localhost
+  gather_facts: false
+
+  collections:
+    - azure.azcollection
+
+  tasks:
+  - name: Output creation dictionary configuration
+    debug:
+      msg:
+        - "Name: {{ item.name }}"
+        - "Disk_GB: {{ item.disk_gb | default('Undefined - using default') }}"
+        - "Group: {{ item.group }}"
+    loop: "{{ az_machines }}"
+
+  - name: Create Azure VM
+    include_role:
+      name: az_vm_create
+    vars:
+      az_vm_create_vm_name: "{{ item.name }}"
+      az_vm_create_disk_size: "{{ item.disk_gb | default(150) }}" 
+      az_vm_create_group: "{{ item.group }}"
+    loop: "{{ az_machines }}"

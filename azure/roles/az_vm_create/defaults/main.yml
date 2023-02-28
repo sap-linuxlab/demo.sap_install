@@ -1,0 +1,58 @@
+---
+# defaults file for az_vm_create
+
+# Azure Resource Group Name
+az_vm_create_rg_name: sapdemo
+
+# Azure VM Name
+az_vm_create_vm_name: "{{ az_vm_create_rg_name + '_VM' }}"
+
+# Azure Location
+az_vm_create_location: eastus
+
+# Azure Virtual Network
+az_vm_create_vnet_name: "{{  az_vm_create_rg_name + '_Vnet' }}"
+az_vm_create_vnet_prefix: 10.0.0.0/16
+
+# Azure Subnet (in Vnet)
+az_vm_create_subnet_name: "{{  az_vm_create_rg_name + '_Subnet' }}"
+az_vm_create_subnet_prefix: 10.0.1.0/24
+
+# PublicIP
+az_vm_create_public_ip_name: "{{ az_vm_create_vm_name + '_PublicIP' }}"
+
+# NIC
+az_vm_create_nic_name: "{{ az_vm_create_vm_name + '_Nic' }}" 
+
+# Storage Account
+# must be between 3 and 24 characters in length and use numbers and lower-case letters only
+#az_vm_create_storage_account: "{{ az_vm_create_rg_name|replace (\"-\", \"\") + 'sa' }}"
+
+# Disks
+# TODO: dictionary with disks instead a single one
+#az_vm_create_disk_name: "{{ az_vm_create_vm_name + '_DataDisk' }}"
+az_vm_create_disk_size: 150
+az_vm_create_datadisks: 
+  - lun: 0
+    disk_size_gb: "{{ az_vm_create_disk_size }}"
+
+# Dictionary with image options
+# Browse to ... for list of image versions
+az_vm_create_os_image:
+  publisher: "RedHat"
+  offer: "RHEL-SAP-HA"
+  sku: "8_6"
+  version: "latest"
+
+az_vm_create_os_name: "{{ az_vm_create_vm_name + '_OsDisk' }}"
+
+# TODO: more parameters for VM size and OS
+az_vm_create_vm_admin: azureuser
+az_vm_create_vm_admin_password:  SuperSecretP@ssw0rd.
+
+# Security Group
+az_vm_create_sg_name: "{{ az_vm_create_rg_name + '_SecurityGroup' }}"
+
+# Default VM size (dependant on subscription)
+az_vm_create_vm_size: Standard_D48s_v3
+
