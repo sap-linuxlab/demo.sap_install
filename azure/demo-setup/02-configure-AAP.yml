@@ -1,0 +1,261 @@
+- name: Configure Ansible Automation Controller
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    controller_validate_certs: false
+    myorg: "SAP Demo"
+    prefix: "RHDS "
+  collections:
+    - ansible.controller
+    - redhat_cop.controller_configuration
+
+  # This playbook requires the following environment variables
+  # CONTROLLER_USERNAME
+  # CONTROLLER_OAUTH_TOKEN or CONTROLLER_PASSWORD
+  # CONTROLLER_HOST defaults to localhost
+  vars_prompt:
+    - name: "controller_username"
+      prompt: "Controller Username"
+      private: false
+      default: "{{lookup('env', 'CONTROLLER_USERNAME')}}"
+    - name: "controller_password"
+      prompt: "Controller Password"
+      private: true
+      default: "{{lookup('env', 'CONTROLLER_PASSWORD')}}"
+    - name: "controller_hostname"
+      prompt: "Controller URL"
+      private: false
+      default: "{{lookup('env', 'CONTROLLER_HOST')}}"
+    - name: "machine_user"
+      prompt: "Azure Cloud User"
+      private: false
+      default: "azureadmin"
+    - name: "machine_password"
+      prompt: "Azure Cloud User Password"
+      private: true
+      default: "SuperSecretP@ssw0rd."
+    - name: "my_suser"
+      prompt: "S-User ID"
+      private: false
+      default: "{{ lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME') }}"
+    - name: "my_spass"
+      prompt: "S-User Password"
+      private: true
+      default: "{{ lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD') }}"
+    - name: "azure_cli_id"
+      prompt: "Azure Client ID"
+      private: false
+      default: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+    - name: "azure_cli_secret"
+      prompt: "Azure Client Secret"
+      private: true
+      default: "{{ lookup('env', 'AZURE_SECRET') }}"
+    - name: "azure_tenant"
+      prompt: "Azure Tenant"
+      private: false
+      default: "{{ lookup('env', 'AZURE_TENANT') }}"
+    - name: "azure_subscription"
+      prompt: "Azure Subscription ID"
+      private: false
+      default: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
+    - name: "az_resourcegroup"
+      prompt: "Azure Resource Group Name"
+      private: false
+      default: "openenv-{{ lookup('env', 'GUID') }}"
+    - name: "ah_token"
+      prompt: "Automation Hub token"
+      private: true
+      default: "{{ lookup('env', 'AH_TOKEN') }}"
+      
+  tasks:
+    # - name: Create a new token using controller username/password
+    #  ansible.controller.token:
+    #    description: 'Creating token to test controller jobs'
+    #    scope: "write"
+    #    state: present
+    #    controller_host: "{{ controller_hostname }}"
+    #    controller_username: "{{ controller_username }}"
+    #    controller_password: "{{ controller_password }}"
+    #    validate_certs: "{{ controller_validate_certs }}"
+    #  register: _token
+    - name: Ensure organization "{{ myorg }}" exists
+      ansible.controller.organization:
+        name: "{{myorg}}"
+        description: "Red Hat SAP DEMO"
+        state: present
+        validate_certs: "{{ controller_validate_certs }}"
+        
+    - name: Ensure Ansible Controller credential for SAP S-User
+      ansible.controller.credential_type:
+        name: "SAP S-User"
+        description: "Communication with SAP Launchpad API"
+        kind: cloud
+        inputs: 
+          fields:
+            - id: suser_id
+              type: string
+              label: "SAP S-User ID"
+              secret: false
+            - id: suser_password
+              type: string
+              label: "SAP S-User password"
+              secret: true
+          required:
+            - suser_id
+            - suser_password 
+        injectors: 
+          extra_vars:
+            suser_id: ''
+            suser_password: ''
+          env:
+            SAP_SUPPORT_DOWNLOAD_PASSWORD: '{{ "{{ suser_password }}" }}'
+            SAP_SUPPORT_DOWNLOAD_USERNAME: '{{ "{{ suser_id }}" }}'
+        state: present
+        validate_certs:  "{{ controller_validate_certs }}"
+
+    # - name: Ensure RHN Activation Key Credential 
+    #  ansible.controller.credential_type:
+    #    name: "RHN Activation Key"
+    #    description: "Used for RHN"
+    #    kind: cloud
+    #    inputs: 
+    #      fields:
+    #        - id: activationkey
+    #          type: string
+    #          label: Activation Key
+    #          secret: true
+    #        - id: orgid
+    #          type: string
+    #          label: Organization ID
+    #          secret: true
+    #      required:
+    #        - activationkey
+    #        - orgid
+    #    injectors: 
+    #      extra_vars:
+    #        reg_activation_key: ''
+    #        reg_organization_id: ''
+    #    state: present
+    #    validate_certs:  "{{ controller_validate_certs }}"
+
+    - name: Ensure machine credential for Azure User exists
+      ansible.controller.credential:
+        name: "{{ prefix }}Azure Machine Credential"
+        description: "used for login into Azure VMs"
+        organization:  "{{myorg}}"
+        credential_type: Machine
+        state: present
+        inputs:
+          username: "{{ machine_user }}"
+          password: "{{ machine_password }}"
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Ensure S-User credential
+      ansible.controller.credential:
+        name: "{{ prefix }}Azure SAP S-User Credential"
+        description: "used for downloading SAP-Software"
+        organization:  "{{myorg}}"
+        credential_type: "SAP S-User"
+        state: present
+        inputs:
+          suser_id: "{{ my_suser }}"
+          suser_password: "{{ my_spass }}"
+        validate_certs: "{{ controller_validate_certs }}"
+    - name: Ensure Azure cloud credential 
+      ansible.controller.credential:
+        name: "{{ prefix }}Azure credential"
+        organization: "{{myorg}}"
+        credential_type: "Microsoft Azure Resource Manager"
+        inputs:
+          subscription: "{{ azure_subscription }}"
+          # username: "{{ machine_user }}"
+          # password: "{{ machine_password }}"
+          client: "{{ azure_cli_id }}"
+          secret: "{{ azure_cli_secret }}"
+          tenant: "{{ azure_tenant }}"
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Ensure Ansible Automation Hub credential
+      ansible.controller.credential:
+        name: "{{ prefix }}Automation Hub Credential"
+        organization: "{{myorg}}"
+        credential_type: "Ansible Galaxy/Automation Hub API Token"
+        inputs:
+          url: https://cloud.redhat.com/api/automation-hub/
+          auth_url: https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
+          token: "{{ ah_token }}"
+        validate_certs: "{{ controller_validate_certs }}"
+    
+    - name: Ensure token is added to organization
+      ansible.controller.organization:
+        name: "{{myorg}}"
+        galaxy_credentials:
+          - "Ansible Galaxy"
+          - "{{ prefix }}Automation Hub Credential"
+        state: present
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Ensure project for sap demo exists 
+      ansible.controller.project:
+        name: "{{ prefix }}SAP Demo Project"
+        organization: "{{myorg}}"
+        state: present
+        scm_type: git
+        scm_branch: azure
+        scm_url: https://github.com/sap-linuxlab/demo.sap_install.git
+        scm_clean: true
+        scm_delete_on_update: true
+        validate_certs: "{{ controller_validate_certs }}"
+    
+    - name: Ensure SAP Demo inventory exists
+      ansible.controller.inventory:
+        name: "{{ prefix }} SAP Demo" 
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        variables:
+          az_vm_create_rg_name: "{{ az_resourcegroup }}"
+
+    # name: Configure dynamic Azure inventory
+
+    - name: Configure job templates
+      ansible.controller.job_template:
+        name: "01 - Infrastructure Provisioning (Azure)"
+        description: "Creates the Machines on Azure"
+        job_type: "run"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        inventory: "{{ prefix }} SAP Demo" 
+        project: "{{ prefix }}SAP Demo Project"
+        playbook: azure/01-server-provisioning-azure.yml
+        credentials:
+          - "{{ prefix }}Azure Machine Credential"
+          - "{{ prefix }}Azure credential"
+        allow_simultaneous: false
+        ask_verbosity_on_launch: true
+        ask_variables_on_launch: true
+        extra_vars:
+          az_machines:
+            - name: azfile
+              size: Standard_A1_v2
+              disk_gb: 50
+              group: fileserver
+            - name: azhana1
+              size: Standard_D48s_v3
+              disk_gb: 250
+              group: hanas
+            - name: azs4
+              size: Standard_B8ms
+              disk_gb: 250
+              group: s4hanas
+
+
+
+
+
+
+    # name: Configure workflow templates
+
+      

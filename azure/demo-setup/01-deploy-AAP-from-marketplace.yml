@@ -7,13 +7,13 @@
     myorg: "SAP Demo"
     prefix: "RHDS "
   collections:
-    - ansible.controller
-    - redhat_cop.controller_configuration
+    - azure.azcollection
 
-  # This playbook requires the following environment variables
-  # CONTROLLER_USERNAME
-  # CONTROLLER_OAUTH_TOKEN or CONTROLLER_PASSWORD
-  # CONTROLLER_HOST defaults to localhost
+  # Note: 
+  # to use azure.azcollection a lot of python modules
+  # need to be installed on the machine
+  # pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
+  #
   vars_prompt:
     - name: "controller_username"
       prompt: "Controller Username"
@@ -34,7 +34,7 @@
     - name: "machine_password"
       prompt: "Azure Cloud User Password"
       private: true
-      default: "Sup3rS3cr3tP@ssw0rd"
+      default: "SuperSecretP@ssw0rd."
     - name: "my_suser"
       prompt: "S-User ID"
       private: false
@@ -59,6 +59,10 @@
       prompt: "Azure Subscription ID"
       private: false
       default: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
+    - name: "az_resourcegroup"
+      prompt: "Azure Resource Group Name"
+      private: false
+      default: "openenv-{{ lookup('env', 'GUID') }}"
     - name: "ah_token"
       prompt: "Automation Hub token"
       private: true
@@ -179,7 +183,7 @@
         credential_type: "Ansible Galaxy/Automation Hub API Token"
         inputs:
           url: https://cloud.redhat.com/api/automation-hub/
-          auth_url: https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/tok1Gen
+          auth_url: https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
           token: "{{ ah_token }}"
         validate_certs: "{{ controller_validate_certs }}"
     
@@ -187,8 +191,8 @@
       ansible.controller.organization:
         name: "{{myorg}}"
         galaxy_credentials:
-          - "{{ prefix }}Automation Hub Credential"
           - "Ansible Galaxy"
+          - "{{ prefix }}Automation Hub Credential"
         state: present
         validate_certs: "{{ controller_validate_certs }}"
 
@@ -204,14 +208,52 @@
         scm_delete_on_update: true
         validate_certs: "{{ controller_validate_certs }}"
     
-    # name: Ensure SAP Demo inventory exists
-
-    # name: Add variables to inventory (if not done in previous step)
+    - name: Ensure SAP Demo inventory exists
+      ansible.controller.inventory:
+        name: "{{ prefix }} SAP Demo" 
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        variables:
+          az_vm_create_rg_name: "{{ az_resourcegroup }}"
 
     # name: Configure dynamic Azure inventory
 
+    - name: Configure job templates
+      ansible.controller.job_template:
+        name: "01 - Infrastructure Provisioning (Azure)"
+        description: "Creates the Machines on Azure"
+        job_type: "run"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        inventory: "{{ prefix }} SAP Demo" 
+        project: "{{ prefix }}SAP Demo Project"
+        playbook: azure/01-server-provisioning-azure.yml
+        credentials:
+          - "{{ prefix }}Azure Machine Credential"
+        allow_simultaneous: false
+        ask_verbosity_on_launch: true
+        ask_variables_on_launch: true
+        extra_vars:
+          az_machines:
+            - name: azfile
+              size: Standard_A1_v2
+              disk_gb: 50
+              group: fileserver
+            - name: azhana1
+              size: Standard_D48s_v3
+              disk_gb: 250
+              group: hanas
+            - name: azs4
+              size: Standard_B8ms
+              disk_gb: 250
+              group: s4hanas
 
-    # name: Configure job templates
+
+
+
+
 
     # name: Configure workflow templates
 

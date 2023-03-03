@@ -54,5 +54,6 @@ az_vm_create_vm_admin_password:  SuperSecretP@ssw0rd.
 az_vm_create_sg_name: "{{ az_vm_create_rg_name + '_SecurityGroup' }}"
 
 # Default VM size (dependant on subscription)
-az_vm_create_vm_size: Standard_D48s_v3
+# See https://learn.microsoft.com/en-us/azure/virtual-machines/sizes for details
+az_vm_create_vm_size: Standard_A1_v2
 
