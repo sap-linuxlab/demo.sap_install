@@ -14,7 +14,7 @@
   #   suser_password
   #
   # optional:
-  #   sap_swpm_software_path   : Pfad in den die Software heruntergeladen wird
+  #   download_path           : Pfad in den die Software heruntergeladen wird
   #   venv                     : virtuelles Python environment für prereqs 
   #
   # vars_prompt:
@@ -28,7 +28,7 @@
   #    default: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD')}}"
 
   vars:
-      sap_swpm_software_path: /sap-software
+      download_path: /sap-software
 
   vars_files: sap-dl.yml
 
@@ -57,16 +57,16 @@
          state: directory
          mode: '0755'
       loop:
-        - "{{ sap_swpm_software_path }}"
-        - "{{ sap_swpm_software_path }}/HANA2SPS06"
-        - "{{ sap_swpm_software_path }}/S4HANA2021.FNDN"
+        - "{{ download_path }}"
+        - "{{ download_path }}/HANA2SPS06"
+        - "{{ download_path }}/S4HANA2021.FNDN"
 
     - name: download SAPCAR
       community.sap_launchpad.software_center_download:
         suser_id: "{{ suser_id }}"
         suser_password: "{{ suser_password }}"
         softwarecenter_search_query: "{{ item }}"
-        dest: "{{ sap_swpm_software_path }}"
+        dest: "{{ download_path }}"
         dry_run: "{{ dryrun|default(false) }}"
       loop: "{{ sapcar }}"
       ignore_errors: true
@@ -76,7 +76,7 @@
         suser_id: "{{ suser_id }}"
         suser_password: "{{ suser_password }}"
         softwarecenter_search_query: "{{ item }}"
-        dest: "{{ sap_swpm_software_path }}/HANA2SPS06"
+        dest: "{{ download_path }}/HANA2SPS06"
         dry_run: "{{ dryrun|default(false) }}"
       loop: "{{ hdb2sps06 }}"
       ignore_errors: true
@@ -86,7 +86,7 @@
         suser_id: "{{ suser_id }}"
         suser_password: "{{ suser_password }}"
         softwarecenter_search_query: "{{ item }}"
-        dest: "{{ sap_swpm_software_path }}/S4HANA2021.FNDN"
+        dest: "{{ download_path }}/S4HANA2021.FNDN"
         deduplicate: "last"
         dry_run: "{{ dryrun|default(false) }}"
       loop: "{{ s4fndn2021 + swpm }}"
@@ -94,11 +94,11 @@
 
     - name: Link SAPCAR
       ansible.builtin.file:
-        src: '{{ sap_swpm_software_path }}/{{ sapcar | first }}'
+        src: '{{ download_path }}/{{ sapcar | first }}'
         dest: '{{ item }}'
         state: hard
       loop:
-        - '{{ sap_swpm_software_path }}/S4HANA2021.FNDN/{{ sapcar | first }}'
-        - '{{ sap_swpm_software_path }}/HANA2SPS06/{{ sapcar | first }}'
+        - '{{ download_path }}/S4HANA2021.FNDN/{{ sapcar | first }}'
+        - '{{ download_path }}/HANA2SPS06/{{ sapcar | first }}'
     
    

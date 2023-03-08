@@ -139,6 +139,13 @@
     #    state: present
     #    validate_certs:  "{{ controller_validate_certs }}"
 
+    # TODO: 
+    # - name: Ensure templating in variables is allowed
+    #   settings:
+    #    name: "AWX_??????"
+    #    value: "always"
+    #  register: testing_settings
+
     - name: Ensure machine credential for Azure User exists
       ansible.controller.credential:
         name: "{{ prefix }}Azure Machine Credential"
@@ -150,6 +157,8 @@
           username: "{{ machine_user }}"
           password: "{{ machine_password }}"
         validate_certs: "{{ controller_validate_certs }}"
+      tags:
+        - update_credentials
 
     - name: Ensure S-User credential exists
       ansible.controller.credential:
@@ -162,6 +171,8 @@
           suser_id: "{{ my_suser }}"
           suser_password: "{{ my_spass }}"
         validate_certs: "{{ controller_validate_certs }}"
+      tags:
+        - update_credentials
 
     - name: Ensure Azure cloud credential exists
       ansible.controller.credential:
@@ -176,6 +187,8 @@
           secret: "{{ azure_cli_secret }}"
           tenant: "{{ azure_tenant }}"
         validate_certs: "{{ controller_validate_certs }}"
+      tags:
+        - update_credentials
 
     - name: Ensure Ansible Automation Hub credential exists
       ansible.controller.credential:
@@ -187,6 +200,8 @@
           auth_url: https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
           token: "{{ ah_token }}"
         validate_certs: "{{ controller_validate_certs }}"
+      tags:
+        - update_credentials
     
     - name: Ensure Galaxy Credentials are added to organization
       ansible.controller.organization:
@@ -216,6 +231,8 @@
       loop:
         - "Azure Demos"
         - "Demo Project"
+      tags:
+        - cleanup_demo_projects
     
     - name: Ensure SAP Demo inventory exists
       ansible.controller.inventory:
@@ -224,9 +241,14 @@
         validate_certs: "{{ controller_validate_certs }}"
         state: present
         variables:
-          az_vm_create_rg_name: "{{ az_resourcegroup }}"
+          {
+            "az_vm_create_rg_name": "openenv-hqnkn",
+            "nfs_server": "{{ '{{' }} hostvars[ azfile ][ ansible_host ] {{ '}}' }}",
+            "nfs_export_dir": "/export/sapinst",
+            "nfs_archive_dir": "/sapinst"
+          }
 
-    - name: Configure dynamic Azure inventory Source
+    - name: Ensure dynamic Azure inventory source exists
       ansible.controller.inventory_source:
         name: "SAP Hosts"
         description: "finds hosts deployed for this demo and group properly"
@@ -236,9 +258,9 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        source: "{{ azure_rm }}"
+        credential: "{{ prefix }}Azure credential"
+        source: azure_rm
         source_vars:
-          ---
           conditional_groups:
             azure: false
           fail_on_template_errors: false
@@ -295,7 +317,7 @@
         state: present
         inventory: "{{ prefix }} SAP Demo"
         project: "{{ prefix }}SAP Demo Project"
-        playbook: generic/91-configure-nfs-server.yml
+        playbook: misc/nfs-server-prepare.yml
         skip_tags: rhn_reg
         credentials:
           - "{{ prefix }}Azure Machine Credential"
@@ -303,6 +325,7 @@
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
+        extra_vars: { "exportdirs": "{{ '{{' }} nfs_export_dir {{ '}}' }}: '*(rw)'" }
 
     - name: Configure Download SAP Software
       ansible.controller.job_template:
@@ -314,15 +337,16 @@
         state: present
         inventory: "{{ prefix }} SAP Demo"
         project: "{{ prefix }}SAP Demo Project"
-        playbook: generic/92-download-sap-media.yml
+        playbook: misc/download-sap-media.yml
         credentials:
           - "{{ prefix }}Azure Machine Credential"
           - "{{ prefix }}Azure credential"
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
+        extra_vars: { "download_path": "{{ '{{' }} nfs_export_dir {{ '}}' }}" }
 
-    - name: Workflow Template: 00-Setup Fileserver
+    - name: Workflow Template 00-Setup Fileserver
       ansible.controller.workflow_job_template:
         name: "00 - Set up NFS fileserver"
         description: "Set up NFS Fileserver to provide SAP Software"
@@ -332,9 +356,6 @@
         state: present
         allow_simultaneous: false
         destroy_current_nodes: true   # Create from scratch !
-        credentials:
-          - "{{ prefix }}Azure Machine Credential"
-          - "{{ prefix }}Azure credential"
         extra_vars:
           az_machines:
             - name: azfile
@@ -343,46 +364,45 @@
               group: fileserver
                
         workflow_nodes:
-          - identifier: node101
+          - identifier: "01 - Infrastructure Provisioning (Azure)"
             unified_job_template:
               name: "01 - Infrastructure Provisioning (Azure)"
               type: job_template
-              related:
-                success_nodes:
-                  - identifier: node102
-                failure_nodes: []
-                always_nodes: []
-                credentials: []
-          - identifier: node102
+            related:
+              success_nodes:
+                - identifier: "Update SAP Hosts"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "Update SAP Hosts"
             unified_job_template:
               name: "SAP Hosts"
               type: inventory_source
-              related:
-                success_nodes:
-                  - identifier: node103
-                failure_nodes: []
-                always_nodes: []
-                credentials: []
-          - identifier: node103
+            related:
+              success_nodes:
+                - identifier: "91 - Configure NFS Fileserver"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "91 - Configure NFS Fileserver"
             unified_job_template:
               name: "91 - Configure NFS Fileserver"
               type: job_template
-              related:
-                success_nodes:
-                  - identifier: node104
-                failure_nodes: []
-                always_nodes: []
-                credentials: []
-          - identifier: node104
+            related:
+              success_nodes:
+                - identifier: "92 - Download SAP Software"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "92 - Download SAP Software"
             unified_job_template:
               name: "92 - Download SAP Software"
               type: job_template
-              related:
-                success_nodes: []
-                failure_nodes: []
-                always_nodes: []
-                credentials: []
-
+            related:
+              success_nodes: []
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
 
 
 
