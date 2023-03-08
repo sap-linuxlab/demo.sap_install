@@ -9,7 +9,7 @@
             "value": "S3cr3tPassw0rd."
         },
         "applicationResourceName": {
-            "value": "AnsibleAutomationPlatformSapDemo"
+            "value": "AAPSapDemo"
         },
         "dnsServiceIP": {
             "value": "10.2.0.10"
@@ -26,7 +26,7 @@
         "vnetConfig": {
             "value": {
                 "name": "vnet01_doNotEditName",
-                "resourceGroup": "openenv-hk7hc",
+                "resourceGroup": "mkoch2-rg",
                 "addressPrefixes": [
                     "10.1.0.0/24"
                 ],

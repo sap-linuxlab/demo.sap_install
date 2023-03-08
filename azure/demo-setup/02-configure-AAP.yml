@@ -237,7 +237,26 @@
         validate_certs: "{{ controller_validate_certs }}"
         state: present
         source: "{{ azure_rm }}"
-
+        source_vars:
+          ---
+          conditional_groups:
+            azure: false
+          fail_on_template_errors: false
+          hostvar_expressions:
+            computer_name: name
+            private_ip: private_ipv4_addresses[0] if private_ipv4_addresses else None
+            provisioning_state: provisioning_state | title
+            public_ip: public_ipv4_addresses[0] if public_ipv4_addresses else None
+            public_ip_id: public_ip_id if public_ip_id is defined else None
+            public_ip_name: public_ip_name if public_ip_name is defined else None
+            tags: tags if tags else None
+            type: resource_type
+          keyed_groups:
+          - key: tags.keys() | list if tags else []
+            prefix: ''
+            separator: ''
+          plain_host_names: true
+          
     - name: Configure job templates
       ansible.controller.job_template:
         name: "01 - Infrastructure Provisioning (Azure)"
@@ -257,10 +276,6 @@
         ask_variables_on_launch: true
         extra_vars:
           az_machines:
-            - name: azfile
-              size: Standard_A1_v2
-              disk_gb: 50
-              group: fileserver
             - name: azhana1
               size: Standard_D48s_v3
               disk_gb: 250
@@ -269,6 +284,107 @@
               size: Standard_B8ms
               disk_gb: 250
               group: s4hanas
+
+    - name: Configure file-server
+      ansible.controller.job_template: 
+        name: "91 - Configure NFS Fileserver"
+        description: "Configures NFS file share for SAP Software"
+        job_type: "run"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        inventory: "{{ prefix }} SAP Demo"
+        project: "{{ prefix }}SAP Demo Project"
+        playbook: generic/91-configure-nfs-server.yml
+        skip_tags: rhn_reg
+        credentials:
+          - "{{ prefix }}Azure Machine Credential"
+          - "{{ prefix }}Azure credential"
+        allow_simultaneous: false
+        ask_verbosity_on_launch: true
+        ask_variables_on_launch: true
+
+    - name: Configure Download SAP Software
+      ansible.controller.job_template:
+        name: "92 - Download SAP Software"
+        description: "Download SAP Software"
+        job_type: "run"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        inventory: "{{ prefix }} SAP Demo"
+        project: "{{ prefix }}SAP Demo Project"
+        playbook: generic/92-download-sap-media.yml
+        credentials:
+          - "{{ prefix }}Azure Machine Credential"
+          - "{{ prefix }}Azure credential"
+        allow_simultaneous: false
+        ask_verbosity_on_launch: true
+        ask_variables_on_launch: true
+
+    - name: Workflow Template: 00-Setup Fileserver
+      ansible.controller.workflow_job_template:
+        name: "00 - Set up NFS fileserver"
+        description: "Set up NFS Fileserver to provide SAP Software"
+        organization: "{{myorg}}"
+        inventory: "{{ prefix }} SAP Demo"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        allow_simultaneous: false
+        destroy_current_nodes: true   # Create from scratch !
+        credentials:
+          - "{{ prefix }}Azure Machine Credential"
+          - "{{ prefix }}Azure credential"
+        extra_vars:
+          az_machines:
+            - name: azfile
+              size: Standard_A1_v2
+              disk_gb: 50
+              group: fileserver
+               
+        workflow_nodes:
+          - identifier: node101
+            unified_job_template:
+              name: "01 - Infrastructure Provisioning (Azure)"
+              type: job_template
+              related:
+                success_nodes:
+                  - identifier: node102
+                failure_nodes: []
+                always_nodes: []
+                credentials: []
+          - identifier: node102
+            unified_job_template:
+              name: "SAP Hosts"
+              type: inventory_source
+              related:
+                success_nodes:
+                  - identifier: node103
+                failure_nodes: []
+                always_nodes: []
+                credentials: []
+          - identifier: node103
+            unified_job_template:
+              name: "91 - Configure NFS Fileserver"
+              type: job_template
+              related:
+                success_nodes:
+                  - identifier: node104
+                failure_nodes: []
+                always_nodes: []
+                credentials: []
+          - identifier: node104
+            unified_job_template:
+              name: "92 - Download SAP Software"
+              type: job_template
+              related:
+                success_nodes: []
+                failure_nodes: []
+                always_nodes: []
+                credentials: []
+
+
+
 
     # name: Configure workflow templates
 

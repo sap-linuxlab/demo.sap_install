@@ -2,6 +2,14 @@
 # This playbook configures a server with
 #  - nfs-service
 
+# The flow of this playbook
+#
+# register to RHN (tag: rhn_reg)
+# additional Storage Config (tag: storage_setup)
+# NFS config (tag: nfs_setup)
+#
+# Use skip tags if you want skip one of the above steps
+
 - name: Install nfs Server
   hosts: fileserver
   become: true
@@ -21,21 +29,26 @@
       - /export/hana/shared: '*(rw)'
 
   tasks:
-    # TODO:
-    # Check proper hostname and /etc/host setting
-
     - name: Ensure Correct subscription and repositories
       include_role:
         name: mk-ansible-roles.subscribe_rhn
+      tags:
+        - rhn_reg
 
     - name: get storage pool setup from server definition
       set_fact:
          storage_pools: "{{ vmware_machines | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
+      tags:
+        - storage_setup
 
     - name: Ensure storage is configured correctly
       include_role:
         name: redhat.rhel_system_roles.storage
+      tags:
+        - storage_setup
 
     - name: Ensure nfs-server is configured correctly
       include_role:
          name: mk-ansible-roles.setup_nfs_server
+      tags:
+        - nfs_setup
