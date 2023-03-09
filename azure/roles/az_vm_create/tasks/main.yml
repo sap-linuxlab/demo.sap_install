@@ -75,5 +75,5 @@
     #   publisher: redhat
     state: present
     tags:
-      {{ az_vm_create_group }}: ''
+      - "{{ az_vm_create_group }}": ''
 
