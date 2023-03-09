@@ -1,9 +1,9 @@
 ---
 collections:
+        - name: azure.azcollection
         - name: vmware.vmware_rest
           # source: https://cloud.redhat.com/api/automation-hub/
         - name: community.vmware
-        - name: azure.azcollection
         - name: openstack.cloud
           version: 1.8.0
         - name: redhat.rhel_system_roles
@@ -16,5 +16,5 @@ collections:
         - name: community.sap_operations
         - name: community.sap_install
           version: 1.2.0
-        - name: https://github.com/sap-linuxlab/community.sap_launchpad.git,dev
+        - name: https://github.com/sap-linuxlab/community.sap_launchpad.git
           type: git
