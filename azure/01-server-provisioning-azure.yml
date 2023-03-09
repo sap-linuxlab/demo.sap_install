@@ -48,6 +48,10 @@
         - "Group: {{ item.group }}"
     loop: "{{ az_machines }}"
 
+  - name: ensure python requirements for azure.azcollection are installed
+    include_role:
+      name: az_python_reqs
+
   - name: Create Azure VM
     include_role:
       name: az_vm_create
