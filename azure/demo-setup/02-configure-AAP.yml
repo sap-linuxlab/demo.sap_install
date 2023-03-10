@@ -30,7 +30,7 @@
     - name: "machine_user"
       prompt: "Azure Cloud User"
       private: false
-      default: "azureadmin"
+      default: "azureuser"
     - name: "machine_password"
       prompt: "Azure Cloud User Password"
       private: true
