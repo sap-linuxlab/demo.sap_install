@@ -228,6 +228,7 @@
       ansible.controller.project:
         name: "{{ item }}"
         state: absent
+        validate_certs: "{{ controller_validate_certs }}"
       loop:
         - "Azure Demos"
         - "Demo Project"
@@ -319,7 +320,6 @@
         skip_tags: rhn_reg
         credentials:
           - "{{ prefix }}Azure Machine Credential"
-          - "{{ prefix }}Azure credential"
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
@@ -338,7 +338,7 @@
         playbook: misc/download-sap-media.yml
         credentials:
           - "{{ prefix }}Azure Machine Credential"
-          - "{{ prefix }}Azure credential"
+          - "{{ prefix }}Azure SAP S-User Credential"
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
