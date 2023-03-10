@@ -236,7 +236,7 @@
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
         extra_vars:
-          az_machines:
+          server_def:
             - name: azfile
               size: Standard_A1_v2
               disk_gb: 50

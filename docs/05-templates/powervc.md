@@ -93,7 +93,7 @@ Repeat Step 2 with proper settings for the following playbooks in the powervc su
 	---
 	## Server Configuration (used in Step1 and Step 2)
 	## Hostgroup is taken from inventory os_availability_zones
-	power_machines:
+	server_def:
 		   - name: sapdemo21
 		     ip: 10.10.10.21
 		     flavor: medium

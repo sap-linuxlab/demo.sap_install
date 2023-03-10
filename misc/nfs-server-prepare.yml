@@ -37,7 +37,7 @@
 
     - name: get storage pool setup from server definition
       set_fact:
-         storage_pools: "{{ vmware_machines | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
+         storage_pools: "{{ server_def | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
       tags:
         - storage_setup
 

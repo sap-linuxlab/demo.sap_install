@@ -10,7 +10,7 @@
 # the following paramters
 #
 #vars:
-#   az_machines:
+#   server_def:
 #           - name: test1
 #             disk_gb: 150
 #
@@ -46,7 +46,7 @@
         - "Name: {{ item.name }}"
         - "Disk_GB: {{ item.disk_gb | default('Undefined - using default') }}"
         - "Group: {{ item.group }}"
-    loop: "{{ az_machines }}"
+    loop: "{{ server_def }}"
 
   - name: ensure python requirements for azure.azcollection are installed
     include_role:
@@ -60,5 +60,5 @@
       az_vm_create_disk_size: "{{ item.disk_gb | default(150) }}" 
       az_vm_create_group: "{{ item.group }}"
       az_vm_create_size: "{{ item.size }}"
-    loop: "{{ az_machines }}"
+    loop: "{{ server_def }}"
   

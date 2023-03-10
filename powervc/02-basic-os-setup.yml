@@ -13,10 +13,10 @@
 # we are good with what the standard image provides
 
 # We need to provide this script the storage configuration
-# for each machine. Hence we need to extend the dictionary "gcp_machines"
+# for each machine. Hence we need to extend the dictionary "server_def"
 # with its individual storage configuration for the second disk, e.g.:
 
-#   gcp_machines:
+#   server_def:
 #           - name: server-name
 #             [...]
 #             storage_pools:

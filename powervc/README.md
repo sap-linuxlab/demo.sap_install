@@ -125,7 +125,7 @@ l
 
 
 ```yaml
-power_machines:
+server_def:
    - vm_create_name: _hostname_
    - vm_create_create_ip: _try without for variable IP_
    - vm_create_flavor: _OpenStack VM Flavor_

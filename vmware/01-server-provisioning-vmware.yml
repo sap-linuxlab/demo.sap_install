@@ -13,7 +13,7 @@
 # For input this playbook needs a dictionary with
 # the following paramters
 
-#   vmw_machines:
+#   server_def:
 #           - name: server-name
 #             disk_gb: <size of datadisk>
 #             mem_mb: <memory in MB, default 16384>
@@ -56,7 +56,7 @@
         - "memory: {{ item.mem_mb | default('16384') }} MB"
         - "cpus: {{ item.cpus | default('4') }}"
         - "group:{{ item.group }}"
-    loop: "{{ vmware_machines }}"
+    loop: "{{ server_def }}"
 
   - name: Create VM from template
     community.vmware.vmware_guest:
@@ -97,4 +97,4 @@
         memory_mb: "{{ item.mem_mb | default('16384') }}"
         num_cpus: "{{ item.cpus | default('4') }}"
       wait_for_ip_address: true
-    loop: "{{ vmware_machines }}"
+    loop: "{{ server_def }}"

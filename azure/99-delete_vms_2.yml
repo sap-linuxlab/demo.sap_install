@@ -8,7 +8,7 @@
   # overwritten in tower/controller
   #
   # vars:
-  #   az_machines:
+  #   server_def:
   #           - name: rhx-hana
   #           - name: rhx-nw
   #
@@ -29,7 +29,7 @@
   #   az_vm_create_vm_admin:
 #
   # CAUTION: This role only removes the machines that are listed in the
-  # az_machines dictionary.
+  # server_def dictionary.
   # If you want to remove all machines in an inventory remove the "when" statements
 
   tasks:
@@ -40,9 +40,9 @@
     vars:
       az_vm_delete_rg_name: "{{ lookup('env','RESOURCEGROUP') }}"
       az_vm_delete_vm_name: "{{ item.name }}"
-    loop: "{{ az_machines | selectattr('name') | list }}"
+    loop: "{{ server_def | selectattr('name') | list }}"
 
     - name: create file in /tmp
     
     
-    #az_machines|map(attribute="name")| list
+    #server_def|map(attribute="name")| list

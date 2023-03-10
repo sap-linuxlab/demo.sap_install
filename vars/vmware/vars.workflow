@@ -1,5 +1,5 @@
 ---
-vmware_machines:
+server_def:
   - name: sapdemohana1
     disk_gb: 500
     mem_mb: 131072

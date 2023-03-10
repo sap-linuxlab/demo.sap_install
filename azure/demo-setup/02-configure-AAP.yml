@@ -242,7 +242,7 @@
         state: present
         variables:
           {
-            "az_vm_create_rg_name": "openenv-hqnkn",
+            "az_vm_create_rg_name": "{{ az_resourcegroup }}"
             "nfs_server": "{{ '{{' }} hostvars[ azfile ][ ansible_host ] {{ '}}' }}",
             "nfs_export_dir": "/export/sapinst",
             "nfs_archive_dir": "/sapinst"
@@ -261,8 +261,6 @@
         credential: "{{ prefix }}Azure credential"
         source: azure_rm
         source_vars:
-          conditional_groups:
-            azure: false
           fail_on_template_errors: false
           hostvar_expressions:
             computer_name: name
@@ -274,7 +272,7 @@
             tags: tags if tags else None
             type: resource_type
           keyed_groups:
-          - key: tags.keys() | list if tags else []
+          - key: tags.AnsibleGroup
             prefix: ''
             separator: ''
           plain_host_names: true
@@ -297,7 +295,7 @@
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
         extra_vars:
-          az_machines:
+          server_def:
             - name: azhana1
               size: Standard_D48s_v3
               disk_gb: 250
@@ -357,7 +355,7 @@
         allow_simultaneous: false
         destroy_current_nodes: true   # Create from scratch !
         extra_vars:
-          az_machines:
+          server_def:
             - name: azfile
               size: Standard_A1_v2
               disk_gb: 50

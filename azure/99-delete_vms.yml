@@ -8,7 +8,7 @@
   # overwritten in tower/controller
   #
   # vars:
-  #   az_machines:
+  #   server_def:
   #           - name: rhx-hana
   #           - name: rhx-nw
   #
@@ -29,7 +29,7 @@
   #   az_vm_create_vm_admin:
 #
   # CAUTION: This role only removes the machines that are listed in the
-  # az_machines dictionary.
+  # server_def dictionary.
   # If you want to remove all machines in an inventory remove the "when" statements
 
   tasks:
@@ -38,7 +38,7 @@
       state: absent
     become: true
     ignore_unreachable: true
-    when: inventory_hostname in az_machines|map(attribute="name")
+    when: inventory_hostname in server_def|map(attribute="name")
 
   - name: Delete VM
     include_role:
@@ -48,4 +48,4 @@
       az_vm_delete_vm_name: 
       name: "{{ inventory_hostname }}"
     delegate_to: localhost
-    when: inventory_hostname in az_machines|map(attribute="name")
+    when: inventory_hostname in server_def|map(attribute="name")
