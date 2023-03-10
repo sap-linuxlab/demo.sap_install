@@ -106,8 +106,8 @@
             - suser_password 
         injectors: 
           extra_vars:
-            suser_id: ''
-            suser_password: ''
+            suser_id: '{{ "{{ suser_id }}" }}'
+            suser_password: '{{ "{{ suser_password }}" }}'
           env:
             SAP_SUPPORT_DOWNLOAD_PASSWORD: '{{ "{{ suser_password }}" }}'
             SAP_SUPPORT_DOWNLOAD_USERNAME: '{{ "{{ suser_id }}" }}'
@@ -295,16 +295,6 @@
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
-        extra_vars:
-          server_def:
-            - name: azhana1
-              size: Standard_D48s_v3
-              disk_gb: 250
-              group: hanas
-            - name: azs4
-              size: Standard_B8ms
-              disk_gb: 250
-              group: s4hanas
 
     - name: Configure file-server
       ansible.controller.job_template: 
@@ -323,7 +313,6 @@
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
-        extra_vars: { "exportdirs": "{{ '{{' }} nfs_export_dir {{ '}}' }}: '*(rw)'" }
 
     - name: Configure Download SAP Software
       ansible.controller.job_template:
@@ -354,12 +343,38 @@
         state: present
         allow_simultaneous: false
         destroy_current_nodes: true   # Create from scratch !
-        extra_vars:
-          server_def:
-            - name: azfile
-              size: Standard_A1_v2
-              disk_gb: 50
-              group: fileserver
+        extra_vars: |
+          {
+            "download_path": "/export/sapinst",
+            "exportdirs": [
+              {
+                "/export/sapinst": "*(rw)"
+              }
+            ],
+            "server_def": [
+              {
+                "name": "azfile",
+                "size": "Standard_A1_v2",
+                "disk_gb": 50,
+                "group": "fileserver",
+                "storage_pools": [
+            {
+              "name": "sapsoftware",
+              "disks": [
+                "sdc"
+              ],
+              "volumes": [
+                {
+                  "name": "sapsoftware",
+                  "size": "50 GiB",
+                  "mount_point": "/export/sapinst"
+                }
+              ]
+            }
+                ]
+              }
+            ]
+          }
                
         workflow_nodes:
           - identifier: "01 - Infrastructure Provisioning (Azure)"

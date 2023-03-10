@@ -9,6 +9,10 @@
 # NFS config (tag: nfs_setup)
 #
 # Use skip tags if you want skip one of the above steps
+#
+# TODO: create exportdirs from server_definition 
+# with set_fact
+# figure out if attribute is set at all first
 
 - name: Install nfs Server
   hosts: fileserver
