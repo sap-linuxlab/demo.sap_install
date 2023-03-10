@@ -74,6 +74,7 @@
     #   product: rhel-byos
     #   publisher: redhat
     state: present
-    tags:
-      - "{{ az_vm_create_group }}": ''
+    tags: 
+      "AnsibleGroup": "{{ az_vm_create_group }}" 
+
 
