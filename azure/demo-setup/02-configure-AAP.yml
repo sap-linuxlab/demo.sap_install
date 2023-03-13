@@ -189,6 +189,7 @@
         validate_certs: "{{ controller_validate_certs }}"
       tags:
         - update_credentials
+        - update_azure_credential
 
     - name: Ensure Ansible Automation Hub credential exists
       ansible.controller.credential:
@@ -241,10 +242,10 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        variables:
+        variables: |
           {
             "az_vm_create_rg_name": "{{ az_resourcegroup }}"
-            "nfs_server": "{{ '{{' }} hostvars[ azfile ][ ansible_host ] {{ '}}' }}",
+            "nfs_server": "{{ '{{' }}hostvars[ azfile ][ ansible_host ]{{ '}}' }}",
             "nfs_export_dir": "/export/sapinst",
             "nfs_archive_dir": "/sapinst"
           }
@@ -278,7 +279,7 @@
             separator: ''
           plain_host_names: true
           
-    - name: Configure job templates
+    - name: Configure infrastructure job templates
       ansible.controller.job_template:
         name: "01 - Infrastructure Provisioning (Azure)"
         description: "Creates the Machines on Azure"
@@ -295,6 +296,128 @@
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
+      tags:
+        - job-template
+
+    - name: Configure OS Setup job templates
+      ansible.controller.job_template:
+        name: "02 - Basic OS Setup"
+        description: "Configures Storage"
+        job_type: "run"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        inventory: "{{ prefix }} SAP Demo" 
+        project: "{{ prefix }}SAP Demo Project"
+        playbook: azure/02-basic-os-setup.yml
+        credentials:
+          - "{{ prefix }}Azure Machine Credential"
+          - "{{ prefix }}Azure credential"
+        allow_simultaneous: false
+        ask_verbosity_on_launch: true
+        ask_variables_on_launch: true
+      tags:
+        - job-template
+
+    - name: Configure HANA Preparation job templates
+      ansible.controller.job_template:
+        name: "03-A Prepare for HANA installation"
+        description: "prepeares the OS for SAP HANA"
+        job_type: "run"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        inventory: "{{ prefix }} SAP Demo" 
+        project: "{{ prefix }}SAP Demo Project"
+        playbook: generic/03-A-sap-hana-prepare.yml
+        credentials:
+          - "{{ prefix }}Azure Machine Credential"
+          - "{{ prefix }}Azure credential"
+        allow_simultaneous: false
+        ask_verbosity_on_launch: true
+        ask_variables_on_launch: true
+      tags:
+        - job-template
+
+    - name: Configure HANA installation job templates
+      ansible.controller.job_template:
+        name: "03-B SAP HANA installation"
+        description: "Installs SAP HANA"
+        job_type: "run"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        inventory: "{{ prefix }} SAP Demo" 
+        project: "{{ prefix }}SAP Demo Project"
+        playbook: generic/03-B-sap-hana-install.yml
+        credentials:
+          - "{{ prefix }}Azure Machine Credential"
+          - "{{ prefix }}Azure credential"
+        allow_simultaneous: false
+        ask_verbosity_on_launch: true
+        ask_variables_on_launch: true
+      tags:
+        - job-template
+
+    - name: Configure SAP HANA Cluster job templates
+      ansible.controller.job_template:
+        name: "03 - CD - Configure SAP HANA Cluster"
+        description: "Creates the Machines on Azure"
+        job_type: "run"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        inventory: "{{ prefix }} SAP Demo" 
+        project: "{{ prefix }}SAP Demo Project"
+        playbook: azure/03-CD-sap-hana-cluster.yml
+        credentials:
+          - "{{ prefix }}Azure Machine Credential"
+          - "{{ prefix }}Azure credential"
+        allow_simultaneous: false
+        ask_verbosity_on_launch: true
+        ask_variables_on_launch: true
+      tags:
+        - job-template
+
+    - name: Configure Netweaver preparation job templates
+      ansible.controller.job_template:
+        name: "04-A Sap Netweaver preparation"
+        description: "Prepares system for S/4Hana installation"
+        job_type: "run"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        inventory: "{{ prefix }} SAP Demo" 
+        project: "{{ prefix }}SAP Demo Project"
+        playbook: generic/04-A-sap-netweaver-prepare.yml
+        credentials:
+          - "{{ prefix }}Azure Machine Credential"
+          - "{{ prefix }}Azure credential"
+        allow_simultaneous: false
+        ask_verbosity_on_launch: true
+        ask_variables_on_launch: true
+      tags:
+        - job-template
+
+    - name: Configure S4 installation job template
+      ansible.controller.job_template:
+        name: "04-B S/4 HANA installation"
+        description: "Installs S/4 HANA"
+        job_type: "run"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        inventory: "{{ prefix }} SAP Demo" 
+        project: "{{ prefix }}SAP Demo Project"
+        playbook: generic/04-B-S4-deployment.yml
+        credentials:
+          - "{{ prefix }}Azure Machine Credential"
+          - "{{ prefix }}Azure credential"
+        allow_simultaneous: false
+        ask_verbosity_on_launch: true
+        ask_variables_on_launch: true
+      tags:
+        - job-template
 
     - name: Configure file-server
       ansible.controller.job_template: 
@@ -313,6 +436,8 @@
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
+      tags:
+        - job-template
 
     - name: Configure Download SAP Software
       ansible.controller.job_template:
@@ -332,6 +457,8 @@
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
         extra_vars: { "download_path": "{{ '{{' }} nfs_export_dir {{ '}}' }}" }
+      tags:
+        - job-template
 
     - name: Workflow Template 00-Setup Fileserver
       ansible.controller.workflow_job_template:
@@ -375,7 +502,6 @@
               }
             ]
           }
-               
         workflow_nodes:
           - identifier: "01 - Infrastructure Provisioning (Azure)"
             unified_job_template:
@@ -416,6 +542,87 @@
               failure_nodes: []
               always_nodes: []
               credentials: []
+      tags:
+        - workflow-template
+
+    - name: Workflow Template Install HANA + S/4
+      ansible.controller.workflow_job_template:
+        name: "01 - Simple HANA + S/4 deployment"
+        description: "Set up NFS Fileserver to provide SAP Software"
+        organization: "{{myorg}}"
+        inventory: "{{ prefix }} SAP Demo"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        allow_simultaneous: false
+        destroy_current_nodes: true   # Create from scratch !
+        extra_vars: |
+          {
+            "server_def": [
+              {
+                "name": "azfile",
+                "size": "Standard_A1_v2",
+                "disk_gb": 50,
+                "group": "fileserver",
+                "storage_pools": [
+            {
+              "name": "sapsoftware",
+              "disks": [
+                "sdc"
+              ],
+              "volumes": [
+                {
+                  "name": "sapsoftware",
+                  "size": "50 GiB",
+                  "mount_point": "/export/sapinst"
+                }
+              ]
+            }
+                ]
+              }
+            ]
+          }
+        workflow_nodes:
+          - identifier: "01 - Infrastructure Provisioning (Azure)"
+            unified_job_template:
+              name: "01 - Infrastructure Provisioning (Azure)"
+              type: job_template
+            related:
+              success_nodes:
+                - identifier: "Update SAP Hosts"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "Update SAP Hosts"
+            unified_job_template:
+              name: "SAP Hosts"
+              type: inventory_source
+            related:
+              success_nodes:
+                - identifier: "91 - Configure NFS Fileserver"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "91 - Configure NFS Fileserver"
+            unified_job_template:
+              name: "91 - Configure NFS Fileserver"
+              type: job_template
+            related:
+              success_nodes:
+                - identifier: "92 - Download SAP Software"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "92 - Download SAP Software"
+            unified_job_template:
+              name: "92 - Download SAP Software"
+              type: job_template
+            related:
+              success_nodes: []
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+      tags:
+        - workflow-template
 
 
 

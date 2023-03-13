@@ -14,6 +14,20 @@
 # with set_fact
 # figure out if attribute is set at all first
 
+- name: Ensure Servers are booted and reachable
+  hosts: fileserver
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Wait for SSH to come up
+    wait_for:
+      host: "{{ ansible_host }}"
+      port: 22
+      delay: 10
+      state: started
+      timeout: 480
+    delegate_to: localhost
+
 - name: Install nfs Server
   hosts: fileserver
   become: true

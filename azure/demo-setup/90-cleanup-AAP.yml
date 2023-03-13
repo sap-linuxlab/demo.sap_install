@@ -1,0 +1,177 @@
+- name: Configure Ansible Automation Controller
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    controller_validate_certs: false
+    myorg: "SAP Demo"
+    prefix: "RHDS "
+  collections:
+    - ansible.controller
+    - redhat_cop.controller_configuration
+
+  # This playbook requires the following environment variables
+  # CONTROLLER_USERNAME
+  # CONTROLLER_OAUTH_TOKEN or CONTROLLER_PASSWORD
+  # CONTROLLER_HOST defaults to localhost
+  vars_prompt:
+    - name: "controller_username"
+      prompt: "Controller Username"
+      private: false
+      default: "{{lookup('env', 'CONTROLLER_USERNAME')}}"
+    - name: "controller_password"
+      prompt: "Controller Password"
+      private: true
+      default: "{{lookup('env', 'CONTROLLER_PASSWORD')}}"
+    - name: "controller_hostname"
+      prompt: "Controller URL"
+      private: false
+      default: "{{lookup('env', 'CONTROLLER_HOST')}}"
+    - name: "machine_user"
+      prompt: "Azure Cloud User"
+      private: false
+      default: "azureadmin"
+    - name: "machine_password"
+      prompt: "Azure Cloud User Password"
+      private: true
+      default: "SuperSecretP@ssw0rd."
+    - name: "my_suser"
+      prompt: "S-User ID"
+      private: false
+      default: "{{ lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME') }}"
+    - name: "my_spass"
+      prompt: "S-User Password"
+      private: true
+      default: "{{ lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD') }}"
+    - name: "azure_cli_id"
+      prompt: "Azure Client ID"
+      private: false
+      default: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+    - name: "azure_cli_secret"
+      prompt: "Azure Client Secret"
+      private: true
+      default: "{{ lookup('env', 'AZURE_SECRET') }}"
+    - name: "azure_tenant"
+      prompt: "Azure Tenant"
+      private: false
+      default: "{{ lookup('env', 'AZURE_TENANT') }}"
+    - name: "azure_subscription"
+      prompt: "Azure Subscription ID"
+      private: false
+      default: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
+    - name: "az_resourcegroup"
+      prompt: "Azure Resource Group Name"
+      private: false
+      default: "openenv-{{ lookup('env', 'GUID') }}"
+    - name: "ah_token"
+      prompt: "Automation Hub token"
+      private: true
+      default: "{{ lookup('env', 'AH_TOKEN') }}"
+      
+  tasks:
+    # - name: Create a new token using controller username/password
+    #  ansible.controller.token:
+    #    description: 'Creating token to test controller jobs'
+    #    scope: "write"
+    #    state: present
+    #    controller_host: "{{ controller_hostname }}"
+    #    controller_username: "{{ controller_username }}"
+    #    controller_password: "{{ controller_password }}"
+    #    validate_certs: "{{ controller_validate_certs }}"
+    #  register: _token
+    - name: Ensure organization "{{ myorg }}" is removed
+      ansible.controller.organization:
+        name: "{{myorg}}"
+        state: absent
+        validate_certs: "{{ controller_validate_certs }}"
+        
+    - name: Ensure Ansible Controller credential for SAP S-User
+      ansible.controller.credential_type:
+        name: "SAP S-User"
+        kind: cloud
+        state: absent
+        validate_certs:  "{{ controller_validate_certs }}"
+
+    - name: Ensure machine credential for Azure User exists
+      ansible.controller.credential:
+        name: "{{ prefix }}Azure Machine Credential"
+        organization:  "{{myorg}}"
+        credential_type: Machine
+        state: absent
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Ensure S-User credential exists
+      ansible.controller.credential:
+        name: "{{ prefix }}Azure SAP S-User Credential"
+        organization:  "{{myorg}}"
+        credential_type: "SAP S-User"
+        state: absent
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Ensure Azure cloud credential exists
+      ansible.controller.credential:
+        name: "{{ prefix }}Azure credential"
+        organization: "{{myorg}}"
+        credential_type: "Microsoft Azure Resource Manager"
+        state: absent
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Ensure Galaxy Credentials are added to organization
+      ansible.controller.organization:
+        name: "{{myorg}}"
+        galaxy_credentials:
+          - "Ansible Galaxy"
+          - "{{ prefix }}Automation Hub Credential"
+        state: present
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Ensure project for sap demo exists 
+      ansible.controller.project:
+        name: "{{ prefix }}SAP Demo Project"
+        organization: "{{myorg}}"
+        state: absent
+        validate_certs: "{{ controller_validate_certs }}"
+
+    
+    - name: Ensure SAP Demo inventory exists
+      ansible.controller.inventory:
+        name: "{{ prefix }} SAP Demo" 
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: absent
+
+    - name: Ensure dynamic Azure inventory source exists
+      ansible.controller.inventory_source:
+        name: "SAP Hosts"
+        inventory: "{{ prefix }} SAP Demo"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: absent
+          
+    - name: Configure job templates
+      ansible.controller.job_template:
+        name: "01 - Infrastructure Provisioning (Azure)"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: absent
+
+    - name: Configure file-server
+      ansible.controller.job_template: 
+        name: "91 - Configure NFS Fileserver"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: absent
+
+    - name: Configure Download SAP Software
+      ansible.controller.job_template:
+        name: "92 - Download SAP Software"
+        state: absent
+
+    - name: Workflow Template 00-Setup Fileserver
+      ansible.controller.workflow_job_template:
+        name: "00 - Set up NFS fileserver"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: absent
+
+      
