@@ -548,8 +548,8 @@
 
     - name: Workflow Template Install HANA + S/4
       ansible.controller.workflow_job_template:
-        name: "01 - Simple HANA + S/4 deployment"
-        description: "Set up NFS Fileserver to provide SAP Software"
+        name: "00 - Simple HANA + S/4 deployment"
+        description: "Install single node HANA and single node S/4"
         organization: "{{myorg}}"
         inventory: "{{ prefix }} SAP Demo"
         validate_certs: "{{ controller_validate_certs }}"
@@ -631,6 +631,102 @@
       tags:
         - workflow-template
         - workflow-template-01
+
+    - name: Workflow Template Install HANA Cluster
+      ansible.controller.workflow_job_template:
+        name: "00 -  HANA Cluster"
+        description: "Install SAP HANA Cluster"
+        organization: "{{myorg}}"
+        inventory: "{{ prefix }} SAP Demo"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        allow_simultaneous: false
+        destroy_current_nodes: true   # Create from scratch !
+        extra_vars: "{{ lookup('file','02-variable-configs/workflow-02.yml')|from_yaml|to_json }}"
+        workflow_nodes:
+          - identifier: "01 - Infrastructure Provisioning (Azure)"
+            unified_job_template:
+              name: "01 - Infrastructure Provisioning (Azure)"
+              type: job_template
+            related:
+              success_nodes:
+                - identifier: "Update SAP Hosts"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "Update SAP Hosts"
+            unified_job_template:
+              name: "SAP Hosts"
+              type: inventory_source
+            related:
+              success_nodes:
+                - identifier: "02 - Basic OS Setup"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "02 - Basic OS Setup"
+            unified_job_template:
+              name: "02 - Basic OS Setup"
+              type: job_template
+            related:
+              success_nodes:
+                - identifier: "03-A Prepare for HANA installation"
+                - identifier: "04-A Sap Netweaver preparation"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "03-A Prepare for HANA installation"
+            unified_job_template:
+              name: "03-A Prepare for HANA installation"
+              type: job_template
+            related:
+              success_nodes:
+                - identifier: "03-B SAP HANA installation"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "03-B SAP HANA installation"
+            unified_job_template:
+              name: "03-B SAP HANA installation"
+              type: job_template
+            related:
+              success_nodes: 
+                - identifier: "03 - CD - Configure SAP HANA Cluster"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "03 - CD - Configure SAP HANA Cluster"
+            unified_job_template:
+              name: "03 - CD - Configure SAP HANA Cluster"
+              type: job_template
+            related:
+              success_nodes: []
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          # - identifier: "04-A Sap Netweaver preparation"
+          #  unified_job_template:
+          #    name: "04-A Sap Netweaver preparation"
+          #    type: job_template
+          #  related:
+          #    success_nodes:
+          #      - identifier: "04-B S/4 HANA installation"
+          #    failure_nodes: []
+          #    always_nodes: []
+          #    credentials: []
+          # - identifier: "04-B S/4 HANA installation"
+          #  unified_job_template:
+          #    name: "04-B S/4 HANA installation"
+          #    type: job_template
+          #  related:
+          #    success_nodes: []
+          #    failure_nodes: []
+          #    always_nodes: []
+          #    credentials: []
+      tags:
+        - workflow-template
+        - workflow-template-02
+
 
 
 
