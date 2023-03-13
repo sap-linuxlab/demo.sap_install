@@ -80,8 +80,8 @@
 
     - name: Ensure NFS Server with SAP install software is mounted
       ansible.posix.mount:
-        src: "{{ nfs_software_archive_srv }}"
-        path: "{{ nfs_software_archive_dir }}"
+        src: "{{ nfs_server }}:{{ nfs_export_dir }}"
+        path: "{{ nfs_archive_dir }}"
         opts: rw,sync,hard,noatime
         fstype: nfs
         state: present
