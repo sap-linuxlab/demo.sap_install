@@ -544,6 +544,7 @@
               credentials: []
       tags:
         - workflow-template
+        - workflow-nfs
 
     - name: Workflow Template Install HANA + S/4
       ansible.controller.workflow_job_template:
@@ -555,32 +556,7 @@
         state: present
         allow_simultaneous: false
         destroy_current_nodes: true   # Create from scratch !
-        extra_vars: |
-          {
-            "server_def": [
-              {
-                "name": "azfile",
-                "size": "Standard_A1_v2",
-                "disk_gb": 50,
-                "group": "fileserver",
-                "storage_pools": [
-            {
-              "name": "sapsoftware",
-              "disks": [
-                "sdc"
-              ],
-              "volumes": [
-                {
-                  "name": "sapsoftware",
-                  "size": "50 GiB",
-                  "mount_point": "/export/sapinst"
-                }
-              ]
-            }
-                ]
-              }
-            ]
-          }
+        extra_vars: "{{ lookup('file','02-variable-configs/workflow-01.yml')|from_yaml|to_json }}"
         workflow_nodes:
           - identifier: "01 - Infrastructure Provisioning (Azure)"
             unified_job_template:
@@ -598,23 +574,54 @@
               type: inventory_source
             related:
               success_nodes:
-                - identifier: "91 - Configure NFS Fileserver"
+                - identifier: "02 - Basic OS Setup"
               failure_nodes: []
               always_nodes: []
               credentials: []
-          - identifier: "91 - Configure NFS Fileserver"
+          - identifier: "02 - Basic OS Setup"
             unified_job_template:
-              name: "91 - Configure NFS Fileserver"
+              name: "02 - Basic OS Setup"
               type: job_template
             related:
               success_nodes:
-                - identifier: "92 - Download SAP Software"
+                - identifier: "03-A Prepare for HANA installation"
+                - identifier: "04-A Sap Netweaver preparation"
               failure_nodes: []
               always_nodes: []
               credentials: []
-          - identifier: "92 - Download SAP Software"
+          - identifier: "03-A Prepare for HANA installation"
             unified_job_template:
-              name: "92 - Download SAP Software"
+              name: "03-A Prepare for HANA installation"
+              type: job_template
+            related:
+              success_nodes:
+                - identifier: "03-B SAP HANA installation"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "03-B SAP HANA installation"
+            unified_job_template:
+              name: "03-B SAP HANA installation"
+              type: job_template
+            related:
+              success_nodes:
+                - identifier: "04-B S/4 HANA installation"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "04-A Sap Netweaver preparation"
+            unified_job_template:
+              name: "04-A Sap Netweaver preparation"
+              type: job_template
+            related:
+              success_nodes:
+                - identifier: "04-B S/4 HANA installation"
+              failure_nodes: []
+              always_nodes: []
+              credentials: []
+          - identifier: "04-B S/4 HANA installation"
+            unified_job_template:
+              name: "04-B S/4 HANA installation"
               type: job_template
             related:
               success_nodes: []
@@ -623,6 +630,7 @@
               credentials: []
       tags:
         - workflow-template
+        - workflow-template-01
 
 
 

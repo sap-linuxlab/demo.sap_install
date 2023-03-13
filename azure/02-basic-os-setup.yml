@@ -74,7 +74,7 @@
 
     - name: Ensure Mountpoint exists
       file:
-         path: "{{ nfs_software_archive_dir }}"
+         path: "{{ nfs_archive_dir }}"
          state: directory
          mode: '0755'
 
