@@ -44,6 +44,7 @@
     debug:
       msg:
         - "Name: {{ item.name }}"
+        - "Size: {{ item.size }}"
         - "Disk_GB: {{ item.disk_gb | default('Undefined - using default') }}"
         - "Group: {{ item.group }}"
     loop: "{{ server_def }}"

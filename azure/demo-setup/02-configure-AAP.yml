@@ -242,13 +242,7 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        variables: |
-          {
-            "az_vm_create_rg_name": "{{ az_resourcegroup }}"
-            "nfs_server": "{{ '{{' }}hostvars[ azfile ][ ansible_host ]{{ '}}' }}",
-            "nfs_export_dir": "/export/sapinst",
-            "nfs_archive_dir": "/sapinst"
-          }
+        variables: "{{ lookup('file','02-variable-configs/inventory.yml')|from_yaml|to_json }}"
 
     - name: Ensure dynamic Azure inventory source exists
       ansible.controller.inventory_source:
