@@ -77,21 +77,27 @@
     # This picks the correct storage configuration for host inventory_hostname out of the server_def dict
     - name: get storage pool setup from server definition
       set_fact:
-         storage_pools: "{{ server_def | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) | combine({ 'disks': unused_disks }) }}"
+         _pool: "{{ server_def | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) | combine({ 'disks': unused_disks }) }}"
       when: 
         - unused_disks is defined
         - unused_disks | length > 0
 
     - name: Debug storage pools
       debug: 
-        var: storage_pools
+        var: _pool
         verbosity: 1
-      when: storage_pools is defined
+      when: _pool is defined
 
     - name: Ensure storage is configured correctly
       include_role:
         name: redhat.rhel_system_roles.storage
-      when: storage_pools is defined
+      vars:
+         storage_pools:
+          - name: "{{ _pool.name }}"
+            disks: "{{ unused_disks }}"
+            volumes: "{{ _pool.volumes }}"
+
+      when: _pool is defined
 
     - name: NFS client is installed
       dnf:
