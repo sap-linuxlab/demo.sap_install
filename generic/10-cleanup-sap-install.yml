@@ -1,0 +1,17 @@
+- name: Clean up SAP Installation files
+  hosts: hanas, s4hanas
+  
+  tasks:
+    - name: Cleanup local installation files
+      ansible.builtin.file:
+        path: '{{ path }}'
+        state: absent
+      loop:
+      - "{{ sap_swpm_software_extract_directory|d(omit) }}"
+      - "{{ sap_hana_install_software_extract_directory|d('/tmp/no_file') }}"
+
+    - name: Unmount Fileserver
+      ansible.posix.mount:
+        path: '{{ nfs_archive_dir }}'
+        state: unmounted
+      when: nfs_archive_dir is defined
