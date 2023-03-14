@@ -1,0 +1,89 @@
+---
+server_def:
+  - name: azhana1
+    disk_gb: 500
+    size: "Standard_D48s_v3"
+    group: hanas
+    storage_pools:
+      - name: sap
+        disks:
+          - sdc
+        volumes:
+          - name: data
+            size: "128 GiB"
+            mount_point: "/hana/data"
+            fs_type: xfs
+            state: present
+          - name: log
+            size: "96 GiB"
+            mount_point: "/hana/log"
+            fs_type: xfs
+            state: present
+          - name: shared
+            size: "128 GiB"
+            mount_point: "/hana/shared"
+            fs_type: xfs
+            state: present
+          - name: sap
+            size: "50 GiB"
+            mount_point: "/usr/sap"
+            state: present
+  - name: azhana2
+    disk_gb: 500
+    size: "Standard_D48s_v3"
+    group: hanas
+    storage_pools:
+      - name: sap
+        disks:
+          - sdc
+        volumes:
+          - name: data
+            size: "128 GiB"
+            mount_point: "/hana/data"
+            fs_type: xfs
+            state: present
+          - name: log
+            size: "96 GiB"
+            mount_point: "/hana/log"
+            fs_type: xfs
+            state: present
+          - name: shared
+            size: "128 GiB"
+            mount_point: "/hana/shared"
+            fs_type: xfs
+            state: present
+          - name: sap
+            size: "50 GiB"
+
+# sap_general_preconfigure
+#-------------------------
+sap_domain: example.com
+sap_general_preconfigure_modify_etc_hosts: true
+sap_general_preconfigure_update: true
+sap_general_preconfigure_fail_if_reboot_required: false
+sap_general_preconfigure_reboot_ok: true
+
+# sap_hana_preconfigure
+#----------------------
+sap_hana_preconfigure_update: true
+sap_hana_preconfigure_fail_if_reboot_required: false
+sap_hana_preconfigure_reboot_ok: true
+
+# sap_netweaver_preconfigure
+#---------------------------
+# No definition needed
+
+# Path to SAP Software on fileshare
+#----------------------------------
+sap_hana_version: HANA2SPS06
+#sap_swpm_product: S4HANA2021.FNDN
+
+# sap_hana_install
+#------------------
+sap_hana_install_software_directory: "{{ nfs_archive_dir }}/{{ sap_hana_version }}"
+sap_hana_install_software_extract_directory: "/mnt/sapinst"
+sap_hana_install_master_password: "R3dh4t$123"
+# The following variables are defined by the survey
+sap_hana_sid: "RHA"                  
+sap_hana_instance_number: "00"
+

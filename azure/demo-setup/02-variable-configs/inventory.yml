@@ -1,0 +1,5 @@
+---
+az_vm_create_rg_name: "{{ az_resourcegroup }}"
+nfs_server: "{{ hostvars['azfile']['private_ip'] }}"
+nfs_export_dir: "/export/sapinst"
+nfs_archive_dir: "/sapinst"

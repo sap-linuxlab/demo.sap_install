@@ -1,0 +1,16 @@
+---
+server_def:
+            - name: azfile
+              size: Standard_A1_v2
+              disk_gb: 50
+              group: fileserver
+              storage_pools:
+                - name: sapsoftware
+                  disks:
+                    - sdc
+                  volumes:
+                    - name: sapsoftware
+                      size: "50 GiB"
+                      mount_point: "{{ nfs_export_dir }}"
+exportdirs:
+  - /export/sapinst: "*(rw)"

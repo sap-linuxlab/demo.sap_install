@@ -60,6 +60,6 @@
       az_vm_create_vm_name: "{{ item.name }}"
       az_vm_create_disk_size: "{{ item.disk_gb | default(150) }}" 
       az_vm_create_group: "{{ item.group }}"
-      az_vm_create_size: "{{ item.size }}"
+      az_vm_create_vm_size: "{{ item.size }}"
     loop: "{{ server_def }}"
   
