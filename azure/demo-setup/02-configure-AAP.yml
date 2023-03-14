@@ -326,7 +326,6 @@
         playbook: generic/03-A-sap-hana-prepare.yml
         credentials:
           - "{{ prefix }}Azure Machine Credential"
-          - "{{ prefix }}Azure credential"
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
@@ -346,7 +345,6 @@
         playbook: generic/03-B-sap-hana-install.yml
         credentials:
           - "{{ prefix }}Azure Machine Credential"
-          - "{{ prefix }}Azure credential"
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
@@ -366,7 +364,6 @@
         playbook: azure/03-CD-sap-hana-cluster.yml
         credentials:
           - "{{ prefix }}Azure Machine Credential"
-          - "{{ prefix }}Azure credential"
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
@@ -386,7 +383,6 @@
         playbook: generic/04-A-sap-netweaver-prepare.yml
         credentials:
           - "{{ prefix }}Azure Machine Credential"
-          - "{{ prefix }}Azure credential"
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
@@ -406,7 +402,6 @@
         playbook: generic/04-B-S4-deployment.yml
         credentials:
           - "{{ prefix }}Azure Machine Credential"
-          - "{{ prefix }}Azure credential"
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true

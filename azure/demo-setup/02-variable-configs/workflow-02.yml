@@ -53,7 +53,7 @@ server_def:
 
 # sap_general_preconfigure
 #-------------------------
-sap_domain: example.com
+sap_domain: internal.cloudapp.net
 sap_general_preconfigure_modify_etc_hosts: true
 sap_general_preconfigure_update: true
 sap_general_preconfigure_fail_if_reboot_required: false

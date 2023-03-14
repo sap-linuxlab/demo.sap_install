@@ -63,7 +63,6 @@
       when:
         - not item.value.partitions
         - not item.value.holders
-        - not item.value.links.ids
         - item.key | regex_search ("sd")
       with_dict: "{{ ansible_devices }}"
 
