@@ -6,8 +6,6 @@ server_def:
     group: hanas
     storage_pools:
       - name: sap
-        disks:
-          - sdc
         volumes:
           - name: data
             size: "128 GiB"
@@ -34,8 +32,6 @@ server_def:
     group: hanas
     storage_pools:
       - name: sap
-        disks:
-          - sdc
         volumes:
           - name: data
             size: "128 GiB"

@@ -6,8 +6,6 @@ server_def:
               group: fileserver
               storage_pools:
                 - name: sapsoftware
-                  disks:
-                    - sdc
                   volumes:
                     - name: sapsoftware
                       size: "50 GiB"

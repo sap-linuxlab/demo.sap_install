@@ -71,6 +71,9 @@
       debug:
         msg: "{{ unused_disks }}"
         verbosity: 1
+      when: 
+        - unused_disks is defined
+        - unused_disks | length > 0
 
     # This picks the correct storage configuration for host inventory_hostname out of the server_def dict
     - name: get storage pool setup from server definition
@@ -84,6 +87,7 @@
       debug: 
         var: storage_pools
         verbosity: 1
+      when: storage_pools is defined
 
     - name: Ensure storage is configured correctly
       include_role:

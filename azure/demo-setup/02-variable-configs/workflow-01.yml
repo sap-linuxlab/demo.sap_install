@@ -6,7 +6,6 @@ server_def:
     group: hanas
     storage_pools:
       - name: sap
-        disks: "{{ unused_disks }}"
         volumes:
           - name: data
             size: "128 GiB"
@@ -35,7 +34,6 @@ server_def:
     group: s4hanas
     storage_pools:
       - name: sap
-        disks: "{{ unused_disks }}"
         volumes:
           - name: sap
             size: "50 GiB"
@@ -94,8 +92,9 @@ sap_swpm_update_etchosts: false
 sap_swpm_product_catalog_id: NW_ABAP_OneHost:{{ sap_swpm_product }}.HDB.ABAP
 # Software
 sap_swpm_software_path: "{{ nfs_archive_dir }}/{{ sap_swpm_product }}"
-sap_swpm_sapcar_path: "{{ sap_swpm_software_path }}"
-sap_swpm_swpm_path: "{{ sap_swpm_software_path }}"
+sap_swpm_software_extract_directory: "/mnt/sapinst"
+sap_swpm_sapcar_path: "{{ sap_swpm_software_extract_directory }}"
+sap_swpm_swpm_path: "{{ sap_swpm_software_extract_directory }}"
 
 # NW Passwords
 sap_swpm_master_password: "R3dh4t$123"
