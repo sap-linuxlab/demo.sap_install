@@ -76,7 +76,7 @@
     - name: get storage pool setup from server definition
       set_fact:
          storage_pools: "{{ server_def | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
-      when: "{{ unused_disks }}" != []
+      when: unused_disks is defined
 
     - name: Debug storage pools
       debug: 
