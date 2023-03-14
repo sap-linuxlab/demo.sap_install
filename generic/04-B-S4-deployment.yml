@@ -24,16 +24,15 @@
         owner: root
         group: root
 
-    - name: copy files on the target system
+    - name: copy installation archives from NFS to local disk
       ansible.builtin.copy:
         src: "{{ sap_swpm_software_path + '/' }}"
         dest: "{{ sap_swpm_software_extract_directory + '/'}}"
         remote_src: true
 
-    - name: update sap_swpm_software_path
-      ansible.builtin.set_fact:
-        sap_swpm_software_path: '{{ sap_swpm_software_extract_directory }}'
-
     - name: execute the SWPM Installation
       include_role:
         name: community.sap_install.sap_swpm
+      vars:
+        sap_swpm_software_path: "{{ sap_swpm_software_extract_directory }}"
+
