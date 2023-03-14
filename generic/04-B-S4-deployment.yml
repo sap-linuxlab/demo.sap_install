@@ -26,7 +26,7 @@
 
     - name: copy installation archives from NFS to local disk
       ansible.builtin.copy:
-        src: "{{ sap_swpm_software_path + '/' }}"
+        src: "{{ sap_swpm_software_directory + '/' }}"
         dest: "{{ sap_swpm_software_extract_directory + '/'}}"
         remote_src: true
 
