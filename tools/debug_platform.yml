@@ -1,0 +1,20 @@
+---
+# Thanks to https://gryzli.info/2017/12/21/ansible-debug-print-variables/
+- name: Print System identification variables
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Print some debug information
+      vars:
+        msg: |
+          " ansible_system_vendor:            {{ ansible_system_vendor }}"
+          " ansible_board_vendor:             {{ ansible_board_vendor }}"
+          " ansible_chassis_vendor:           {{ ansible_chassis_vendor }}"
+          " ansible_virtualization_role       {{ ansible_virtualization_role }}"
+          " ansible_virtualization_tech_guest {{ ansible_virtualization_tech_guest | to_yaml }}"
+          " ansible_virtualization_tech_host  {{ ansible_virtualization_tech_host }}"
+          " ansible_virtualization_type       {{ ansible_virtualization_type }}"
+      debug:
+        msg: "{{ msg.split('\n') }}"
+      tags: debug_info

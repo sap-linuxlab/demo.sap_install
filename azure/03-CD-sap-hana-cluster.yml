@@ -1,6 +1,6 @@
 ---
 # call playbook with # ansible-playbook example_in_one_file.yml
-- name: "Phase 03-C and 03-D -Setup HANA System Replication"
+- name: "Phase 03-C and 03-D -Setup HANA System Replication and Cluster on Azure"
   hosts: hanas
   become: true
 
@@ -38,8 +38,132 @@
 # hostvars[inventory_hostname].ansible_host
 #
 
-  roles:
-    - community.sap_install.sap_ha_install_hana_hsr
-    - community.sap_install.sap_ha_prepare_pacemaker
-    - community.sap_install.sap_ha_install_pacemaker
-    - community.sap_install.sap_ha_set_hana
+  tasks:
+    - name: Configure HANA System Replication
+      ansible.builtin.include_role:
+        name: community.sap_install.sap_ha_install_hana_hsr
+    
+    # Name from Azure Credentials
+    - name: set fence device
+      ansible.builtin.set_fact:
+        sap_pacemaker_stonith_devices:
+          - name: "fence_name_for_azure"
+            agent: "fence_azure_arm"
+            parameters: >
+              "username=lookup  appid"
+              "password=lookup secret"
+              "subscriptionId=lookup"
+              "tenantId=lookup"
+              "resourceGroup=lookup"
+              "pcmk_host_list=inventroy hostnames der gruppe hanas"
+      
+      - name: Create Azure basic internal loadbalancer
+        azure.azcollection.azure_rm_loadbalancer:
+          resource_group: "{{ az_vm_create_rg_name }}"
+          name: "{{ sb_name }}"
+          sku: Standard
+          public_address_address: "{{ pipbname }}"
+          probe_protocol: Tcp
+          virtual_network_address_list:
+            - ip_address: 10.0.0.4
+              virtual_network_name: "{{ sap_hana_install_sid | lower }}adm"
+              enable_ha: true
+            config:
+              ip_address: 10.0.0.4
+              address: 10.0.0.5
+              uasn: 6.6
+              redirect_configuration: Disabled
+              tunnel_enable: Enabled
+              backup_ip_address: 10.0.0.3
+              tunnel_endpoint_address: 10.0.0.4
+              virtual_network_name: "{{ sap_hana_install_sid | lower }}adm"
+              enable_ha: true
+              reload_timeout: 600
+      
+         # Internal loadbalancer, Basic SKU, Dynamic IP adress assignment
+        
+      - name: Create Backend Adresspool 
+        azure_rm_backend_adress:
+          resource_group: "{{ resource_group }}"
+          name: "{{ sb_name }}-backend-url"
+          type: Microsoft.Web/sites
+          ip_address: 10.0.0.5
+          location: eastus
+          priority: 1
+          weight: 3
+        ingress:
+          - name: HTTP
+            protocol: Tcp
+            destination_port: 80
+            action: Allow
+            priority: 1
+            direction: Inbound
+            source: 192.0.2.0/24
+          - name: HTTP
+            protocol: Tcp
+            destination_port: 81
+            action: Allow
+            priority: 1
+            direction: Inbound
+            source: 192.0.2.0/24
+      
+      - name: Web-Folders
+        protocol: Tcp
+        frontend_ip_configuration:
+          resource_group: "{{ resource_group }}"
+          name: "{{ sb_name }}"
+      - resource_id
+
+      # Probe TCP/61000
+      - name: Create Azure health probe
+        azure_rm_healthmonitor:
+          resource_group: "{{ resource_group }}"
+          name: "{{ sb_name }}-health"
+        health_check:
+          - name: HTTP
+            protocol: TCP
+            target_port: 61000
+            action: Allow
+            priority: 1
+            direction: Inbound
+            source: 192.0.2.0/24
+          - name: HTTP
+            protocol: TCP
+            target_port: 81
+            action: Allow
+            priority: 1
+            direction: Inbound
+            source: 192.0.2.0
+          - name: Nodes
+            protocol: TCP
+            target_port: 27
+            action: Allow
+            priority: 1
+            direction: NodePort
+      - name: Check severity
+            name: Ensure to useMode for the API Login type
+            applicationSubType: GitHub
+            operation: GET_MODE
+      - name: Get Controller info
+        provider:
+          mode: console
+      register: result
+      - name: Assert result
+        fail_msg: "Please logout:
+    
+      - name: Create Azure loadbalancer rule
+        application_rule:
+          loadbalancer_rule_id: "{{ result.loadbalancer.id }}"
+          rule_id: "{{ result.loadbalancer.id }}"
+          rule_desc: azure-sso-allow-microsoft-ds
+          cookie_based_affinity: enabled
+          name: "{{ sb_name }}"q
+        statement:
+          id: "{{ result.loadbalancer.id }}"
+      when: result.loadbalancer.id is defined
+     
+
+      - name: Configure HANA system replication
+        include_role: community.sap_install.sap_ha_install_hana_hsr
+
+      - name: - community.sap_install.sap_ha_pacemaker_cluster

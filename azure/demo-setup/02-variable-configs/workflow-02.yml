@@ -83,3 +83,34 @@ sap_hana_install_master_password: "R3dh4t$123"
 sap_hana_sid: "RHA"                  
 sap_hana_instance_number: "00"
 
+# Cluster Setup
+# --------------
+# follow: https://access.redhat.com/articles/6964708
+#
+ha_cluster_cluster_name: hanacluster
+ha_cluster_hacluster_password: 'S3cr3tP@ssw0rd'
+
+sap_hana_cluster_nodes:
+  - node_name: azhana1
+    node_ip: hostvars['azhana1']['private_ip']
+    node_role: primary
+    hana_site: DC01
+
+  - node_name: azhana2
+    node_ip: hostvars['azhana2']['private_ip']
+    node_role: secondary
+    hana_site: DC02
+
+# sap_hana_vip:
+#   primary: 10.0.0.202
+#   sap_ha_pacemaker_cluster_stonith_custom:
+#  - name: "fence_for_vmware"
+#    agent: "stonith:fence_vmware_rest"
+#    options:
+#      pcmk_host_list: 'rhd-hana1,rhd-hana2' 
+#      ssl_insecure: 1 
+#      ssl: 1
+#      ipaddr: "{{ lookup('env', 'VMWARE_HOST')}}"
+#      login: "{{lookup('env','VMWARE_USER')}}"
+#      passwd: "{{lookup('env','VMWARE_PASSWORD')}}"
+

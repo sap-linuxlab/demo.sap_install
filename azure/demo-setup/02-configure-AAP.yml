@@ -79,6 +79,16 @@
     #    controller_password: "{{ controller_password }}"
     #    validate_certs: "{{ controller_validate_certs }}"
     #  register: _token
+
+    - name: Change Job Setting to allow jinja in extravars
+      ansible.controller.settings:
+        name: "ALLOW_JINJA_IN_EXTRA_VARS"
+        value: "always"
+        validate_certs: "{{ controller_validate_certs }}"
+      tags:
+        - allow_jinja_in_extra_vars
+      
+    
     - name: Ensure organization "{{ myorg }}" exists
       ansible.controller.organization:
         name: "{{myorg}}"
@@ -459,38 +469,7 @@
         state: present
         allow_simultaneous: false
         destroy_current_nodes: true   # Create from scratch !
-        extra_vars: |
-          {
-            "download_path": "/export/sapinst",
-            "exportdirs": [
-              {
-                "/export/sapinst": "*(rw)"
-              }
-            ],
-            "server_def": [
-              {
-                "name": "azfile",
-                "size": "Standard_A1_v2",
-                "disk_gb": 50,
-                "group": "fileserver",
-                "storage_pools": [
-            {
-              "name": "sapsoftware",
-              "disks": [
-                "sdc"
-              ],
-              "volumes": [
-                {
-                  "name": "sapsoftware",
-                  "size": "50 GiB",
-                  "mount_point": "/export/sapinst"
-                }
-              ]
-            }
-                ]
-              }
-            ]
-          }
+        extra_vars: "{{ lookup('file','02-variable-configs/workflow-nfs.yml')|from_yaml|to_json }}"
         workflow_nodes:
           - identifier: "01 - Infrastructure Provisioning (Azure)"
             unified_job_template:
@@ -660,7 +639,6 @@
             related:
               success_nodes:
                 - identifier: "03-A Prepare for HANA installation"
-                - identifier: "04-A Sap Netweaver preparation"
               failure_nodes: []
               always_nodes: []
               credentials: []

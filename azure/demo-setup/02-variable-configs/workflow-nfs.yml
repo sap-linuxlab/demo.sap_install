@@ -1,4 +1,5 @@
 ---
+download_path: "/export/sapinst",
 server_def:
             - name: azfile
               size: Standard_A1_v2
@@ -9,6 +10,6 @@ server_def:
                   volumes:
                     - name: sapsoftware
                       size: "50 GiB"
-                      mount_point: "{{ nfs_export_dir }}"
+                      mount_point: "/export/sapinst"
 exportdirs:
-  - /export/sapinst: "*(rw)"
+  - /export/sapinst: "*(ro)"
