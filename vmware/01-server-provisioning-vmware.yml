@@ -97,4 +97,26 @@
         memory_mb: "{{ item.mem_mb | default('16384') }}"
         num_cpus: "{{ item.cpus | default('4') }}"
       wait_for_ip_address: true
+      #advanced_settings:
+      #  - guestinfo.AnsibleGroup: "{{ item.group }}"
+      #  extra_configs:
+      #    - key: "guestinfo.Environment"
+      #      value: "Production"
+      #    - key: guestinfo.AnsibleGroup
+      #      value: "{{ item.Group }}"
+      #guest_customization_specs:
+      #  - name: my-spec
+      #    customization_spec_params:
+      #      - key: guestinfo.Environment
+      #        value: Production
     loop: "{{ server_def }}"
+
+    ## tagging maybe with community.vmware.vmware_guest_custom_attributes
+    #https://www.nicktailor.com/?p=1359
+    # use https://docs.ansible.com/ansible/latest/collections/community/vmware/vmware_tag_manager_module.html
+    #
+    # vermutlich: 
+    #   - Tag erstellen mit tag_module
+    #   - tag zuweisen mit tag_manager_module
+    #  => Verlagerung in Rolle?
+    #

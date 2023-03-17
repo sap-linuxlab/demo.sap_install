@@ -18,3 +18,16 @@
       debug:
         msg: "{{ msg.split('\n') }}"
       tags: debug_info
+      
+    - name: Get Chassis Asset Tag
+      slurp:
+        src: '/sys/devices/virtual/dmi/id/chassis_asset_tag'
+      register: chassis_asset_tag
+
+    - name: Check for Azure platform
+      # from https://stackoverflow.com/questions/65034541/ansible-how-to-use-lookup-in-remote-servers
+      debug:
+        msg: "Platform: Azure Virtual Machine: Chassis Code = 7783-7084-3265-9085-8269-3286-77"
+      when: 
+        - chassis_asset_tag['content'] == 'Nzc4My03MDg0LTMyNjUtOTA4NS04MjY5LTMyODYtNzcK'
+        - ansible_virtualization_role == 'guest'

@@ -10,29 +10,13 @@
 #    sap_hana_sid: 'DB1'
 #    sap_hana_instance_number: '00'
 #    sap_hana_install_master_password: 'my_hana_password'
-#    # It is recommended to use vault instead of plain text passwords. Example please check README
 #
-#    ### Cluster Definition
-#    sap_ha_install_pacemaker_cluster_name: cluster1
-#    sap_hana_hacluster_password: 'my_hacluster'
 #
-#    sap_hana_cluster_nodes:
-#      - node_name: hana1
-#        node_ip: 10.0.0.101
-#        node_role: primary
-#        hana_site: DC01
+# Prerequisites of this playbook
 #
-#      - node_name: hana2
-#        node_ip: 10.0.0.102
-#        node_role: secondary
-#        hana_site: DC02
-#
-#    sap_ha_set_hana_vip1: 10.0.0.200
-#
-#    sap_pacemaker_stonith_devices:
-#      - name: "fence_for_platform"
-#        agent: _appropriate_fencing agent here_"
-#        parameters:  "fencing agent parameters"
+#  az_rg:     Name of Azure Resource Group
+#  az_subnet: name of Azure Subnet
+#  az_vnet:   name of virtual Network in Subnet
 
 # Access the IP Address of a particular hostname:
 # hostvars[inventory_hostname].ansible_host
@@ -59,29 +43,37 @@
       
       - name: Create Azure basic internal loadbalancer
         azure.azcollection.azure_rm_loadbalancer:
-          resource_group: "{{ az_vm_create_rg_name }}"
-          name: "{{ sb_name }}"
-          sku: Standard
-          public_address_address: "{{ pipbname }}"
-          probe_protocol: Tcp
-          virtual_network_address_list:
-            - ip_address: 10.0.0.4
-              virtual_network_name: "{{ sap_hana_install_sid | lower }}adm"
-              enable_ha: true
-            config:
-              ip_address: 10.0.0.4
-              address: 10.0.0.5
-              uasn: 6.6
-              redirect_configuration: Disabled
-              tunnel_enable: Enabled
-              backup_ip_address: 10.0.0.3
-              tunnel_endpoint_address: 10.0.0.4
-              virtual_network_name: "{{ sap_hana_install_sid | lower }}adm"
-              enable_ha: true
-              reload_timeout: 600
+          resource_group: "{{ az_rg }}"
+          name: "{{  az_rg + '_LB'}}"
+          sku: "Basic"
+          fontend_ip_configuration:
+            name: "{{  az_rg + '_LB_FE' }}"
+            private_ip_allocation_method: "Dynamic"
+            subnet: "{{ az_subnet }}"
+          backend_address_pools:
+            name: "{{ az_rg + '_LB_BE }}"
+          probes:
+            - name: "{{  az_rg + '_probe' }}"
+              port: 61000
+              protocol: "Tcp"
+        register: lb
       
-         # Internal loadbalancer, Basic SKU, Dynamic IP adress assignment
-        
+      # Internal loadbalancer, Basic SKU, Dynamic IP adress assignment
+      - name: Associate VMs with backend pool
+        azure_rm_networkinterface:
+          resource_group: "{{ az_rg }}"
+          name: "{{ vm }}"
+          virtual_network_name: myvnet
+          subnet_name: mysubnet
+          # enable_accelerated_networking: true
+          ip_configurations:
+            - name: myipconfig
+              load_balancer_backend_address_pools:
+                - id: "{{ lb.backend_address_pools[0].id }}"
+        with_items:
+          - "{{ vm1_name }}"
+          - "{{ vm2_name }}"
+          
       - name: Create Backend Adresspool 
         azure_rm_backend_adress:
           resource_group: "{{ resource_group }}"
