@@ -28,16 +28,31 @@ and the following software preinstalled
 
 EOT
 
-# Create virtual python environment for deployment
 
+# Create virtual python environment for deployment
+if [ ! -d ~/.venv/azure ]; then
+   [ ! -d ~/.venv ] && mkdir ~/.venv
+   python - m venv ~/.venv/azure
+fi
+echo "Activate python environment"
+source ~/.venv/azure/bin/activate
+python -m pip install --upgrade pip 
+
+echo -n "Checking for Ansible ... "
+if ! which ansible ; then
+ echo "installing ansible in venv"
+ python -m pip install ansible
+ exit 1
+fi
 echo -n "Checking for Azure CLI  ... "
 if ! which az ; then
  echo "ERROR: please install az cli" 
+ echo "see: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=dnf"
  exit 1
 fi
 echo -n "Checking for jq ... "
 if ! which jq ; then 
-  echo "ERROR: please install jq"
+  echo "ERROR: please install jq (dnf install jq)"
   exit 1
 fi
 
