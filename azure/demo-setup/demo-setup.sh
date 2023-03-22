@@ -77,19 +77,19 @@ if [ "$a" -eq "y" -o "$a" -eq "Y" ]; then
 else
   echo "Creating new Service Principal ..."
   echo "Enter your user name"; read u
-  az login -u $u
+  az login
   az account set --subscription ${SUBSCRIPTION}
   SPC=$(az ad sp create-for-rbac --name $u --role Contributor --scope /subscriptions/$SUBSCRIPTION)
 fi
 
 a=""
-echo "Do you have a preinstalled AAP Controller"; read a
+echo -n "Do you have a preinstalled AAP Controller [y/N] "; read a
 if [ "$a" -eq "y" -o "$a" -eq "Y" ]; then
   echo -n "Enter Controller URL:     "; read CONTROLLER_HOST
   echo -n "Enter Controller User:    "; read CONTROLLER_USERNAME
   echo -n "Enter Controller Password:"; read CONTROLLER_PASSWORD 
 else
-  echo -m "Enter resource Group Name:"; read RESOURCEGROUP
+  echo -n "Enter Azure Resource Group Name:"; read RESOURCEGROUP
   # run controller deployment
   ansible-playbook -i localhost, -vv 01-deploy-AAP-from-marketplace.yml
 fi
