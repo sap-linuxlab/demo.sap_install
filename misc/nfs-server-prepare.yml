@@ -53,17 +53,64 @@
       tags:
         - rhn_reg
 
+    # Azure does not reliabnly number disks, so we figure out the disks that are available:
+    # name: find disks if not defined
+    # when: 
+    # block:
+    - name: find unused disks
+      set_fact:
+        unused_disks: "{{ unused_disks|default([]) + [ item.key ] }}"
+      when:
+        - not item.value.partitions
+        - not item.value.holders
+        - item.key | regex_search ("sd")
+      with_dict: "{{ ansible_devices }}"
+
+    - name: print found disks
+      debug:
+        msg: "{{ unused_disks }}"
+        verbosity: 1
+      when: 
+        - unused_disks is defined
+        - unused_disks | length > 0
+
+    # This picks the correct storage configuration for host inventory_hostname out of the server_def dict
     - name: get storage pool setup from server definition
       set_fact:
-         storage_pools: "{{ server_def | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
-      tags:
-        - storage_setup
+         _pool: "{{ server_def | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) | combine({ 'disks': unused_disks }) }}"
+      when: 
+        - unused_disks is defined
+        - unused_disks | length > 0
+
+    - name: Debug storage pools
+      debug: 
+        var: _pool
+        verbosity: 1
+      when: _pool is defined
 
     - name: Ensure storage is configured correctly
       include_role:
         name: redhat.rhel_system_roles.storage
-      tags:
-        - storage_setup
+      vars:
+         storage_pools:
+          - name: "{{ _pool.name }}"
+            disks: "{{ unused_disks }}"
+            volumes: "{{ _pool.volumes }}"
+      when: _pool is defined
+
+    # old code
+    #
+    # - name: get storage pool setup from server definition
+    #   set_fact:
+    #      storage_pools: "{{ server_def | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
+    #   tags:
+    #     - storage_setup
+    # 
+    # - name: Ensure storage is configured correctly
+    #   include_role:
+    #     name: redhat.rhel_system_roles.storage
+    #   tags:
+    #     - storage_setup
 
     - name: Ensure nfs-server is configured correctly
       include_role:
