@@ -200,6 +200,7 @@
       tags:
         - update_credentials
         - update_azure_credential
+        - new_demo_env
 
     - name: Ensure Ansible Automation Hub credential exists
       ansible.controller.credential:
@@ -252,7 +253,10 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        variables: "{{ lookup('file','02-variable-configs/inventory.yml')|from_yaml|to_json }}"
+        variables: "{{ lookup('template','02-variable-configs/inventory.yml.j2')|from_yaml|to_json }}"
+      tags:
+        - new_demo_env
+        - update_inventory
 
     - name: Ensure dynamic Azure inventory source exists
       ansible.controller.inventory_source:

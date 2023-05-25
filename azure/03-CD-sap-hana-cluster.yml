@@ -154,6 +154,7 @@
           id: "{{ result.loadbalancer.id }}"
       when: result.loadbalancer.id is defined
      
+      - name: Add Loadbalnacer pool to VM NIC
 
       - name: Configure HANA system replication
         include_role: community.sap_install.sap_ha_install_hana_hsr
