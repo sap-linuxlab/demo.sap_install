@@ -89,8 +89,8 @@ ansible-playbook -i localhost, -v 02-configure-AAP.yml -t new_demo_env \
   -e my_suser="${SAP_SUPPORT_DOWNLOAD_USERNAME}" \
   -e my_spass="${SAP_SUPPORT_DOWNLOAD_PASSWORD}" \
   -e ah_token="${AH_TOKEN}" \
-  -e machine_password="SuperSecretP@ssw0rd." \
-  -e machine_user=azure_user
+  -e machine_password="" \
+  -e machine_user="azureuser"
   
 
   
