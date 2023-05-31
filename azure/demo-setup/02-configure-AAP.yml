@@ -149,13 +149,6 @@
     #    state: present
     #    validate_certs:  "{{ controller_validate_certs }}"
 
-    # TODO: 
-    # - name: Ensure templating in variables is allowed
-    #   settings:
-    #    name: "AWX_??????"
-    #    value: "always"
-    #  register: testing_settings
-
     - name: Ensure machine credential for Azure User exists
       ansible.controller.credential:
         name: "{{ prefix }}Azure Machine Credential"
