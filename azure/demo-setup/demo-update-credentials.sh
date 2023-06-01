@@ -22,7 +22,7 @@ EOT
 # Create virtual python environment for deployment
 if [ ! -d ~/.venv/azure ]; then
    [ ! -d ~/.venv ] && mkdir ~/.venv
-   python - m venv ~/.venv/azure
+   python3.9 -m venv ~/.venv/azure
 fi
 echo "Activate python environment"
 source ~/.venv/azure/bin/activate
