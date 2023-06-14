@@ -36,6 +36,8 @@ and the following software preinstalled (the script will check and may do it for
 
 EOT
 
+# FUNCTIONS
+
 # Shows progressspinner
 # start with spinner&
 # stop with spinner stop
@@ -57,6 +59,19 @@ spinner() {
       rm -f /tmp/stopspin
     fi
 }
+
+cache_var() {
+  ansible -i localhost, localhost \
+   -e ansible_connection=local \
+   -m lineinfile \
+   -a "path=testenv.azure.sh
+       state=present
+       line=\"export ${1}=${2}\"
+       regexp=\"^export ${1}\"
+       create=yes" > /dev/null 2>&1
+}
+
+#### EMD Functions
 
 # Create virtual python 3.9 environment for deployment
 if [[ ! -d ~/.venv/azure ]]; then
@@ -102,19 +117,9 @@ fi
 pip install -r "${icp}/azure/azcollection/requirements-azure.txt" >"${LOGFILE}" 2>&1
 
 [[ -f testenv.azure.sh ]] && source testenv.azure.sh
-cache_var() {
-  ansible -i localhost, localhost \
-   -e ansible_connection=local \
-   -m lineinfile \
-   -a "path=testenv.azure.sh
-       state=present
-       line=\"export ${1}=${2}\"
-       regexp=\"^export ${1}\"
-       create=yes"
-}
 
 echo ""
-echo "You can generate a Red Hat Automation Token at https://console.redhat.com/ansible/automation-hub/token"
+[[ -z "${AH_TOKEN}" ]] && echo "You can generate a Red Hat Automation Token at https://console.redhat.com/ansible/automation-hub/token"
 while [[ -z "${AH_TOKEN}" ]]; do
    echo -n "Enter your Red Hat Automation Hub Token: " && read -r AH_TOKEN
    cache_var AH_TOKEN "${AH_TOKEN}"
@@ -198,7 +203,8 @@ if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER
       spinner &
       aap_result=$(az deployment group create --name "AnsibleAutomationPlatform" \
                       --resource-group "${RESOURCEGROUP}_AAP" --template-file ./template.json --parameters ./parameters.json | tee -a ${LOGFILE} )
-      touch /tmp/stopspin # stop spinner
+      # touch /tmp/stopspin # stop spinner
+      spinner stop
       echo "Creation stopped at $(date)"
       aap_status=$(echo "${aap_result}"| jq -r '.properties.provisioningState' )
       [[ "${aap_status}" != "Succeeded" ]] && echo "ERROR creating Ansible Controller from marketplace" && exit 1
