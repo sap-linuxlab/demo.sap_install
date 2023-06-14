@@ -1,0 +1,86 @@
+---
+# tasks file for az_vm_delete
+#
+- name: print resourcegroup and vm name to be deleted
+  ansible.builtin.debug:
+    msg: "Deleting VM {{ az_vm_delete_vm_name }} in RG {{ az_vm_delete_rg_name }}"
+    verbosity: 1
+
+- name: get info of Azure VM
+  azure.azcollection.azure_rm_virtualmachine_info:
+    resource_group: "{{ az_vm_delete_rg_name }}"
+    name: "{{ az_vm_delete_vm_name  }}"
+  register: _ansible_vm_delete_register_vm_facts
+  ignore_errors: true
+
+- name: print info of Azure VM
+  ansible.builtin.debug:
+      msg: "{{ _ansible_vm_delete_register_vm_facts }}"
+      verbosity: 1
+
+- name: Delete Azure VM and its resources
+  when: not _ansible_vm_delete_register_vm_facts.failed
+  azure.azcollection.azure_rm_virtualmachine:
+    resource_group: "{{ az_vm_delete_rg_name }}"
+    name: "{{ az_vm_delete_vm_name }}"
+    state: absent
+
+- name: get list of VMs in Azure subnet
+  azure.azcollection.azure_rm_virtualmachine_info:
+    resource_group: "{{ az_vm_delete_rg_name }}"
+  register: _az_vm_delete_register_vms_info  
+
+- name: print list of Azure VMs
+  ansible.builtin.debug:
+    msg: "{{ _az_vm_delete_register_vms_info.vms }}"
+
+
+
+  #- name: Delete subnet if no VMs remain in subnet
+  #  azure.azcollection.azure_rm_subnet:
+  #    resource_group: "{{ az_vm_delete_rg_name }}"
+  #    name: "{{ az_vm_delete_vm_name }}"
+  #    state: absent
+  #  when: _subnet_info.subnets | length == 0
+
+  #- name: get list of subnets in Azure vnet
+  #  azure.azcollection.azure_rm_subnet_info:
+  #    resource_group: "{{ az_vm_delete_rg_name }}"
+  #    name: "{{ az_vm_delete_azure_subnet_name }}"
+  #  register: _subnet_info
+
+  # wrong module
+  #- name: Delete vnet if no subnets are defined
+  #  azure.azcollection.azure_rm_virtualnetwork:
+  #    resource_group: "{{ az_vm_delete_rg_name }}"
+  #    name: "{{ az_vm_delete_azure_vnet_name }}"
+  #    state: absent
+  #  when: _subnet_info.subnets | length == 0
+
+  # completely wrong
+  #- name: get all resources in the Azure resource group
+  #  azure.azcollection.azure_rm_resourcegroup_info:
+  #    name: "{{ az_vm_delete_rg_name }}"
+  #  register: _az_vm_delete_rg_info
+
+  #- name: Ensure Resource group is removed if no resources are in it
+    #ansible.builtin.assert:
+    #  that:
+    #    - _az_vm_delete_rg_info.resource_group | length == 0
+    #  fail_msg: "Could not find resources: {{ _az_vm_delete_rg_info.resource_group\
+    #    \ | join(', ') }}"
+    #  success_msg: "Could not find resources: {{ _az_vm_delete_rg_info.resource_group\
+    #    \ | join(', ') }}"
+   # azure.azcollection.azure_rm_resource:
+    #  name: "{{ az_vm_delete_rg_name }}"
+    #  state: absent
+    #when:
+    #  - az_vm_delete_rg_info.resource_group | length == 0
+    #  - az_vm_delete_empty_resourcegroup
+
+
+
+
+
+
+

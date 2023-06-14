@@ -1,0 +1,91 @@
+---
+- name: Create an Azure Cloud VM
+  hosts: localhost
+  tasks:
+    - name: Create a resource group
+      azure_rm_resourcegroup:
+        name: myResourceGroup
+        location: eastus
+      register: resource_group
+    - name: Create a virtual network
+      azure_rm_virtualnetwork:
+        resource_group: "{{ resource_group.id }}"
+        name: myVnet
+        address_prefixes: 10.0.0.0/16
+      register: vnet
+    - name: Create a subnet
+      azure_rm_subnet:
+        resource_group: "{{ resource_group.id }}"
+        virtual_network_name: myVnet
+        name: mySubnet
+        address_prefix: 10.0.1.0/24
+    - name: Create a public IP
+      azure_rm_publicipaddress:
+        resource_group: "{{ resource_group.id }}"
+        name: myPublicIP
+        allocation_method: Static
+    - name: Create a network interface
+      azure_rm_networkinterface:
+        resource_group: "{{ resource_group.id }}"
+        name: myNic
+        virtual_network_name: myVnet
+        subnet_name: mySubnet
+        public_ip_name: myPublicIP
+      register: nic
+    - name: Create a storage account
+      azure_rm_storageaccount:
+        resource_group: "{{ resource_group.id }}"
+        name: myStorageAccount
+        sku: Standard_LRS
+        kind: StorageV2
+        access_tier: Hot
+    - name: Create a disk
+      azure_rm_manageddisk:
+        resource_group: "{{ resource_group.id }}"
+        name: myDisk
+        storage_account_type: Standard_LRS
+        disk_size_gb: 150
+    - name: Create a virtual machine
+      azure_rm_virtualmachine:
+        resource_group: "{{ resource_group.id }}"
+        name: myVM
+        vm_size: Standard_D48s_v3
+        admin_username: azureuser
+        admin_password: SuperSecretPassword
+        network_interfaces:
+          - "{{ nic.id }}"
+        managed_disks:
+          - name: myDisk
+            managed_disk_type: Premium_LRS
+            create_option: Attach
+        os_disk_name: myOsDisk
+        os_type: Linux
+        image:
+          offer: CentOS
+          publisher: OpenLogic
+          SKU: '7.3'
+          version: latest
+    - name: Create a network security group
+      azure_rm_securitygroup:
+        resource_group: "{{ resource_group.id }}"
+        name: mySecurityGroup
+        rules:
+          - name: AllowSSH
+            access: Allow
+            protocol: TCP
+            direction: Inbound
+            priority: 1000
+            source_port_range: *
+            destination_port_range: 22
+    - name: Assign the network security group to the network interface
+      azure_rm_networkinterface:
+        resource_group: "{{ resource_group.id }}"
+        name: myNic
+        security_group_name: mySecurityGroup
+    - name: Start the VM
+      azure_rm_virtualmachine:
+        resource_group: "{{ resource_group.id }}"
+        name: myVM
+        state: present
+        powerstate: started
+

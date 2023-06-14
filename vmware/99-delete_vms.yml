@@ -8,7 +8,7 @@
   # overwritten in tower/controller
   #
   # vars:
-  #   vmware_machines:
+  #   server_def:
   #           - name: rhx-hana
   #           - name: rhx-nw
   #
@@ -19,7 +19,7 @@
   # export VMWARE_password=mypassword
   #
   # CAUTION: This role only removes the machines that are listed in the
-  # vmware_machines dictionary.
+  # server_def dictionary.
   # If you want to remove all machines in an inventory remove the "when" statements
 
   tasks:
@@ -28,7 +28,7 @@
       state: absent
     become: true
     ignore_unreachable: true
-    when: inventory_hostname in vmware_machines|map(attribute="name")
+    when: inventory_hostname in server_def|map(attribute="name")
 
   - name: Delete VM
     community.vmware.vmware_guest:
@@ -45,4 +45,4 @@
       # folder: "{{ vmware_folder }}"
       # cluster: "{{ vmware_cluster }}"
     delegate_to: localhost
-    when: inventory_hostname in vmware_machines|map(attribute="name")
+    when: inventory_hostname in server_def|map(attribute="name")

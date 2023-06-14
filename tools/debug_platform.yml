@@ -1,0 +1,33 @@
+---
+# Thanks to https://gryzli.info/2017/12/21/ansible-debug-print-variables/
+- name: Print System identification variables
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Print some debug information
+      vars:
+        msg: |
+          " ansible_system_vendor:            {{ ansible_system_vendor }}"
+          " ansible_board_vendor:             {{ ansible_board_vendor }}"
+          " ansible_chassis_vendor:           {{ ansible_chassis_vendor }}"
+          " ansible_virtualization_role       {{ ansible_virtualization_role }}"
+          " ansible_virtualization_tech_guest {{ ansible_virtualization_tech_guest | to_yaml }}"
+          " ansible_virtualization_tech_host  {{ ansible_virtualization_tech_host }}"
+          " ansible_virtualization_type       {{ ansible_virtualization_type }}"
+      debug:
+        msg: "{{ msg.split('\n') }}"
+      tags: debug_info
+      
+    - name: Get Chassis Asset Tag
+      slurp:
+        src: '/sys/devices/virtual/dmi/id/chassis_asset_tag'
+      register: chassis_asset_tag
+
+    - name: Check for Azure platform
+      # from https://stackoverflow.com/questions/65034541/ansible-how-to-use-lookup-in-remote-servers
+      debug:
+        msg: "Platform: Azure Virtual Machine: Chassis Code = 7783-7084-3265-9085-8269-3286-77"
+      when: 
+        - chassis_asset_tag['content'] == 'Nzc4My03MDg0LTMyNjUtOTA4NS04MjY5LTMyODYtNzcK'
+        - ansible_virtualization_role == 'guest'

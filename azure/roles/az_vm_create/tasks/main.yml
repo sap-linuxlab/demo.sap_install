@@ -1,0 +1,80 @@
+---
+- name: Create a resource group
+  azure.azcollection.azure_rm_resourcegroup:
+    name: "{{ az_vm_create_rg_name }}"
+    location: "{{ az_vm_create_location }}"
+  register: _az_vm_create_register_rg
+
+- name: Check registered var
+  debug:
+    var: _az_vm_create_register_rg
+    verbosity: 1
+
+- name: Create a network security group
+  azure.azcollection.azure_rm_securitygroup:
+    resource_group: "{{ az_vm_create_rg_name }}"
+    name: "{{ az_vm_create_sg_name }}"
+    rules:
+      - name: AllowSSH
+        access: Allow
+        protocol: Tcp
+        direction: Inbound
+        priority: 1000
+        source_port_range: '*'
+        destination_port_range: 22
+
+- name: Create a virtual network
+  azure.azcollection.azure_rm_virtualnetwork:
+    resource_group: "{{  az_vm_create_rg_name }}"
+    name: "{{ az_vm_create_vnet_name }}"
+    address_prefixes: "{{ az_vm_create_vnet_prefix }}"
+
+- name: Create a subnet
+  azure.azcollection.azure_rm_subnet:
+    resource_group: "{{ az_vm_create_rg_name }}"
+    virtual_network_name: "{{ az_vm_create_vnet_name }}"
+    name: "{{ az_vm_create_subnet_name }}"
+    address_prefix: "{{ az_vm_create_subnet_prefix }}"
+
+- name: Create a public IP
+  azure.azcollection.azure_rm_publicipaddress:
+    resource_group: "{{ az_vm_create_rg_name }}"
+    name: "{{ az_vm_create_public_ip_name }}"
+    allocation_method: Static
+
+- name: Create a network interface
+  azure.azcollection.azure_rm_networkinterface:
+    resource_group: "{{ az_vm_create_rg_name }}"
+    name: "{{ az_vm_create_nic_name }}"
+    virtual_network_name: "{{ az_vm_create_vnet_name }}"
+    subnet_name: "{{ az_vm_create_subnet_name }}"
+    public_ip_name: "{{ az_vm_create_public_ip_name }}"
+    security_group_name: "{{ az_vm_create_sg_name }}"
+
+- name: Create a virtual machine
+  azure.azcollection.azure_rm_virtualmachine:
+    resource_group: "{{ az_vm_create_rg_name }}"
+    name: "{{ az_vm_create_vm_name }}"
+    vm_size: "{{ az_vm_create_vm_size }}"
+    admin_username: "{{ az_vm_create_vm_admin }}"
+    admin_password: "{{ az_vm_create_vm_admin_password }}"
+    # ssh_password_enabled: false
+    # ssh_public_keys:
+    #   - path: "/home/{{ az_vm_create_vm_admin }}/.ssh/authorized_keys"
+    #     key_data: "mypublickey"
+    network_interfaces:
+      - "{{ az_vm_create_nic_name }}"
+    data_disks: "{{ az_vm_create_datadisks }}"
+    os_disk_name: "{{ az_vm_create_vm_name + 'Boot' }}"
+    os_type: Linux
+    image: "{{ az_vm_create_os_image }}"
+    # the following may be req. for byos 
+    # plan:
+    #   name: rhel-lvm86
+    #   product: rhel-byos
+    #   publisher: redhat
+    state: present
+    tags: 
+      "AnsibleGroup": "{{ az_vm_create_group }}" 
+
+

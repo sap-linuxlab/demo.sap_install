@@ -1,0 +1,27 @@
+---
+# tasks file for az_python_reqs
+- name: get collection path
+  ansible.builtin.shell: |
+    for i in $(ansible-config dump |\
+              awk -F= '( $1 ~ "COLLECTIONS_PATHS" ) { print($2) }' |\
+              tr -d  "[],\'"); do
+      echo $i
+    done
+  register: collection_path
+
+- name: set requirements file
+  set_fact:
+    req_file: "{{ req_file | d([])  + [ item| string + '/ansible_collections/azure/azcollection/requirements-azure.txt' ] }}"
+  loop: "{{ collection_path.stdout_lines }}"
+
+- name: do some thing with the right file
+  debug:
+    msg: "{{ item }}"
+  with_first_found: "{{ req_file }}"
+
+- name: Ensure azure.azcollection requirements are installed
+  ansible.builtin.pip:
+    requirements: "{{ item }}"
+    virtualenv: "{{ venv | d(omit) }}"
+  with_first_found: "{{ req_file }}"
+  

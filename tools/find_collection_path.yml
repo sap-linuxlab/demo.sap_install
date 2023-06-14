@@ -1,0 +1,20 @@
+---
+- name: dump public ssh key injected by Machine Credential
+  hosts: localhost
+  gather_facts: true
+
+  tasks:
+    - name: print environment
+      shell: |
+        for i in $(ansible-config dump |\
+                  awk -F= '( $1 ~ "COLLECTIONS_PATHS" ) { print($2) }' |\
+                  tr -d  "[],\'"); do
+          echo $i
+        done
+      register: collection_path
+
+    - name: do some thing with the right file
+      debug:
+        msg: "{{ item }}"
+      with_first_found: "{{ req_file }}"
+     

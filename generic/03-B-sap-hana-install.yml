@@ -9,11 +9,11 @@
   become: true
 
   tasks:
-    # This step will be included in the role in the future
-    - name: Detect Existing HANA installation
-      include_tasks: check_for_sap_instances.yml
+    # This step is already included in version 1.0.2. of the collection
+    # name: Detect Existing HANA installation
+    #  include_tasks: check_for_sap_instances.yml
 
     - name: execute the SAP Hana Installation
       include_role:
         name: community.sap_install.sap_hana_install
-      when: not sap_hana_deployment_skip
+    # when: not sap_hana_deployment_skip

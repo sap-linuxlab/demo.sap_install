@@ -1,0 +1,51 @@
+---
+- name: remove azure vms
+  hosts: all
+  gather_facts: false
+
+  #
+  # This dictionary is an example and needs to be
+  # overwritten in tower/controller
+  #
+  # vars:
+  #   server_def:
+  #           - name: rhx-hana
+  #           - name: rhx-nw
+  #
+  # Authentication:
+  #
+  # Using this playbook from AAP requires Azure credentials to be created
+  # From CLI:
+  # - login with `az login`A or
+  # - use a profile stored in ~/.azure/credentials and set AZURE_PROFILE if not using "default"
+  # - or set the foillowing environment vars:
+  #    AZURE_SUBSCRIPTION_ID: subscription_id
+  #    AZURE_CLIENT_ID:       client_id
+  #    AZURE_SECRET:          secret
+  #    AZURE_TENANT:          tenant
+  #
+  # Global variables:
+  #   az_vm_create_vm_admin_password (try to get from AAP machine credential)
+  #   az_vm_create_vm_admin:
+#
+  # CAUTION: This role only removes the machines that are listed in the
+  # server_def dictionary.
+  # If you want to remove all machines in an inventory remove the "when" statements
+
+  tasks:
+  - name: Unregister from RHN
+    redhat_subscription:
+      state: absent
+    become: true
+    ignore_unreachable: true
+    when: inventory_hostname in server_def|map(attribute="name")
+
+  - name: Delete VM
+    include_role:
+      name: az_delete_vm
+    vars:
+      az_vm_delete_rg_name: lookup('env','RESOURCEGROUP')
+      az_vm_delete_vm_name: 
+      name: "{{ inventory_hostname }}"
+    delegate_to: localhost
+    when: inventory_hostname in server_def|map(attribute="name")
