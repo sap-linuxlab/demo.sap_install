@@ -79,6 +79,9 @@
     #    controller_password: "{{ controller_password }}"
     #    validate_certs: "{{ controller_validate_certs }}"
     #  register: _token
+    - name: Login to Azure Cloud with username and tenant
+      
+    
     - name: Ensure organization "{{ myorg }}" exists
       ansible.controller.organization:
         name: "{{myorg}}"

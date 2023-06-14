@@ -97,6 +97,7 @@
         src: '{{ download_path }}/{{ sapcar | first }}'
         dest: '{{ item }}'
         state: hard
+        mode: '755'
       loop:
         - '{{ download_path }}/S4HANA2021.FNDN/{{ sapcar | first }}'
         - '{{ download_path }}/HANA2SPS06/{{ sapcar | first }}'
