@@ -36,6 +36,27 @@ and the following software preinstalled (the script will check and may do it for
 
 EOT
 
+# Shows progressspinner
+# start with spinner&
+# stop with spinner stop
+spinner() {
+    if [[ "${1}" = "stop" ]]; then
+      touch /tmp/stopspin
+    else
+      echo -n "Start building Ansible Controller"
+      local delay=0.75;
+      local spinstr='|/-\';
+      while [[ ! -f /tmp/stopspin ]]; do
+          local temp=${spinstr#?};
+          printf " [%c]  " "${spinstr}";
+          local spinstr=$temp${spinstr%"${temp}"};
+          sleep ${delay};
+          printf "\b\b\b\b\b\b";
+      done;
+      printf "    \b\b\b\b"; 
+      rm -f /tmp/stopspin
+    fi
+}
 
 # Create virtual python 3.9 environment for deployment
 if [[ ! -d ~/.venv/azure ]]; then
@@ -93,6 +114,7 @@ cache_var() {
 }
 
 echo ""
+echo "You can generate a Red Hat Automation Token at https://console.redhat.com/ansible/automation-hub/token"
 while [[ -z "${AH_TOKEN}" ]]; do
    echo -n "Enter your Red Hat Automation Hub Token: " && read -r AH_TOKEN
    cache_var AH_TOKEN "${AH_TOKEN}"
@@ -147,19 +169,6 @@ export AZURE_TENANT="${TENANT}"
 export AZURE_SUBSCRIPTION_ID="${SUBSCRIPTION}"
 
 ## get Ansible Controller Credentials
-spinner() {
-    echo -n "Start building Ansible Controller"
-    local delay=0.75;
-    local spinstr='|/-\';
-    while [[ -z "${aap_result}" ]]; do
-         local temp=${spinstr#?};
-         printf " [%c]  " "${spinstr}";
-         local spinstr=$temp${spinstr%"${temp}"};
-         sleep ${delay};
-         printf "\b\b\b\b\b\b";
-     done;
-     printf "    \b\b\b\b"; 
-}
 
 if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER_PASSWORD}" ]]; then
   a=""
@@ -189,6 +198,7 @@ if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER
       spinner &
       aap_result=$(az deployment group create --name "AnsibleAutomationPlatform" \
                       --resource-group "${RESOURCEGROUP}_AAP" --template-file ./template.json --parameters ./parameters.json | tee -a ${LOGFILE} )
+      touch /tmp/stopspin # stop spinner
       echo "Creation stopped at $(date)"
       aap_status=$(echo "${aap_result}"| jq -r '.properties.provisioningState' )
       [[ "${aap_status}" != "Succeeded" ]] && echo "ERROR creating Ansible Controller from marketplace" && exit 1
@@ -204,4 +214,24 @@ if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER
 fi
 
 echo "Configure Controller"
-ansible-playbook -i localhost, -vv 02-configure-AAP.yml
+ansible-playbook -i localhost, -vv 02-configure-AAP.yml \
+  -e controller_username=${CONTROLLER_HOST} \
+  -e controller_password=${CONTROLLER_PASSWORD} \
+  -e controller_hostname=${CONTROLLER_HOSTNAME} \
+  -e ansible_python_interpreter=~/.venv/azure/bin/python3 \
+  -e azure_cli_id=${CLIENT_ID} \
+  -e azure_cli_secret=${PASSWORD} \
+  -e azure_tenant=${TENANT} \
+  -e az_resourcegroup=${RESOURCEGROUP} \
+  -e azure_subscription=${SUBSCRIPTION} \
+  -e my_suser="${SAP_SUPPORT_DOWNLOAD_USERNAME}" \
+  -e my_spass="${SAP_SUPPORT_DOWNLOAD_PASSWORD}" \
+  -e ah_token="${AH_TOKEN}" \
+  -e machine_user="azureuser"
+
+echo ""
+echo "Your demo environment is ready"
+echo "Log in to ${CONTROLLER_HOST} as admin with password ${CONTROLLER_PASSWORD}"
+echo "Assign a subscription"
+echo "kick off the workflow '00 - Set up NFS fileserver'"
+echo "demo other workflows"

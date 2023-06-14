@@ -62,7 +62,7 @@
     - name: "az_resourcegroup"
       prompt: "Azure Resource Group Name"
       private: false
-      default: "openenv-{{ lookup('env', 'GUID') }}"
+      default: "{{ lookup('env', 'RESOURCEGROUP') }}"
     - name: "ah_token"
       prompt: "Automation Hub token"
       private: true
