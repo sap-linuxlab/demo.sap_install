@@ -27,7 +27,6 @@ server_def:
             mount_point: "/usr/sap"
             state: present
 
-            
   - name: azs4
     disk_gb: 95
     size: "Standard_B8ms"
@@ -48,7 +47,7 @@ server_def:
             fs_type: swap
             mount_options: swap
             state: present
-        
+
 # sap_general_preconfigure
 #-------------------------
 sap_domain: internal.cloudapp.net
@@ -78,7 +77,7 @@ sap_hana_install_software_directory: "{{ nfs_archive_dir }}/{{ sap_hana_version 
 sap_hana_install_software_extract_directory: "/mnt/sapinst"
 sap_hana_install_master_password: "R3dh4t$123"
 # The following variables are defined by the survey
-sap_hana_sid: "RHA"                  
+sap_hana_sid: "RHA"
 sap_hana_instance_number: "00"
 
 # sap_swpm (used in step 4B)
@@ -86,7 +85,7 @@ sap_hana_instance_number: "00"
 # This currently does not work in all setups (see issues)
 sap_swpm_update_etchosts: false
 
-# sap_swpm 
+# sap_swpm
 #----------
 # Product ID for New Installation
 sap_swpm_product_catalog_id: NW_ABAP_OneHost:{{ sap_swpm_product }}.HDB.ABAP
@@ -108,7 +107,7 @@ sap_swpm_db_sidadm_password: "{{ sap_swpm_master_password }}"
 #sap_swpm_db_schema_abap: "SAPHANADB"
 # NW Instance Parameters
 # defined by the survey
-# sap_swpm_sid: S4H
+sap_swpm_sid: "S4H"
 sap_swpm_pas_instance_nr: "01"
 sap_swpm_ascs_instance_nr: "02"
 sap_swpm_ascs_instance_hostname: "{{ ansible_hostname }}"
