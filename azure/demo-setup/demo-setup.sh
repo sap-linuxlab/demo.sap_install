@@ -118,6 +118,9 @@ pip install -r "${icp}/azure/azcollection/requirements-azure.txt" >"${LOGFILE}" 
 
 [[ -f testenv.azure.sh ]] && source testenv.azure.sh
 
+# TODO: Ensure Automation.Controller or awx.awx collection is installed (needed for configuring AAP)
+
+
 echo ""
 [[ -z "${AH_TOKEN}" ]] && echo "You can generate a Red Hat Automation Token at https://console.redhat.com/ansible/automation-hub/token"
 while [[ -z "${AH_TOKEN}" ]]; do
@@ -155,7 +158,7 @@ if [[ -z "${CLIENT_ID}" || -z "${PASSWORD}" || -z "${TENANT}" ]]; then
     echo "Creating new Service Principal sapdemo for this demo"
     az login
     az account set --subscription "${SUBSCRIPTION}"
-    SPC=$(az ad sp create-for-rbac --name sapdemo --role Contributor --scope "/subscriptions/${SUBSCRIPTION}")
+    SPC=$(az ad sp create-for-rbac --name ${USER}-sapdemo --role Contributor --scope "/subscriptions/${SUBSCRIPTION}")
     CLIENT_ID=$( echo ${SPC} | jq -r '.appId' )
     PASSWORD=$( echo ${SPC} | jq -r '.password' )
     TENANT=$( echo $SPC | jq -r '.tenant' )
