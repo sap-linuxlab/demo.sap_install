@@ -158,7 +158,7 @@ if [[ -z "${CLIENT_ID}" || -z "${PASSWORD}" || -z "${TENANT}" ]]; then
     echo "Creating new Service Principal sapdemo for this demo"
     az login
     az account set --subscription "${SUBSCRIPTION}"
-    SPC=$(az ad sp create-for-rbac --name ${USER}-sapdemo --role Contributor --scope "/subscriptions/${SUBSCRIPTION}")
+    SPC=$(az ad sp create-for-rbac --name "${USER}_sapdemo" --role Contributor --scope "/subscriptions/${SUBSCRIPTION}")
     CLIENT_ID=$( echo ${SPC} | jq -r '.appId' )
     PASSWORD=$( echo ${SPC} | jq -r '.password' )
     TENANT=$( echo $SPC | jq -r '.tenant' )
