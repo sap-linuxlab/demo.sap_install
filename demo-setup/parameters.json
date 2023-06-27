@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "access": {
+            "value": "public"
+        },
+        "adminPassword": {
+            "value": null
+        },
+        "applicationResourceName": {
+            "value": "AAPSapDemo"
+        },
+        "disasterRecovery": {
+            "value": false
+        },
+        "dnsServiceIP": {
+            "value": "10.2.0.10"
+        },
+        "location": {
+            "value": "eastus"
+        },
+        "podCidr": {
+            "value": "10.244.0.0/20"
+        },
+        "serviceCidr": {
+            "value": "10.2.0.0/26"
+        },
+        "tagsByResource": {
+            "value": {}
+        },
+        "vnetConfig": {
+            "value": {
+                "name": "vnet01_doNotEditName",
+                "resourceGroup": "mkochsap3_AAP",
+                "addressPrefixes": [
+                    "10.4.0.0/24"
+                ],
+                "addressPrefix": "10.4.0.0/24",
+                "newOrExisting": "new",
+                "subnets": {
+                    "aks": {
+                        "name": "cluster_doNotEditName",
+                        "addressPrefix": "10.4.0.0/26",
+                        "startAddress": "10.4.0.4"
+                    },
+                    "appgw": {
+                        "name": "appgw_doNotEditName",
+                        "addressPrefix": "10.4.0.64/28",
+                        "startAddress": "10.4.0.68"
+                    },
+                    "plink": {
+                        "name": "private_link_doNotEditName",
+                        "addressPrefix": "10.4.0.80/28",
+                        "startAddress": "10.4.0.84"
+                    },
+                    "postgres": {
+                        "name": "database_doNotEditName",
+                        "addressPrefix": "10.4.0.96/28",
+                        "startAddress": "10.4.0.100"
+                    }
+                }
+            }
+        },
+        "managedResourceGroupId": {
+            "value": "/subscriptions/129186ff-0dd1-4f5b-b8af-0215aafa79fd/resourceGroups/mkochsap3_AAP_managed"
+        }
+    }
+}
