@@ -1,0 +1,15 @@
+---
+download_path: "/export/sapinst"
+server_def:
+  - name: azfile
+    size: Standard_A1_v2
+    disk_gb: 50
+    group: fileserver
+    storage_pools:
+      - name: sapsoftware
+        volumes:
+          - name: sapsoftware
+            size: "50 GiB"
+            mount_point: "/export/sapinst"
+exportdirs:
+  - /export/sapinst: "*(ro)"
