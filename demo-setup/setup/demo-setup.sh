@@ -255,7 +255,7 @@ ansible-playbook -i localhost, -vv 01-wait-for-https.yml \
   -e controller_hostname="${CONTROLLER_HOST}"
 
 ansible-playbook -i localhost, -vv 02-configure-AAP.yml \
-  -e controller_username="${CONTROLLER_HOST}" \
+  -e controller_username="${CONTROLLER_USERNAME}" \
   -e controller_password="${CONTROLLER_PASSWORD}" \
   -e controller_hostname="${CONTROLLER_HOST}" \
   -e azure_cli_id="${CLIENT_ID}" \
