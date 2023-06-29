@@ -79,7 +79,7 @@ done
 echo ""
 
 echo "Checking your Automation Hub Token"
-while ! curl https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token -d grant_type=refresh_token -d client_id="cloud-services" -d refresh_token="$AH_TOKEN" --fail --silent --show-error --output /dev/null; do
+while ! curl https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token -d grant_type=refresh_token -d client_id="cloud-services" -d refresh_token="${AH_TOKEN}" --fail --silent --show-error --output /dev/null; do
       echo "you do not have a valid token"
       echo "You can generate a Red Hat Automation Token at https://console.redhat.com/ansible/automation-hub/token"
       echo -n "Enter your Red Hat Automation Hub Token: " && read -r AH_TOKEN
@@ -265,8 +265,9 @@ ansible-playbook -i localhost, -vv 02-configure-AAP.yml \
   -e azure_subscription="${SUBSCRIPTION}" \
   -e my_suser="${SAP_SUPPORT_DOWNLOAD_USERNAME}" \
   -e my_spass="${SAP_SUPPORT_DOWNLOAD_PASSWORD}" \
-  -e ah_token="${AH_TOKEN}" \
-  -e machine_user="azureuser"
+  -e ah_token=${AH_TOKEN} \
+  -e machine_user="azureuser" \
+  -e machine_password="SuperSecretP@ssw0rd." # notsecret
 
 echo ""
 echo "Your demo environment is ready"
@@ -274,6 +275,6 @@ echo "Log in to ${CONTROLLER_HOST} as admin with password ${CONTROLLER_PASSWORD}
 echo "Assign a subscription"
 echo "kick off the workflow '00 - Set up NFS fileserver' to download the SAP software"
 echo "demo other workflows"
-echo "You can login to deployed SAP servers using 'ssh azureuser@<IP>' using the password 'SuperSecretP@ssw0rd.'"
+echo "You can login to deployed SAP servers using 'ssh azureuser@<IP>' using the password 'SuperSecretP@ssw0rd.'" # notsecret
 echo ""
 echo "to delete the demo remove the above two resourcegroups and the service principal"

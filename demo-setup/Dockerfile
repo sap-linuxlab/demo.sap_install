@@ -10,6 +10,10 @@ RUN dnf update -y && \
     pip3 install -q ansible==8.1.0 &&\
     pip3 install -r /usr/local/lib/python3.9/site-packages/ansible_collections//azure/azcollection/requirements-azure.txt 
 
+RUN mkdir /etc/ansible &&\
+    echo "[defaults]" > /etc/ansible/ansible.cfg &&\
+    echo "stdout_callback = yaml" >> /etc/ansible/ansible.cfg
+
 WORKDIR /root
 ADD setup ./setup
 
