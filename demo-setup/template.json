@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "aapName": {
-            "defaultValue": "[format('aap{0}', uniqueString(utcNow(), resourceGroup().id))]",
+            "defaultValue": "[format('aap{0}', uniqueString(utcNow('yyyyMMddHHmmssffffff'), resourceGroup().id))]",
             "type": "string"
         },
         "access": {
@@ -21,12 +21,28 @@
             },
             "type": "bool"
         },
+        "disasterRecovery": {
+            "defaultValue": false,
+            "type": "bool"
+        },
         "dnsServiceIP": {
             "type": "string"
         },
-        "installerAutoRetrySteps": {
+        "engineAutoRetrySteps": {
             "defaultValue": false,
             "type": "bool"
+        },
+        "engineContainerImage": {
+            "defaultValue": "registry.redhat.io/ansible-on-clouds/aoc-azure-aap-installer-rhel9:latest",
+            "type": "string"
+        },
+        "engineSaveContainer": {
+            "defaultValue": false,
+            "type": "bool"
+        },
+        "engineTemplateUrl": {
+            "defaultValue": "https://rhaap.blob.core.windows.net/templates/templates_1.0.28.zip",
+            "type": "string"
         },
         "location": {
             "defaultValue": "",
@@ -49,6 +65,14 @@
         "serviceCidr": {
             "type": "string"
         },
+        "starttime": {
+            "defaultValue": "[utcNow()]",
+            "type": "string"
+        },
+        "tagsByResource": {
+            "defaultValue": {},
+            "type": "object"
+        },
         "vmSize": {
             "defaultValue": "Standard_D4s_v3",
             "type": "string"
@@ -59,7 +83,7 @@
         },
         "applicationResourceName": {
             "type": "string",
-            "defaultValue": "e4d8869dc96044c3a8f2da5a8a36d941"
+            "defaultValue": "c825c45889264b368c855c1f09f52ca4"
         },
         "managedResourceGroupId": {
             "type": "string",
@@ -76,7 +100,7 @@
     "resources": [
         {
             "type": "Microsoft.Solutions/applications",
-            "apiVersion": "2017-09-01",
+            "apiVersion": "2021-07-01",
             "location": "[resourceGroup().Location]",
             "kind": "MarketPlace",
             "name": "[parameters('applicationResourceName')]",
@@ -84,7 +108,7 @@
                 "name": "rh-aap-azure0int-z1",
                 "product": "rhaapomsa",
                 "publisher": "redhat",
-                "version": "1.0.25"
+                "version": "1.0.30"
             },
             "identity": "[if(empty(parameters('managedIdentity')),json('null'),parameters('managedIdentity'))]",
             "properties": {
@@ -102,11 +126,23 @@
                     "crossTenantRoleAssignment": {
                         "value": "[parameters('crossTenantRoleAssignment')]"
                     },
+                    "disasterRecovery": {
+                        "value": "[parameters('disasterRecovery')]"
+                    },
                     "dnsServiceIP": {
                         "value": "[parameters('dnsServiceIP')]"
                     },
-                    "installerAutoRetrySteps": {
-                        "value": "[parameters('installerAutoRetrySteps')]"
+                    "engineAutoRetrySteps": {
+                        "value": "[parameters('engineAutoRetrySteps')]"
+                    },
+                    "engineContainerImage": {
+                        "value": "[parameters('engineContainerImage')]"
+                    },
+                    "engineSaveContainer": {
+                        "value": "[parameters('engineSaveContainer')]"
+                    },
+                    "engineTemplateUrl": {
+                        "value": "[parameters('engineTemplateUrl')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -122,6 +158,12 @@
                     },
                     "serviceCidr": {
                         "value": "[parameters('serviceCidr')]"
+                    },
+                    "starttime": {
+                        "value": "[parameters('starttime')]"
+                    },
+                    "tagsByResource": {
+                        "value": "[parameters('tagsByResource')]"
                     },
                     "vmSize": {
                         "value": "[parameters('vmSize')]"

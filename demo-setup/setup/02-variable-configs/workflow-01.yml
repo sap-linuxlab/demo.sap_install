@@ -75,7 +75,7 @@ sap_swpm_product: S4HANA2021.FNDN
 #------------------
 sap_hana_install_software_directory: "{{ nfs_archive_dir }}/{{ sap_hana_version }}"
 sap_hana_install_software_extract_directory: "/mnt/sapinst"
-sap_hana_install_master_password: "R3dh4t$123"
+sap_hana_install_master_password: "R3dh4t$123" # notsecret
 # The following variables are defined by the survey
 sap_hana_sid: "RHA"
 sap_hana_instance_number: "00"
@@ -96,7 +96,7 @@ sap_swpm_sapcar_path: "{{ sap_swpm_software_extract_directory }}"
 sap_swpm_swpm_path: "{{ sap_swpm_software_extract_directory }}"
 
 # NW Passwords
-sap_swpm_master_password: "R3dh4t$123"
+sap_swpm_master_password: "R3dh4t$123" # notsecret
 sap_swpm_ddic_000_password: "{{ sap_swpm_master_password }}"
 # HDB Passwords
 sap_swpm_db_system_password: "{{ sap_swpm_master_password }}"

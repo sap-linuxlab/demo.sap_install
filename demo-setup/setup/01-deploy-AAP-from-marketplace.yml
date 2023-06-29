@@ -1,0 +1,94 @@
+---
+- name: Configure Ansible Automation Controller
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    az_location: "eastus"
+    az_managed_app: "AAPSapDemo"
+
+  vars_prompt:
+    - name: "controller_password"
+      prompt: "Controller Password"
+      private: true
+      default: "{{lookup('env', 'CONTROLLER_PASSWORD')}}"
+    - name: "azure_cli_id"
+      prompt: "Azure Client ID"
+      private: false
+      default: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+    - name: "azure_cli_secret"
+      prompt: "Azure Client Secret"
+      private: true
+      default: "{{ lookup('env', 'AZURE_SECRET') }}"
+    - name: "azure_tenant"
+      prompt: "Azure Tenant"
+      private: false
+      default: "{{ lookup('env', 'AZURE_TENANT') }}"
+    - name: "azure_subscription"
+      prompt: "Azure Subscription ID"
+      private: false
+      default: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
+    - name: "az_resourcegroup"
+      prompt: "Azure Resource Group Name"
+      private: false
+      default: "{{ lookup('env', 'RESOURCEGROUP') }}"
+
+  tasks:
+    - name: Create Azure resource group "{{ az_resoucegroup }}"
+      azure.azcollection.azure_rm_resourcegroup:
+        name: "{{ az_resourcegroup }}_AAP"
+        location: "{{ az_location }}"
+        state: present
+
+    - name: Create AAP deployment from Marketplace image (takes up to 3hrs)
+      azure.azcollection.azure_rm_deployment:
+        resource_group: "{{ az_resourcegroup }}_AAP"
+        name: "{{ az_managed_app }}_deployment"
+        location: "{{ az_location }}"
+        template_link: 'https://raw.githubusercontent.com/sap-linuxlab/demo.sap_install/azure/demo-setup/template.json'
+        parameters:
+          access:
+            value: public
+          adminPassword:
+            value: "{{  controller_password }}"
+          applicationResourceName:
+            value: "{{ az_managed_app }}"
+          disasterRecovery:
+            value: false
+          dnsServiceIP:
+            value: 10.2.0.10
+          location:
+            value: "{{ az_location }}"
+          managedResourceGroupId:
+            value: "/subscriptions/{{ azure_subscription }}/resourceGroups/{{ az_resourcegroup }}_AAPmanaged"
+          podCidr:
+            value: 10.244.0.0/20
+          serviceCidr:
+            value: 10.2.0.0/26
+          tagsByResource:
+            value: {}
+          vnetConfig:
+            value:
+              addressPrefix: 10.1.0.0/24
+              addressPrefixes:
+                - 10.1.0.0/24
+              name: vnet01_doNotEditName
+              newOrExisting: new
+              resourceGroup: "{{ az_resourcegroup }}_AAP"
+              subnets:
+                aks:
+                  addressPrefix: 10.1.0.0/26
+                  name: cluster_doNotEditName
+                  startAddress: 10.1.0.4
+                appgw:
+                  addressPrefix: 10.1.0.64/28
+                  name: appgw_doNotEditName
+                  startAddress: 10.1.0.68
+                plink:
+                  addressPrefix: 10.1.0.80/28
+                  name: private_link_doNotEditName
+                  startAddress: 10.1.0.84
+                postgres:
+                  addressPrefix: 10.1.0.96/28
+                  name: database_doNotEditName
+                  startAddress: 10.1.0.100

@@ -1,0 +1,25 @@
+---
+- name: Create Azure service principal
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Install required Azure modules
+      pip:
+        name: azure
+        state: present
+
+    - name: Create Azure service principal
+      azure.azcollection.azure_rm_azureauth:
+        username: "{{ azure_username }}"
+        password: "{{ azure_password }}"
+        tenant: "{{ azure_tenant }}"
+      register: login_output
+
+    - name: Assign Contributor role to service principal
+      azure.azcollection.azure_rm_roleassignment:
+        role_definition_name: Contributor
+        principal_id: "{{ login_output['msrOutput']['aadClientId'] }}"
+        scope: /subscriptions/{{ subscription_id }}
+        state: present
+
