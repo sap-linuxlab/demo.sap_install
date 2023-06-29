@@ -78,7 +78,7 @@ sap_hana_version: HANA2SPS06
 #------------------
 sap_hana_install_software_directory: "{{ nfs_archive_dir }}/{{ sap_hana_version }}"
 sap_hana_install_software_extract_directory: "/mnt/sapinst"
-sap_hana_install_master_password: "R3dh4t$123"
+sap_hana_install_master_password: "R3dh4t$123" # notsecret
 # The following variables are defined by the survey
 sap_hana_sid: "RHA"                  
 sap_hana_instance_number: "00"
@@ -88,7 +88,7 @@ sap_hana_instance_number: "00"
 # follow: https://access.redhat.com/articles/6964708
 #
 ha_cluster_cluster_name: hanacluster
-ha_cluster_hacluster_password: 'S3cr3tP@ssw0rd'
+ha_cluster_hacluster_password: 'S3cr3tP@ssw0rd' # notsecret
 
 sap_hana_cluster_nodes:
   - node_name: azhana1

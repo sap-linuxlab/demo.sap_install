@@ -30,13 +30,6 @@ To run this script you need to have at least the following information at hand:
 - SAP S-User with download permission or accessible NFS-share with SAP Software 
 - Access Token to Red Hat Automation Hub
 
-and the following software preinstalled (the script will check and may do it for you)
-
-- ansible-core Ansible CLI
-- jq for parsing json
-- ansible collection azure.azcollection plus required python libraries
-- azure az CLI
-
 EOT
 
 # FUNCTIONS
@@ -84,11 +77,16 @@ while [[ -z "${EMAIL}" ]]; do
   cache_var EMAIL "${EMAIL}"  
 done
 echo ""
-[[ -z "${AH_TOKEN}" ]] && echo "You can generate a Red Hat Automation Token at https://console.redhat.com/ansible/automation-hub/token"
-while [[ -z "${AH_TOKEN}" ]]; do
-   echo -n "Enter your Red Hat Automation Hub Token: " && read -r AH_TOKEN
-   cache_var AH_TOKEN "${AH_TOKEN}"
+
+echo "Checking your Automation Hub Token"
+while ! curl https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token -d grant_type=refresh_token -d client_id="cloud-services" -d refresh_token="$AH_TOKEN" --fail --silent --show-error --output /dev/null; do
+      echo "you do not have a valid token"
+      echo "You can generate a Red Hat Automation Token at https://console.redhat.com/ansible/automation-hub/token"
+      echo -n "Enter your Red Hat Automation Hub Token: " && read -r AH_TOKEN
+      cache_var AH_TOKEN "${AH_TOKEN}"
 done
+echo "Automation Hub Token is valid"
+
 while [[ -z "${SAP_SUPPORT_DOWNLOAD_USERNAME}" ]]; do
   echo -n "Enter your SAP S-User: "; read -r SAP_SUPPORT_DOWNLOAD_USERNAME
   cache_var SAP_SUPPORT_DOWNLOAD_USERNAME "${SAP_SUPPORT_DOWNLOAD_USERNAME}"
@@ -100,8 +98,8 @@ done
 while [[ -z "${SUBSCRIPTION}" ]]; do
   echo -n "Enter Azure Subscription ID :"; read -r SUBSCRIPTION
   cache_var SUBSCRIPTION "${SUBSCRIPTION}"
-  cache_var AZURE_SUBSCRIPTION_ID "${SUBSCRIPTION}"
 done
+[[ -z "${AZURE_SUBSCRIPTION_ID}" ]] && cache_var AZURE_SUBSCRIPTION_ID "${SUBSCRIPTION}"
 
 ## get Azure service principal
 if [[ -z "${CLIENT_ID}" || -z "${PASSWORD}" || -z "${TENANT}" ]]; then
@@ -138,6 +136,7 @@ if [[ -z "${CLIENT_ID}" || -z "${PASSWORD}" || -z "${TENANT}" ]]; then
   cache_var AZURE_TENANT "${TENANT}"
 fi
 
+# Resource Group definition
 while [[ -z "${RESOURCEGROUP}" ]]; do
     echo -n "Enter Azure Resource Group Name to hold the virtual machines:"; read -r RESOURCEGROUP
 done
@@ -146,22 +145,25 @@ cache_var RESOURCEGROUP "${RESOURCEGROUP}"
 ## get Ansible Controller Credentials
 if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER_PASSWORD}" ]]; then
   a=""
-  echo -n "Do you have a preinstalled AAP Controller [y/N] "; read -r a
+  echo -n "Do you have already an AAP Controller you want to use [y/N] "; read -r a
   if [[ "${a}" = "y" || "${a}" = "Y" ]]; then
     echo -n "Enter Controller URL:     "; read -r CONTROLLER_HOST
     echo -n "Enter Controller User:    "; read -r CONTROLLER_USERNAME
     echo -n "Enter Controller Password:"; read -r CONTROLLER_PASSWORD
   else
+    # Ensure you are logged in to the right account
     if [[ $(az account show --query "id") != "\"${SUBSCRIPTION}\"" ]]; then 
       az login
       az account set --subscription "${SUBSCRIPTION}"
     fi
     # run controller deployment
-    rg_result=$(az group create --name  "${RESOURCEGROUP}_AAP" --location eastus | tee -a "${LOGFILE}")
-    rg_status=$(echo "${rg_result}"| jq -r '.properties.provisioningState' )
-    [[ "${rg_status}" != "Succeeded" ]] && echo "ERROR creating Azure Resource group" && exit 1
     echo "Azure Resource Group for AAP Controller: ${RESOURCEGROUP}_AAP"
-    aap_managedapp_name=$(cat parameters.json | jq -r '.parameters.applicationResourceName.value')
+    while [[ -z "${CONTROLLER_PASSWORD}" ]]; do
+      echo -n "Enter Controller Password:"; read -r CONTROLLER_PASSWORD
+    done
+    CONTROLLER_USERNAME="admin" # A new deployment needs admin -- so overwrite it
+
+    aap_managedapp_name="AAPSapDemo"
     if az managedapp list -g ${RESOURCEGROUP}_AAP --query "[].name" | grep -qw "${aap_managedapp_name}"; then
       echo "AAP Managed App ${aap_managedapp_name} already deployed"
       echo "Trying to get config"
@@ -169,18 +171,35 @@ if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER
       echo "Creating AAP from Marketplace"
       echo "Be patient, this can take up to 3hrs"
       echo "Creation started at $(date) - run 'tail -f ${LOGFILE}' in other window to see the output"
-      #spinner &
-      aap_result=$(az deployment group create --name "AnsibleAutomationPlatform" \
-                      --resource-group "${RESOURCEGROUP}_AAP" --template-file ./template.json --parameters ./parameters.json | tee -a ${LOGFILE} )
-      # touch /tmp/stopspin # stop spinner
-      #spinner stop
-      echo "Creation stopped at $(date)"
-      aap_status=$(echo "${aap_result}"| jq -r '.properties.provisioningState' )
-      [[ "${aap_status}" != "Succeeded" ]] && echo "ERROR creating Ansible Controller from marketplace" && exit 1
+      ansible-playbook -vv 01-deploy-AAP-from-marketplace.yml \
+        -e controller_password="${CONTROLLER_PASSWORD}" \
+        -e azure_cli_id="${CLIENT_ID}" \
+        -e azure_cli_secret="${PASSWORD}" \
+        -e azure_tenant="${TENANT}" \
+        -e az_resourcegroup="${RESOURCEGROUP}" \
+        -e azure_subscription="${SUBSCRIPTION}"
+
+      DeploymentEngineURL=$(az managedapp show  -g  ${RESOURCEGROUP}_AAP -n ${aap_managedapp_name} --query outputs.deploymentEngineUrl.value)
+      ansible-playbook -i localhost, -vv 01-wait-for-https.yml \
+        -e controller_hostname="${DeploymentEngineURL}"
+
+      echo ""
+      echo ""
+      echo "======================================================================================================="
+      echo "ATTENTION: The deployment of AAP in Azure is not always reliable"
+      echo "There is a way to follow along with the deployment, and track the deployment steps,"
+      echo " INCLUDING the ability to 'Restart' from a failed step, instead of completelyDeploymentEngineURL"
+      echo ""
+      echo "To follow the installation process, please browse to ${DeploymentEngineURL}"
+      echo "login with ${CONTROLLER_USERNAME} and password ${CONTROLLER_PASSWORD}"
+      echo ""
+      echo "If the deployment has failed at a specific step you will have the option to RESTART"
+      echo "that step to continue the deployment process"
+      echo "========================================================================================================="
+      echo ""
+      echo ""
     fi
     CONTROLLER_HOST=$(az managedapp show  -g  ${RESOURCEGROUP}_AAP -n ${aap_managedapp_name} --query outputs.automationControllerUrl.value)
-    CONTROLLER_USERNAME="admin"
-    CONTROLLER_PASSWORD=$(cat parameters.json | jq -r '.parameters.adminPassword.value')
   fi
   [[ -z "${CONTROLLER_HOST}" ]] && echo "ERROR: Something unexpected went wrong. " && exit 1
   cache_var CONTROLLER_HOST "${CONTROLLER_HOST}"
@@ -188,9 +207,9 @@ if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER
   cache_var CONTROLLER_PASSWORD "${CONTROLLER_PASSWORD}"
 fi
 
-
-echo "SUMMARY"
-echo "======="
+echo "========================================================================================================="
+echo "CONFIGURATION SUMMARY"
+echo "========================================================================================================="
 echo ""
 echo "S-User ID:                        ${SAP_SUPPORT_DOWNLOAD_USERNAME}"
 echo -n "S-User password:                  "
@@ -200,7 +219,7 @@ else
   echo "is unset -> demo will fail to download SAP software"
 fi
 echo -n "Red Hat Automation Hub Token:     "
-if [ ! -z "${AH_TOKEN}" ]; then
+if [[ -n "${AH_TOKEN}" ]]; then
   echo "is set"
 else
   echo "is unset -> demo cannot download collections"
@@ -221,23 +240,29 @@ echo "AAP Controller password           ${CONTROLLER_PASSWORD}"
 echo ""
 echo "if any of this content is empty, plase stop and rerun the demo with valid information"
 echo ""
-
-echo "Configure Controller"
+echo "========================================================================================================="
+echo ""
+echo ""
+echo "Configure Controller when it is installed"
+echo "follow the above procedure to watch and ensure the installation"
+echo ""
 export AZURE_CLIENT_ID="${CLIENT_ID}"
 export AZURE_SECRET="${PASSWORD}"
 export AZURE_TENANT="${TENANT}"
 export AZURE_SUBSCRIPTION_ID="${SUBSCRIPTION}"
 
+ansible-playbook -i localhost, -vv 01-wait-for-https.yml \
+  -e controller_hostname="${CONTROLLER_HOST}"
+
 ansible-playbook -i localhost, -vv 02-configure-AAP.yml \
-  -e controller_username=${CONTROLLER_HOST} \
-  -e controller_password=${CONTROLLER_PASSWORD} \
-  -e controller_hostname=${CONTROLLER_HOSTNAME} \
-  -e ansible_python_interpreter=~/.venv/azure/bin/python3 \
-  -e azure_cli_id=${CLIENT_ID} \
-  -e azure_cli_secret=${PASSWORD} \
-  -e azure_tenant=${TENANT} \
-  -e az_resourcegroup=${RESOURCEGROUP} \
-  -e azure_subscription=${SUBSCRIPTION} \
+  -e controller_username="${CONTROLLER_HOST}" \
+  -e controller_password="${CONTROLLER_PASSWORD}" \
+  -e controller_hostname="${CONTROLLER_HOST}" \
+  -e azure_cli_id="${CLIENT_ID}" \
+  -e azure_cli_secret="${PASSWORD}" \
+  -e azure_tenant="${TENANT}" \
+  -e az_resourcegroup="${RESOURCEGROUP}" \
+  -e azure_subscription="${SUBSCRIPTION}" \
   -e my_suser="${SAP_SUPPORT_DOWNLOAD_USERNAME}" \
   -e my_spass="${SAP_SUPPORT_DOWNLOAD_PASSWORD}" \
   -e ah_token="${AH_TOKEN}" \

@@ -1,0 +1,24 @@
+---
+- name: Waiting for AAP controller availability
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    az_location: "eastus"
+    az_managed_app: "AAPSapDemo"
+
+  vars_prompt:
+    - name: "controller_hostname"
+      prompt: "Controller URL"
+      private: false
+      default: "{{lookup('env', 'CONTROLLER_HOST')}}"
+
+  tasks:
+    - name: Check if controller is available and returning status 200 (testing 5 hours)
+      uri:
+        url: "{{ controller_hostname }}"
+        validate_certs: no
+      register: result
+      until: "result.status == 200"
+      retries: 60
+      delay: 300

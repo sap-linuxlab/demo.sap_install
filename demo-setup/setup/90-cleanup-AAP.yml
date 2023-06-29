@@ -2,13 +2,11 @@
   hosts: localhost
   gather_facts: false
   connection: local
+  ignore_errors: true
   vars:
     controller_validate_certs: false
     myorg: "SAP Demo"
     prefix: "RHDS "
-  collections:
-    - ansible.controller
-    - redhat_cop.controller_configuration
 
   # This playbook requires the following environment variables
   # CONTROLLER_USERNAME
@@ -27,62 +25,10 @@
       prompt: "Controller URL"
       private: false
       default: "{{lookup('env', 'CONTROLLER_HOST')}}"
-    - name: "machine_user"
-      prompt: "Azure Cloud User"
-      private: false
-      default: "azureadmin"
-    - name: "machine_password"
-      prompt: "Azure Cloud User Password"
-      private: true
-      default: "SuperSecretP@ssw0rd."
-    - name: "my_suser"
-      prompt: "S-User ID"
-      private: false
-      default: "{{ lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME') }}"
-    - name: "my_spass"
-      prompt: "S-User Password"
-      private: true
-      default: "{{ lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD') }}"
-    - name: "azure_cli_id"
-      prompt: "Azure Client ID"
-      private: false
-      default: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
-    - name: "azure_cli_secret"
-      prompt: "Azure Client Secret"
-      private: true
-      default: "{{ lookup('env', 'AZURE_SECRET') }}"
-    - name: "azure_tenant"
-      prompt: "Azure Tenant"
-      private: false
-      default: "{{ lookup('env', 'AZURE_TENANT') }}"
-    - name: "azure_subscription"
-      prompt: "Azure Subscription ID"
-      private: false
-      default: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
-    - name: "az_resourcegroup"
-      prompt: "Azure Resource Group Name"
-      private: false
-      default: "{{ lookup('env', 'RESOURCEGROUP') }}"
-    - name: "ah_token"
-      prompt: "Automation Hub token"
-      private: true
-      default: "{{ lookup('env', 'AH_TOKEN') }}"
-      
+
   tasks:
-    # - name: Create a new token using controller username/password
-    #  ansible.controller.token:
-    #    description: 'Creating token to test controller jobs'
-    #    scope: "write"
-    #    state: present
-    #    controller_host: "{{ controller_hostname }}"
-    #    controller_username: "{{ controller_username }}"
-    #    controller_password: "{{ controller_password }}"
-    #    validate_certs: "{{ controller_validate_certs }}"
-    #  register: _token
-
-
     - name: Remove Workflow templates
-      ansible.controller.workflow_job_template:
+      awx.awx.workflow_job_template:
         name: "{{ item }}"
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
@@ -92,7 +38,7 @@
         - "00 - Simple HANA + S/4 deployment"
 
     - name: Remove Job templates
-      ansible.controller.job_template:
+      awx.awx.job_template:
         name: "92 - Download SAP Software"
         state: absent
         organization: "{{myorg}}"
@@ -109,7 +55,7 @@
         - "92 - Download SAP Software"
 
     - name: Ensure dynamic Azure inventory is removed
-      ansible.controller.inventory_source:
+      awx.awx.inventory_source:
         name: "SAP Hosts"
         inventory: "{{ prefix }} SAP Demo"
         organization: "{{myorg}}"
@@ -117,21 +63,21 @@
         state: absent
 
     - name: Ensure SAP Demo inventory is removed
-      ansible.controller.inventory:
+      awx.awx.inventory:
         name: "{{ prefix }} SAP Demo" 
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: absent
 
     - name: Ensure project for sap demo is removed
-      ansible.controller.project:
+      awx.awx.project:
         name: "{{ prefix }}SAP Demo Project"
         organization: "{{myorg}}"
         state: absent
-        validate_certs: "{{ controller_validate_certs }}"
+        controller_host: "{{ controller_hostname }}"
 
     - name: Ensure Credentials are removed
-      ansible.controller.credential:
+      awx.awx.credential:
         name: "{{ prefix }}Azure credential"
         organization: "{{myorg}}"
         credential_type: "Microsoft Azure Resource Manager"
@@ -142,19 +88,16 @@
         - "{{ prefix }}Azure Machine Credential"
         - "{{ prefix }}Azure SAP S-User Credential"
         - "{{ prefix }}Automation Hub Credential"
-        
+
     - name: Ensure credential definition for SAP S-User is removed
-      ansible.controller.credential_type:
+      awx.awx.credential_type:
         name: "SAP S-User"
         kind: cloud
         state: absent
-        validate_certs:  "{{ controller_validate_certs }}"
+        validate_certs: "{{ controller_validate_certs }}"
 
     - name: Ensure organization "{{ myorg }}" is removed
-      ansible.controller.organization:
+      awx.awx.organization:
         name: "{{myorg}}"
         state: absent
         validate_certs: "{{ controller_validate_certs }}"
-        
-
-    
