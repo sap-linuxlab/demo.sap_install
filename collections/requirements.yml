@@ -8,15 +8,13 @@ collections:
           # source: https://console.redhat.com/api/automation-hub/
         - name: redhat.rhel_system_roles
           version: 1.7.3
-          source: https://cloud.redhat.com/api/automation-hub/
         - name: community.general
-          version: 4.3.0
+          # version: 4.3.0
         - name: community.postgresql
-          version: 1.6.1
+          # version: 1.6.1
           # requires ansible 2.9+
         - name: https://github.com/sap-linuxlab/community.sap_launchpad.git
           type: git
-        - name: https://github.com/mk-ansible-roles/community.sap_install.git,dev
-          type: git
-        - name: https://github.com/sap-linuxlab/community.sap_operations.git
-          type: git
+        - name: community.sap_install
+        - name: community.sap_operations
+        - name: sap.sap_operations
