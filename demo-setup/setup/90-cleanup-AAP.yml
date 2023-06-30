@@ -39,7 +39,7 @@
 
     - name: Remove Job templates
       awx.awx.job_template:
-        name: "92 - Download SAP Software"
+        name: "{{ item }}"
         state: absent
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"

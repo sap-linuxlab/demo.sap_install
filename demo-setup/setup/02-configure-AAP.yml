@@ -67,7 +67,7 @@
       prompt: "Automation Hub token"
       private: true
       default: "{{ lookup('env', 'AH_TOKEN') }}"
-      
+
   tasks:
     # - name: Create a new token using controller username/password
     #  awx.awx.token:
@@ -87,21 +87,20 @@
         validate_certs: "{{ controller_validate_certs }}"
       tags:
         - allow_jinja_in_extra_vars
-      
-    
+
     - name: Ensure organization "{{ myorg }}" exists
       awx.awx.organization:
         name: "{{myorg}}"
         description: "Red Hat SAP DEMO"
         state: present
         validate_certs: "{{ controller_validate_certs }}"
-        
+
     - name: Ensure Ansible Controller credential for SAP S-User
       awx.awx.credential_type:
         name: "SAP S-User"
         description: "Communication with SAP Launchpad API"
         kind: cloud
-        inputs: 
+        inputs:
           fields:
             - id: suser_id
               type: string
@@ -113,8 +112,8 @@
               secret: true
           required:
             - suser_id
-            - suser_password 
-        injectors: 
+            - suser_password
+        injectors:
           extra_vars:
             suser_id: '{{ "{{ suser_id }}" }}'
             suser_password: '{{ "{{ suser_password }}" }}'
@@ -122,14 +121,14 @@
             SAP_SUPPORT_DOWNLOAD_PASSWORD: '{{ "{{ suser_password }}" }}'
             SAP_SUPPORT_DOWNLOAD_USERNAME: '{{ "{{ suser_id }}" }}'
         state: present
-        validate_certs:  "{{ controller_validate_certs }}"
+        validate_certs: "{{ controller_validate_certs }}"
 
-    # - name: Ensure RHN Activation Key Credential 
+    # - name: Ensure RHN Activation Key Credential
     #  awx.awx.credential_type:
     #    name: "RHN Activation Key"
     #    description: "Used for RHN"
     #    kind: cloud
-    #    inputs: 
+    #    inputs:
     #      fields:
     #        - id: activationkey
     #          type: string
@@ -153,7 +152,7 @@
       awx.awx.credential:
         name: "{{ prefix }}Azure Machine Credential"
         description: "used for login into Azure VMs"
-        organization:  "{{myorg}}"
+        organization: "{{myorg}}"
         credential_type: Machine
         state: present
         inputs:
@@ -167,7 +166,7 @@
       awx.awx.credential:
         name: "{{ prefix }}Azure SAP S-User Credential"
         description: "used for downloading SAP-Software"
-        organization:  "{{myorg}}"
+        organization: "{{myorg}}"
         credential_type: "SAP S-User"
         state: present
         inputs:
@@ -207,7 +206,7 @@
         validate_certs: "{{ controller_validate_certs }}"
       tags:
         - update_credentials
-    
+
     - name: Ensure Galaxy Credentials are added to organization
       awx.awx.organization:
         name: "{{myorg}}"
@@ -217,7 +216,7 @@
         state: present
         validate_certs: "{{ controller_validate_certs }}"
 
-    - name: Ensure project for sap demo exists 
+    - name: Ensure project for sap demo exists
       awx.awx.project:
         name: "{{ prefix }}SAP Demo Project"
         organization: "{{myorg}}"
@@ -239,7 +238,20 @@
         - "Demo Project"
       tags:
         - cleanup_demo_projects
-    
+
+    - name: Cleanup demo job templates
+      awx.awx.job_template:
+        name: "{{ item }}"
+        state: absent
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+      loop:
+        - 'Azure web application deployment demo'
+        - 'Azure web application migration demo'
+        - 'Demo Job Template'
+      tags:
+        - cleanup_demo_templates
+
     - name: Ensure SAP Demo inventory exists
       awx.awx.inventory:
         name: "{{ prefix }} SAP Demo" 
@@ -275,11 +287,11 @@
             tags: tags if tags else None
             type: resource_type
           keyed_groups:
-          - key: tags.AnsibleGroup
-            prefix: ''
-            separator: ''
+            - key: tags.AnsibleGroup
+              prefix: ''
+              separator: ''
           plain_host_names: true
-          
+
     - name: Configure infrastructure job templates
       awx.awx.job_template:
         name: "01 - Infrastructure Provisioning (Azure)"
@@ -288,7 +300,7 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        inventory: "{{ prefix }} SAP Demo" 
+        inventory: "{{ prefix }} SAP Demo"
         project: "{{ prefix }}SAP Demo Project"
         playbook: azure/01-server-provisioning-azure.yml
         credentials:

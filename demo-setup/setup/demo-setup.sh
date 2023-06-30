@@ -171,7 +171,7 @@ if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER
       echo "Creating AAP from Marketplace"
       echo "Be patient, this can take up to 3hrs"
       echo "Creation started at $(date) - run 'tail -f ${LOGFILE}' in other window to see the output"
-      ansible-playbook -vv 01-deploy-AAP-from-marketplace.yml \
+      ansible-playbook -v -i localhost, 01-deploy-AAP-from-marketplace.yml \
         -e controller_password="${CONTROLLER_PASSWORD}" \
         -e azure_cli_id="${CLIENT_ID}" \
         -e azure_cli_secret="${PASSWORD}" \
@@ -180,7 +180,7 @@ if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER
         -e azure_subscription="${SUBSCRIPTION}"
 
       DeploymentEngineURL=$(az managedapp show  -g  ${RESOURCEGROUP}_AAP -n ${aap_managedapp_name} --query outputs.deploymentEngineUrl.value)
-      ansible-playbook -i localhost, -vv 01-wait-for-https.yml \
+      ansible-playbook -i localhost, 01-wait-for-https.yml \
         -e controller_hostname="${DeploymentEngineURL}"
 
       echo ""
@@ -251,10 +251,16 @@ export AZURE_SECRET="${PASSWORD}"
 export AZURE_TENANT="${TENANT}"
 export AZURE_SUBSCRIPTION_ID="${SUBSCRIPTION}"
 
-ansible-playbook -i localhost, -vv 01-wait-for-https.yml \
+ansible-playbook -i localhost,  01-wait-for-https.yml \
   -e controller_hostname="${CONTROLLER_HOST}"
 
-ansible-playbook -i localhost, -vv 02-configure-AAP.yml \
+echo ""
+echo "The Ansible Automation Controller is now fully deployed"
+echo "We are waiting another minute before trying to configure"
+echo ""
+sleep 60 # If we would continue immediately  the playbook cannot connect, so give it some additional time
+
+ansible-playbook -i localhost, -v 02-configure-AAP.yml \
   -e controller_username="${CONTROLLER_USERNAME}" \
   -e controller_password="${CONTROLLER_PASSWORD}" \
   -e controller_hostname="${CONTROLLER_HOST}" \
