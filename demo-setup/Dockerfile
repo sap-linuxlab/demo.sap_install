@@ -18,4 +18,4 @@ WORKDIR /root
 ADD setup ./setup
 
 WORKDIR /root/setup
-ENTRYPOINT ./demo-setup.sh
+ENTRYPOINT /bin/bash
