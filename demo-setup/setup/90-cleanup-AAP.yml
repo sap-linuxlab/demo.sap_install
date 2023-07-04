@@ -1,3 +1,4 @@
+---
 - name: Configure Ansible Automation Controller
   hosts: localhost
   gather_facts: false
@@ -64,7 +65,7 @@
 
     - name: Ensure SAP Demo inventory is removed
       awx.awx.inventory:
-        name: "{{ prefix }} SAP Demo" 
+        name: "{{ prefix }} SAP Demo"
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: absent

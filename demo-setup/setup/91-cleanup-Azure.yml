@@ -1,3 +1,4 @@
+---
 - name: Remove AAP and azure groups
   hosts: localhost
   gather_facts: false
@@ -48,3 +49,11 @@
       loop:
         - "{{ az_resourcegroup }}"
         - "{{ az_resourcegroup }}_AAP"
+
+    - name: Delete Azure Service Principal
+      azure.azcollection.azure_rm_adserviceprincipal:
+        tenant: "{{ azure_tenant }}"
+        client_id: "{{ azure_cli_id }}"
+        secret: "{{ azure_cli_secret }}"
+        state: absent
+        app_id: "{{ azure_cli_id }}"

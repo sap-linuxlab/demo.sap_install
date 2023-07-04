@@ -5,7 +5,9 @@ cat << EOT
 Update Azure credentials SAP Deployment demo
 =============================================
 
-This script updates the azure credentials in a running AAP Controller
+This script updates the azure credentials in a running AAP Controller.
+This script should be used only if you have a permanent controller, where you
+want to manage changing Azure subscriptions.
 
 Requirements
 ============
@@ -20,8 +22,8 @@ EOT
 
 
 # Create virtual python environment for deployment
-if [ ! -d ~/.venv/azure ]; then
-   [ ! -d ~/.venv ] && mkdir ~/.venv
+if [[ ! -d ~/.venv/azure ]]; then
+   [[ ! -d ~/.venv ]] && mkdir ~/.venv
    python3.9 -m venv ~/.venv/azure
 fi
 echo "Activate python environment"

@@ -1,3 +1,4 @@
+---
 - name: Configure Ansible Automation Controller
   hosts: localhost
   gather_facts: false
@@ -95,7 +96,7 @@
 
     - debug:
         var: _output
-        
+
     - name: Ensure organization "{{ myorg }}" exists
       awx.awx.organization:
         name: "{{myorg}}"
@@ -149,7 +150,7 @@
     #      required:
     #        - activationkey
     #        - orgid
-    #    injectors: 
+    #    injectors:
     #      extra_vars:
     #        reg_activation_key: ''
     #        reg_organization_id: ''
@@ -328,7 +329,7 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        inventory: "{{ prefix }} SAP Demo" 
+        inventory: "{{ prefix }} SAP Demo"
         project: "{{ prefix }}SAP Demo Project"
         playbook: azure/02-basic-os-setup.yml
         credentials:
@@ -348,7 +349,7 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        inventory: "{{ prefix }} SAP Demo" 
+        inventory: "{{ prefix }} SAP Demo"
         project: "{{ prefix }}SAP Demo Project"
         playbook: generic/03-A-sap-hana-prepare.yml
         credentials:
@@ -367,7 +368,7 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        inventory: "{{ prefix }} SAP Demo" 
+        inventory: "{{ prefix }} SAP Demo"
         project: "{{ prefix }}SAP Demo Project"
         playbook: generic/03-B-sap-hana-install.yml
         credentials:
@@ -386,7 +387,7 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        inventory: "{{ prefix }} SAP Demo" 
+        inventory: "{{ prefix }} SAP Demo"
         project: "{{ prefix }}SAP Demo Project"
         playbook: azure/03-CD-sap-hana-cluster.yml
         credentials:
@@ -405,7 +406,7 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        inventory: "{{ prefix }} SAP Demo" 
+        inventory: "{{ prefix }} SAP Demo"
         project: "{{ prefix }}SAP Demo Project"
         playbook: generic/04-A-sap-netweaver-prepare.yml
         credentials:
@@ -424,7 +425,7 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        inventory: "{{ prefix }} SAP Demo" 
+        inventory: "{{ prefix }} SAP Demo"
         project: "{{ prefix }}SAP Demo Project"
         playbook: generic/04-B-S4-deployment.yml
         credentials:
@@ -436,7 +437,7 @@
         - job-template
 
     - name: Configure file-server
-      awx.awx.job_template: 
+      awx.awx.job_template:
         name: "91 - Configure NFS Fileserver"
         description: "Configures NFS file share for SAP Software"
         job_type: "run"
@@ -674,7 +675,7 @@
               name: "03-B SAP HANA installation"
               type: job_template
             related:
-              success_nodes: 
+              success_nodes:
                 - identifier: "03 - CD - Configure SAP HANA Cluster"
               failure_nodes: []
               always_nodes: []
@@ -710,10 +711,3 @@
       tags:
         - workflow-template
         - workflow-template-02
-
-
-
-
-    # name: Configure workflow templates
-
-      
