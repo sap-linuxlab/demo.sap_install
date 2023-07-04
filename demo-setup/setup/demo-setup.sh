@@ -96,7 +96,7 @@ while [[ -z "${SAP_SUPPORT_DOWNLOAD_PASSWORD}" ]]; do
   cache_var SAP_SUPPORT_DOWNLOAD_PASSWORD "${SAP_SUPPORT_DOWNLOAD_PASSWORD}"
 done
 while [[ -z "${SUBSCRIPTION}" ]]; do
-  echo -n "Enter Azure Subscription ID :"; read -r SUBSCRIPTION
+  echo -n "Enter Azure Subscription ID : "; read -r SUBSCRIPTION
   cache_var SUBSCRIPTION "${SUBSCRIPTION}"
 done
 [[ -z "${AZURE_SUBSCRIPTION_ID}" ]] && cache_var AZURE_SUBSCRIPTION_ID "${SUBSCRIPTION}"
@@ -104,7 +104,7 @@ done
 ## get Azure service principal
 if [[ -z "${CLIENT_ID}" || -z "${PASSWORD}" || -z "${TENANT}" ]]; then
   a=""
-  echo -n "Do your have Azure Service Principal Credentials (client_id, tenant_id and password)? [y/N]"; read -r a
+  echo -n "Do you have Azure Service Principal Credentials (client_id, tenant_id, and password)? [y/N]"; read -r a
   if [[  "${a}" = "y" || "${a}" = "Y" ]]; then
     echo -n "Enter your Azure Client ID "; read -r CLIENT_ID
     echo -n "Enter your Azure Secret ID "; read -r PASSWORD
@@ -171,7 +171,7 @@ if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER
       echo "Creating AAP from Marketplace"
       echo "Be patient, this can take up to 3hrs"
       echo "Creation started at $(date) - run 'tail -f ${LOGFILE}' in other window to see the output"
-      ansible-playbook -vv 01-deploy-AAP-from-marketplace.yml \
+      ansible-playbook -v -i localhost, 01-deploy-AAP-from-marketplace.yml \
         -e controller_password="${CONTROLLER_PASSWORD}" \
         -e azure_cli_id="${CLIENT_ID}" \
         -e azure_cli_secret="${PASSWORD}" \
@@ -180,7 +180,7 @@ if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER
         -e azure_subscription="${SUBSCRIPTION}"
 
       DeploymentEngineURL=$(az managedapp show  -g  ${RESOURCEGROUP}_AAP -n ${aap_managedapp_name} --query outputs.deploymentEngineUrl.value)
-      ansible-playbook -i localhost, -vv 01-wait-for-https.yml \
+      ansible-playbook -i localhost, 01-wait-for-https.yml \
         -e controller_hostname="${DeploymentEngineURL}"
 
       echo ""
@@ -246,15 +246,24 @@ echo ""
 echo "Configure Controller when it is installed"
 echo "follow the above procedure to watch and ensure the installation"
 echo ""
-export AZURE_CLIENT_ID="${CLIENT_ID}"
-export AZURE_SECRET="${PASSWORD}"
-export AZURE_TENANT="${TENANT}"
-export AZURE_SUBSCRIPTION_ID="${SUBSCRIPTION}"
 
-ansible-playbook -i localhost, -vv 01-wait-for-https.yml \
+# re-read the cached environment variables 
+if [[ -f ./testenv.azure.sh ]]; then
+  source ./testenv.azure.sh
+else
+  echo "Something went wrong with the cached variables"
+  echo "please check './testenv.azure.sh' and re-run $0"
+  exit 1
+fi
+
+ansible-playbook -i localhost,  01-wait-for-https.yml \
   -e controller_hostname="${CONTROLLER_HOST}"
 
-ansible-playbook -i localhost, -vv 02-configure-AAP.yml \
+echo ""
+echo "The Ansible Automation Controller is now fully deployed"
+echo ""
+
+ansible-playbook -i localhost, -v 02-configure-AAP.yml \
   -e controller_username="${CONTROLLER_USERNAME}" \
   -e controller_password="${CONTROLLER_PASSWORD}" \
   -e controller_hostname="${CONTROLLER_HOST}" \

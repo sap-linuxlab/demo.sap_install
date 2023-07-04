@@ -1,3 +1,4 @@
+---
 - name: Configure Ansible Automation Controller
   hosts: localhost
   gather_facts: false
@@ -39,7 +40,7 @@
 
     - name: Remove Job templates
       awx.awx.job_template:
-        name: "92 - Download SAP Software"
+        name: "{{ item }}"
         state: absent
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
@@ -64,7 +65,7 @@
 
     - name: Ensure SAP Demo inventory is removed
       awx.awx.inventory:
-        name: "{{ prefix }} SAP Demo" 
+        name: "{{ prefix }} SAP Demo"
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: absent
