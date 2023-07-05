@@ -171,13 +171,16 @@ if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER
       echo "Creating AAP from Marketplace"
       echo "Be patient, this can take up to 3hrs"
       echo "Creation started at $(date) - run 'tail -f ${LOGFILE}' in other window to see the output"
+      # undocumented feature: add AAP_TEMPLATE_URL to your docker environment file to change the template
+      [[ -z "AAP_TEMPLATE_URL" ]] && AAP_TEMPLATE_URL=https://raw.githubusercontent.com/sap-linuxlab/demo.sap_install/azure/demo-setup/template.json
       ansible-playbook -v -i localhost, 01-deploy-AAP-from-marketplace.yml \
         -e controller_password="${CONTROLLER_PASSWORD}" \
         -e azure_cli_id="${CLIENT_ID}" \
         -e azure_cli_secret="${PASSWORD}" \
         -e azure_tenant="${TENANT}" \
         -e az_resourcegroup="${RESOURCEGROUP}" \
-        -e azure_subscription="${SUBSCRIPTION}"
+        -e azure_subscription="${SUBSCRIPTION}"\
+        -e az_aap_template_url="${AAP_TEMPLATE_URL}"
 
       DeploymentEngineURL=$(az managedapp show  -g  ${RESOURCEGROUP}_AAP -n ${aap_managedapp_name} --query outputs.deploymentEngineUrl.value)
       ansible-playbook -i localhost, 01-wait-for-https.yml \

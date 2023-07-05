@@ -1,8 +1,8 @@
 ---
 collections:
         - name: azure.azcollection
+        - name: google.cloud
         - name: vmware.vmware_rest
-          # source: https://cloud.redhat.com/api/automation-hub/
         - name: community.vmware
           version: 3.4.0
         - name: openstack.cloud
