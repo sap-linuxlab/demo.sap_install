@@ -1,0 +1,34 @@
+---
+#
+# This playbook downloads the Netweaver software defined in the list
+# {{ sap_s4_software }} to {{ sap_swpm_software_path }}
+#
+# The role sap_swpm unpacks thes software found in {{ sap_swpm_software_path }}
+# Then it calls the installation of sapinst with the configured paramters
+#
+
+- name: Install S4
+  hosts: gcp_awx_group_s4
+  become: true
+
+  tasks:
+    - name: Ensure "{{ sap_swpm_software_path }}" exists
+      file:
+         path: "{{ sap_swpm_software_path }}"
+         state: directory
+         mode: '0755'
+         owner: root
+         group: root
+      tags:
+        - sap_s4_softwaredownload
+
+    - name: Copy files from storage bucket to "{{ sap_swpm_software_path }}"
+      command: gsutil -m rsync -x "IMDB_SERVER20.*\.SAR$" gs://{{ gcp_bucket_sap }}/{{ sap_swpm_product }}  {{ sap_swpm_software_path }}
+      tags:
+        - sap_s4_softwaredownload
+
+    - name: execute the SWPM Installation
+      include_role:
+        name: community.sap_install.sap_swpm
+      tags:
+        - sap_s4_swpm

@@ -1,0 +1,12 @@
+---
+# Phase 4 - step A
+#
+# This playbook configures all systems in S4 group
+# for consumption of SAP Netweaver software
+
+- name: Prepare for SAP Netweaver Installation
+  hosts: gcp_awx_group_s4
+  become: true
+  roles:
+               - community.sap_install.sap_general_preconfigure
+               - community.sap_install.sap_netweaver_preconfigure
