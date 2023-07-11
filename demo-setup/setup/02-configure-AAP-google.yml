@@ -37,14 +37,18 @@
       prompt: "S-User Password"
       private: true
       default: "{{ lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD') }}"
-    - name: "google_credentials_json"
-      prompt: "Google Credentials file content"
+    - name: "gcp_vm_region"
+      prompt: "Google Region"
       private: false
-      default: "{{ lookup('env', 'google_credentials_json') }}"
-    - name: "gcp_location"
-      prompt: "Google location"
+      default: "europe-west"
+    - name: "gcp_vm_zone"
+      prompt: "Google Zone"
       private: false
-      default: "{{ lookup('env', '') }}"
+      default: "europe-west3-c"
+    - name: "gcp_vm_vpc"
+      prompt: "Google VM VPC"
+      private: false
+      default: "sapdemo_vpc"
 
   tasks:
     #- name: Create a new token using controller username/password
@@ -153,12 +157,11 @@
 
     - name: Ensure Google cloud credential exists
       awx.awx.credential:
-        name: "{{ prefix }}Azure credential"
+        name: "{{ prefix }}GCE credential"
         organization: "{{myorg}}"
         credential_type: "Google Compute Engine"
         inputs:
-          project: "your-gce-project"
-          json_file: "/path/to/your/credentials.json"
+          json_file: "./cache.gce.json"
         validate_certs: "{{ controller_validate_certs }}"
       tags:
         - update_credentials
@@ -177,6 +180,7 @@
         validate_certs: "{{ controller_validate_certs }}"
       tags:
         - update_credentials
+        - update_ah_token
 
     - name: Ensure Galaxy Credentials are added to organization
       awx.awx.organization:
@@ -225,16 +229,16 @@
 
     - name: Ensure SAP Demo inventory exists
       awx.awx.inventory:
-        name: "{{ prefix }} SAP Demo" 
+        name: "{{ prefix }} SAP Demo"
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        variables: "{{ lookup('template','02-variable-configs/inventory.yml.j2')|from_yaml|to_json }}"
+        variables: "{{ lookup('template','02-variable-configs/inventory-google.yml.j2')|from_yaml|to_json }}"
       tags:
         - new_demo_env
         - update_inventory
 
-    - name: Ensure dynamic Azure inventory source exists
+    - name: Ensure dynamic GCE inventory source exists
       awx.awx.inventory_source:
         name: "SAP Hosts"
         description: "finds hosts deployed for this demo and group properly"
@@ -244,24 +248,22 @@
         organization: "{{myorg}}"
         validate_certs: "{{ controller_validate_certs }}"
         state: present
-        credential: "{{ prefix }}Azure credential"
-        source: azure_rm
+        credential: "{{ prefix }}GCE credential"
+        source: gcp_compute
         source_vars:
-          fail_on_template_errors: false
-          hostvar_expressions:
-            computer_name: name
-            private_ip: private_ipv4_addresses[0] if private_ipv4_addresses else None
-            provisioning_state: provisioning_state | title
-            public_ip: public_ipv4_addresses[0] if public_ipv4_addresses else None
-            public_ip_id: public_ip_id if public_ip_id is defined else None
-            public_ip_name: public_ip_name if public_ip_name is defined else None
-            tags: tags if tags else None
-            type: resource_type
+          zones:
+            - '{{ gcp_vm_zone }}'
+          auth_kind: serviceaccount
+          hostnames:
+            - name
+          compose:
+            ansible_host: networkInterfaces[0].accessConfigs[0].natIP
           keyed_groups:
-            - key: tags.AnsibleGroup
+            - key: labels.awx_group
               prefix: ''
               separator: ''
-          plain_host_names: true
+
+
 
     - name: Configure infrastructure job templates
       awx.awx.job_template:
@@ -673,3 +675,8 @@
       tags:
         - workflow-template
         - workflow-template-02
+
+
+## TODO for demo -- create in VM? or globally?
+# Create network Tag 'ssh' for remote login?
+# Create VPC?

@@ -31,7 +31,7 @@
         - "disk2:{{ item.disk2size }}"
         - "type: {{ item.vmtype }}"
         - "group:{{ item.group }}"
-    loop: "{{ gcp_machines }}"
+    loop: "{{ server_def }}"
 
   - name: Create GCE VMs
     include_role:
