@@ -25,14 +25,10 @@
       prompt: "Controller URL"
       private: false
       default: "{{lookup('env', 'CONTROLLER_HOST')}}"
-    - name: "machine_user"
-      prompt: "Azure Cloud User"
-      private: false
-      default: "azureuser"
-    - name: "machine_password"
-      prompt: "Azure Cloud User Password"
+    - name: "ah_token"
+      prompt: "Automation Hub token"
       private: true
-      default: "SuperSecretP@ssw0rd."
+      default: "{{ lookup('env', 'AH_TOKEN') }}"
     - name: "my_suser"
       prompt: "S-User ID"
       private: false
@@ -41,30 +37,14 @@
       prompt: "S-User Password"
       private: true
       default: "{{ lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD') }}"
-    - name: "azure_cli_id"
-      prompt: "Azure Client ID"
+    - name: "google_credentials_json"
+      prompt: "Google Credentials file content"
       private: false
-      default: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
-    - name: "azure_cli_secret"
-      prompt: "Azure Client Secret"
-      private: true
-      default: "{{ lookup('env', 'AZURE_SECRET') }}"
-    - name: "azure_tenant"
-      prompt: "Azure Tenant"
+      default: "{{ lookup('env', 'google_credentials_json') }}"
+    - name: "gcp_location"
+      prompt: "Google location"
       private: false
-      default: "{{ lookup('env', 'AZURE_TENANT') }}"
-    - name: "azure_subscription"
-      prompt: "Azure Subscription ID"
-      private: false
-      default: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
-    - name: "az_resourcegroup"
-      prompt: "Azure Resource Group Name"
-      private: false
-      default: "{{ lookup('env', 'RESOURCEGROUP') }}"
-    - name: "ah_token"
-      prompt: "Automation Hub token"
-      private: true
-      default: "{{ lookup('env', 'AH_TOKEN') }}"
+      default: "{{ lookup('env', '') }}"
 
   tasks:
     #- name: Create a new token using controller username/password
@@ -132,44 +112,30 @@
         state: present
         validate_certs: "{{ controller_validate_certs }}"
 
-    # - name: Ensure RHN Activation Key Credential
-    #  awx.awx.credential_type:
-    #    name: "RHN Activation Key"
-    #    description: "Used for RHN"
-    #    kind: cloud
-    #    inputs:
-    #      fields:
-    #        - id: activationkey
-    #          type: string
-    #          label: Activation Key
-    #          secret: true
-    #        - id: orgid
-    #          type: string
-    #          label: Organization ID
-    #          secret: true
-    #      required:
-    #        - activationkey
-    #        - orgid
-    #    injectors:
-    #      extra_vars:
-    #        reg_activation_key: ''
-    #        reg_organization_id: ''
-    #    state: present
-    #    validate_certs:  "{{ controller_validate_certs }}"
-
-    - name: Ensure machine credential for Azure User exists
-      awx.awx.credential:
-        name: "{{ prefix }}Azure Machine Credential"
-        description: "used for login into Azure VMs"
-        organization: "{{myorg}}"
-        credential_type: Machine
-        state: present
+    - name: Ensure RHN Activation Key Credential
+      awx.awx.credential_type:
+        name: "RHN Activation Key"
+        description: "Used for RHN"
+        kind: cloud
         inputs:
-          username: "{{ machine_user }}"
-          password: "{{ machine_password }}"
+          fields:
+            - id: activationkey
+              type: string
+              label: Activation Key
+              secret: true
+            - id: orgid
+              type: string
+              label: Organization ID
+              secret: true
+          required:
+            - activationkey
+            - orgid
+        injectors:
+          extra_vars:
+            reg_activation_key: ''
+            reg_organization_id: ''
+        state: present
         validate_certs: "{{ controller_validate_certs }}"
-      tags:
-        - update_credentials
 
     - name: Ensure S-User credential exists
       awx.awx.credential:
@@ -185,22 +151,18 @@
       tags:
         - update_credentials
 
-    - name: Ensure Azure cloud credential exists
+    - name: Ensure Google cloud credential exists
       awx.awx.credential:
         name: "{{ prefix }}Azure credential"
         organization: "{{myorg}}"
-        credential_type: "Microsoft Azure Resource Manager"
+        credential_type: "Google Compute Engine"
         inputs:
-          subscription: "{{ azure_subscription }}"
-          # username: "{{ machine_user }}"
-          # password: "{{ machine_password }}"
-          client: "{{ azure_cli_id }}"
-          secret: "{{ azure_cli_secret }}"
-          tenant: "{{ azure_tenant }}"
+          project: "your-gce-project"
+          json_file: "/path/to/your/credentials.json"
         validate_certs: "{{ controller_validate_certs }}"
       tags:
         - update_credentials
-        - update_azure_credential
+        - update_gce_credential
         - new_demo_env
 
     - name: Ensure Ansible Automation Hub credential exists
