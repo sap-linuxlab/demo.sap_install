@@ -1,6 +1,6 @@
 ---
 # tasks file for gcp_vm_create_tower
-- name: ensure bootdisk for vm {{ gcp_vm_name }}  is created
+- name: Ensure bootdisk is created for vm {{ gcp_vm_name }}
   gcp_compute_disk:
     name: "{{ gcp_vm_name }}-bootdisk"
     size_gb: "{{ gcp_vm_bdisksize }}"
@@ -12,7 +12,7 @@
     state: present
   register: gcp_bdisk_config
 
-- name: ensure swapdisk for vm {{ gcp_vm_name }}  is created
+- name: Ensure swapdisk is created for vm {{ gcp_vm_name }}
   gcp_compute_disk:
     name: "{{ gcp_vm_name }}-disk2"
     size_gb: "{{ gcp_vm_disk2size }}"
@@ -24,38 +24,51 @@
 - name: Get network configuration of {{ gcp_vm_vpc }}
   gcp_compute_network_info:
     filters:
-    - name = "{{ gcp_vm_vpc }}"
+      - name = "{{ gcp_vm_vpc }}"
     auth_kind: serviceaccount
   register: gcp_network_config
   when:
     - gcp_vm_vpc is defined
     - gcp_vm_vpc|trim != ''
 
-- name: gcp_compute_subnetwork_info
+- name: Ensure creation of network {{ gcp_vm_vpc }}
+  google.cloud.gcp_compute_network:
+    name: '{{ gcp_vm_vpc }}'
+    auth_kind: serviceaccount
+    state: present
+    auto_create_subnetworks: true
+  register: gcp_network_config
+  when:
+    - gcp_network_config.resources is undefined
+    - gcp_vm_vpc is defined
+    - gcp_vm_vpc|trim != ''
+
+
+- name: Get subnetwork configuration of region {{ gcp_vm_region }}
   gcp_compute_subnetwork_info:
     region: "{{ gcp_vm_region }}"
     filters:
-    - name = "{{ gcp_vm_region }}"
+      - name = "{{ gcp_vm_region }}"
     auth_kind: serviceaccount
   register: gcp_subnetwork_config
 
-- name: ensure vm {{ gcp_vm_name }} is created
+- name: Ensure the creation of {{ gcp_vm_name }}
   gcp_compute_instance:
     name: "{{ gcp_vm_name }}"
     machine_type: "{{ gcp_vm_type }}"
     disks:
-    - auto_delete: 'true'
-      boot: 'true'
-      source: "{{ gcp_bdisk_config }}"
-    - auto_delete: 'true'
-      boot: 'false'
-      source: "{{ gcp_disk2_config }}"
+      - auto_delete: 'true'
+        boot: 'true'
+        source: "{{ gcp_bdisk_config }}"
+      - auto_delete: 'true'
+        boot: 'false'
+        source: "{{ gcp_disk2_config }}"
     network_interfaces:
-    - network: "{{ gcp_network_config.resources | first  }}"
-      subnetwork: "{{ gcp_subnetwork_config.resources | first }}"
-      access_configs:
-      - name: External NAT
-        type: ONE_TO_ONE_NAT
+      - network: "{{ gcp_network_config.resources | first  }}"
+        subnetwork: "{{ gcp_subnetwork_config.resources | first }}"
+        access_configs:
+          - name: External NAT
+            type: ONE_TO_ONE_NAT
     zone: "{{ gcp_vm_zone }}"
     tags:
       items: "{{ gcp_vm_network_tags }}"
@@ -63,10 +76,10 @@
       awx_group: "{{ gcp_vm_awx_group }}"
     auth_kind: serviceaccount
     service_accounts:
-       - email: "{{ lookup('env','GCE_EMAIL') }}"
-         scopes:
-           - https://www.googleapis.com/auth/compute
-           - https://www.googleapis.com/auth/devstorage.read_only
+      - email: "{{ lookup('env','GCE_EMAIL') }}"
+        scopes:
+          - https://www.googleapis.com/auth/compute
+          - https://www.googleapis.com/auth/devstorage.read_only
     state: present
   register: gcp_new_instance
 
