@@ -31,17 +31,17 @@
     - gcp_vm_vpc is defined
     - gcp_vm_vpc|trim != ''
 
-- name: Ensure creation of network {{ gcp_vm_vpc }}
-  google.cloud.gcp_compute_network:
-    name: '{{ gcp_vm_vpc }}'
-    auth_kind: serviceaccount
-    state: present
-    auto_create_subnetworks: true
-  register: gcp_network_config
-  when:
-    - gcp_network_config.resources is undefined
-    - gcp_vm_vpc is defined
-    - gcp_vm_vpc|trim != ''
+# - name: Ensure creation of network {{ gcp_vm_vpc }}
+#   google.cloud.gcp_compute_network:
+#     name: '{{ gcp_vm_vpc }}'
+#     auth_kind: serviceaccount
+#     state: present
+#     auto_create_subnetworks: true
+#   register: gcp_network_config
+#   when:
+#     - gcp_network_config.resources is undefined
+#     - gcp_vm_vpc is defined
+#     - gcp_vm_vpc|trim != ''
 
 - name: Get subnetwork configuration of region {{ gcp_vm_region }}
   google.cloud.gcp_compute_subnetwork_info:
@@ -55,14 +55,13 @@
   ansible.builtin.debug:
     msg:
       - "Network"
-      - "{{ gcp_network_config.resources | first }}"
+      - "{{ gcp_network_config }}"
 
 - name: Ensure the subnetwork resources are available
   ansible.builtin.debug:
     msg:
-
       - "Subnet"
-      - "{{ gcp_subnetwork_config.resources | first }}"
+      - "{{ gcp_subnetwork_config }}"
 
 - name: Ensure the creation of "{{ gcp_vm_name }}"
   google.cloud.gcp_compute_instance:
