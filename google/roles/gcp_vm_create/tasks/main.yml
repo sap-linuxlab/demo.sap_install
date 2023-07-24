@@ -1,7 +1,7 @@
 ---
 # tasks file for gcp_vm_create_tower
 - name: Ensure bootdisk is created for vm {{ gcp_vm_name }}
-  gcp_compute_disk:
+  google.cloud.gcp_compute_disk:
     name: "{{ gcp_vm_name }}-bootdisk"
     size_gb: "{{ gcp_vm_bdisksize }}"
     source_image: "{{ gcp_vm_image_source }}"
@@ -13,7 +13,7 @@
   register: gcp_bdisk_config
 
 - name: Ensure swapdisk is created for vm {{ gcp_vm_name }}
-  gcp_compute_disk:
+  google.cloud.gcp_compute_disk:
     name: "{{ gcp_vm_name }}-disk2"
     size_gb: "{{ gcp_vm_disk2size }}"
     zone: "{{ gcp_vm_zone }}"
@@ -22,7 +22,7 @@
   register: gcp_disk2_config
 
 - name: Get network configuration of {{ gcp_vm_vpc }}
-  gcp_compute_network_info:
+  google.cloud.gcp_compute_network_info:
     filters:
       - name = "{{ gcp_vm_vpc }}"
     auth_kind: serviceaccount
@@ -45,15 +45,24 @@
 
 
 - name: Get subnetwork configuration of region {{ gcp_vm_region }}
-  gcp_compute_subnetwork_info:
+  google.cloud.gcp_compute_subnetwork_info:
     region: "{{ gcp_vm_region }}"
     filters:
       - name = "{{ gcp_vm_region }}"
     auth_kind: serviceaccount
   register: gcp_subnetwork_config
 
-- name: Ensure the creation of {{ gcp_vm_name }}
-  gcp_compute_instance:
+- name: Ensure the network resources are available
+  ansible.builtin.debug:
+    msg:
+      - "Network"
+      - "{{ gcp_network_config.resources | first }}"
+      - "----------------------------------------------------------"
+      - "Subnet"
+      - "{{ gcp_subnetwork_config.resources | first }}"
+
+- name: Ensure the creation of "{{ gcp_vm_name }}"
+  google.cloud.gcp_compute_instance:
     name: "{{ gcp_vm_name }}"
     machine_type: "{{ gcp_vm_type }}"
     disks:
@@ -64,8 +73,8 @@
         boot: 'false'
         source: "{{ gcp_disk2_config }}"
     network_interfaces:
-      - network: "{{ gcp_network_config.resources | first  }}"
-        subnetwork: "{{ gcp_subnetwork_config.resources | first }}"
+      - network: "{{ gcp_network_config }}"
+        subnetwork: "{{ gcp_subnetwork_config }}"
         access_configs:
           - name: External NAT
             type: ONE_TO_ONE_NAT
@@ -76,7 +85,7 @@
       awx_group: "{{ gcp_vm_awx_group }}"
     auth_kind: serviceaccount
     service_accounts:
-      - email: "{{ lookup('env','GCE_EMAIL') }}"
+      - email: "{{ lookup('env', 'GCE_EMAIL') }}"
         scopes:
           - https://www.googleapis.com/auth/compute
           - https://www.googleapis.com/auth/devstorage.read_only
@@ -84,5 +93,5 @@
   register: gcp_new_instance
 
 - name: Info on instance
-  debug:
-     var: gcp_new_instance
+  ansible.builtin.debug:
+    var: gcp_new_instance
