@@ -43,7 +43,6 @@
     - gcp_vm_vpc is defined
     - gcp_vm_vpc|trim != ''
 
-
 - name: Get subnetwork configuration of region {{ gcp_vm_region }}
   google.cloud.gcp_compute_subnetwork_info:
     region: "{{ gcp_vm_region }}"
@@ -57,7 +56,11 @@
     msg:
       - "Network"
       - "{{ gcp_network_config.resources | first }}"
-      - "----------------------------------------------------------"
+
+- name: Ensure the subnetwork resources are available
+  ansible.builtin.debug:
+    msg:
+
       - "Subnet"
       - "{{ gcp_subnetwork_config.resources | first }}"
 
