@@ -75,8 +75,8 @@
         boot: 'false'
         source: "{{ gcp_disk2_config }}"
     network_interfaces:
-      - network: "{{ gcp_network_config }}"
-        subnetwork: "{{ gcp_subnetwork_config }}"
+      - network: "{{ gcp_network_config.resources | first }}"
+        subnetwork: "{{ gcp_subnetwork_config.resources | first }}"
         access_configs:
           - name: External NAT
             type: ONE_TO_ONE_NAT
