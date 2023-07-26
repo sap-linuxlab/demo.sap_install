@@ -8,7 +8,7 @@
 #
 
 - name: Install S4
-  hosts: gcp_awx_group_s4
+  hosts: s4hanas
   become: true
 
   tasks:
