@@ -33,6 +33,11 @@
         - "group:{{ item.group }}"
     loop: "{{ server_def }}"
 
+  - name: ensure google-cloud-storage Python library is installed
+    pip:
+      name: google-cloud-storage
+      state: present
+
   - name: Create GCE VMs
     include_role:
       name: gcp_vm_create

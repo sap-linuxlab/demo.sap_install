@@ -39,7 +39,7 @@
       when: sap_hana_install_sarfiles is defined
 
     - name: sync hana directory from storage bucket to {{ sap_hana_install_software_directory }}
-      command: gsutil -m rsync  gs://{{ gcp_bucket_sap }}/{{ sap_hana_version }}  {{ sap_swpm_software_path }}
+      command: gsutil -m rsync  gs://{{ gcp_bucket_sap }}/{{ sap_hana_version }}  {{ sap_hana_install_software_directory}}
       when: sap_hana_install_sarfiles is undefined
 
     - name: execute the SAP Hana Installation
