@@ -20,3 +20,9 @@ gcp_vm_disk2size: 100
 gcp_vm_vpc:
 # Define network tags (firewall rule) to use
 gcp_vm_network_tags:
+# Define VM creation scopes
+gcp_vm_scopes:
+  - https://www.googleapis.com/auth/compute
+  - https://www.googleapis.com/auth/devstorage.read_only
+
+
