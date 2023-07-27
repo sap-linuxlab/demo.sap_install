@@ -43,10 +43,11 @@
   become: false
   tasks:
   - name: Wait for SSH to come up
-    wait_for:
+    ansible.builtin.wait_for:
       host: "{{ ansible_host }}"
       port: 22
-      delay: 90
+      # delay: 10
+      sleep: 10
       search_regex: OpenSSH
       state: started
       timeout: 480
