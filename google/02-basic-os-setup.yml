@@ -116,6 +116,9 @@
          name:
            - gcsfuse
            - nfs-utils
+           - python3-protobuf
+           - python3-pyasn1-modules
+           - google-cloud-sdk
          state: present
 
     - name: ensure google-cloud-storage Python library is installed
