@@ -1,0 +1,50 @@
+---
+########################################################
+# Phase 1: server provisioning
+#
+# After running this playbook you will have
+# servers with RHEL8 running on Google Cloud
+#
+# For input this playbook needs a dictionary with
+# the following paramters
+
+#   server_def:
+#           - name: server-name
+#             bdisksize: 50
+#             disk2size: 200
+#             vmtype: n1-standard-2
+#             group: label for group
+
+# Additional variables which are used for the google cloud
+# are defined in the inventory, where all google machines are created
+
+
+- hosts: localhost
+  gather_facts: false
+
+  tasks:
+  - name: Output creation dictionary configuration
+    debug:
+      msg:
+        - "Name: {{ item.name }}"
+        - "boot: {{ item.bdisksize }}"
+        - "disk2:{{ item.disk2size }}"
+        - "type: {{ item.vmtype }}"
+        - "group:{{ item.group }}"
+    loop: "{{ server_def }}"
+
+  - name: ensure google-cloud-storage Python library is installed
+    pip:
+      name: google-cloud-storage
+      state: present
+
+  - name: Create GCE VMs
+    include_role:
+      name: gcp_vm_create
+    vars:
+      gcp_vm_name: "{{ item.name }}"
+      gcp_vm_bdisksize: "{{ item.bdisksize }}"
+      gcp_vm_disk2size: "{{ item.disk2size }}"
+      gcp_vm_type: "{{ item.vmtype }}"
+      gcp_vm_awx_group: "{{ item.group }}"
+    loop: "{{ server_def }}"

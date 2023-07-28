@@ -1,0 +1,14 @@
+---
+gcp_vm_zone: '{{ gcp_vm_zone }}'
+gcp_vm_region: '{{ gcp_vm_region }}'
+# 
+gcp_vm_image_source: projects/rhel-byos-cloud/global/images/rhel-8-byos-v20211028
+gcp_vm_vpc: '{{ gcp_vm_vpc }}'
+  - ssh
+
+gcp_bucket_sap: 'sap-software'
+
+az_vm_create_rg_name: '{{ az_resourcegroup }}'
+nfs_server: "{{ '{{ hostvars[\'azfile\'][\'private_ip\'] }}' }}"
+nfs_export_dir: "/export/sapinst"
+nfs_archive_dir: "/sapinst"

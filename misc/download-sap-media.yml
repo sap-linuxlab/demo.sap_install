@@ -69,7 +69,7 @@
         dest: "{{ download_path }}"
         dry_run: "{{ dryrun|default(false) }}"
       loop: "{{ sapcar }}"
-      #ignore_errors: true
+      ignore_errors: true
 
     - name: download Hana Media
       community.sap_launchpad.software_center_download:
@@ -79,7 +79,7 @@
         dest: "{{ download_path }}/HANA2SPS06"
         dry_run: "{{ dryrun|default(false) }}"
       loop: "{{ hdb2sps06 }}"
-      #ignore_errors: true
+      ignore_errors: true
 
     - name: download S4 Media
       community.sap_launchpad.software_center_download:
@@ -90,7 +90,7 @@
         deduplicate: "last"
         dry_run: "{{ dryrun|default(false) }}"
       loop: "{{ s4fndn2021 + swpm }}"
-      #ignore_errors: true
+      ignore_errors: true
 
     - name: Link SAPCAR
       ansible.builtin.file:

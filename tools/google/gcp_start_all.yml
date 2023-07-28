@@ -1,0 +1,13 @@
+---
+- name: Start Google VM
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Start a GCP VM instance which is currently stopped
+      gcp_compute_instance:
+        name: "{{ inventory_hostname }}"
+        zone: "{{ gcp_vm_zone }}"
+        auth_kind: serviceaccount
+        status: RUNNING
+      delegate_to: localhost

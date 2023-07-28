@@ -6,6 +6,7 @@
   vars:
     az_location: "eastus"
     az_managed_app: "AAPSapDemo"
+    az_aap_template_url: 'https://raw.githubusercontent.com/sap-linuxlab/demo.sap_install/azure/demo-setup/template.json'
 
   vars_prompt:
     - name: "controller_password"
@@ -45,7 +46,7 @@
         resource_group: "{{ az_resourcegroup }}_AAP"
         name: "{{ az_managed_app }}_deployment"
         location: "{{ az_location }}"
-        template_link: 'https://raw.githubusercontent.com/sap-linuxlab/demo.sap_install/azure/demo-setup/template.json'
+        template_link: "{{ az_aap_template_url }}"
         parameters:
           access:
             value: public

@@ -266,7 +266,7 @@ echo ""
 echo "The Ansible Automation Controller is now fully deployed"
 echo ""
 
-ansible-playbook -i localhost, -v 02-configure-AAP.yml \
+ansible-playbook -i localhost, -v 02-configure-AAP-azure.yml \
   -e controller_username="${CONTROLLER_USERNAME}" \
   -e controller_password="${CONTROLLER_PASSWORD}" \
   -e controller_hostname="${CONTROLLER_HOST}" \

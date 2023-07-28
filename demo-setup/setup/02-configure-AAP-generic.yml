@@ -1,0 +1,200 @@
+---
+- name: Configure Ansible Automation Controller
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    controller_validate_certs: false
+    myorg: "SAP Demo"
+    prefix: "RHDS "
+
+  # This playbook requires the following environment variables
+  # CONTROLLER_USERNAME
+  # CONTROLLER_OAUTH_TOKEN or CONTROLLER_PASSWORD
+  # CONTROLLER_HOST defaults to localhost
+  vars_prompt:
+    - name: "controller_username"
+      prompt: "Controller Username"
+      private: false
+      default: "{{lookup('env', 'CONTROLLER_USERNAME')}}"
+    - name: "controller_password"
+      prompt: "Controller Password"
+      private: true
+      default: "{{lookup('env', 'CONTROLLER_PASSWORD')}}"
+    - name: "controller_hostname"
+      prompt: "Controller URL"
+      private: false
+      default: "{{lookup('env', 'CONTROLLER_HOST')}}"
+    - name: "my_suser"
+      prompt: "S-User ID"
+      private: false
+      default: "{{ lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME') }}"
+    - name: "my_spass"
+      prompt: "S-User Password"
+      private: true
+      default: "{{ lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD') }}"
+    - name: "ah_token"
+      prompt: "Automation Hub token"
+      private: true
+      default: "{{ lookup('env', 'AH_TOKEN') }}"
+
+  tasks:
+    - name: Change Job Setting to allow jinja in extravars
+      awx.awx.settings:
+        name: "ALLOW_JINJA_IN_EXTRA_VARS"
+        value: "always"
+        validate_certs: "{{ controller_validate_certs }}"
+      register: _output
+      tags:
+        - allow_jinja_in_extra_vars
+      until: _output.failed == false
+      retries: 10
+      delay: 10
+
+    - debug:
+        var: _output
+
+    - name: Ensure organization "{{ myorg }}" exists
+      awx.awx.organization:
+        name: "{{myorg}}"
+        description: "Red Hat SAP DEMO"
+        state: present
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Ensure Ansible Controller credential for SAP S-User
+      awx.awx.credential_type:
+        name: "SAP S-User"
+        description: "Communication with SAP Launchpad API"
+        kind: cloud
+        inputs:
+          fields:
+            - id: suser_id
+              type: string
+              label: "SAP S-User ID"
+              secret: false
+            - id: suser_password
+              type: string
+              label: "SAP S-User password"
+              secret: true
+          required:
+            - suser_id
+            - suser_password
+        injectors:
+          extra_vars:
+            suser_id: '{{ "{{ suser_id }}" }}'
+            suser_password: '{{ "{{ suser_password }}" }}'
+          env:
+            SAP_SUPPORT_DOWNLOAD_PASSWORD: '{{ "{{ suser_password }}" }}'
+            SAP_SUPPORT_DOWNLOAD_USERNAME: '{{ "{{ suser_id }}" }}'
+        state: present
+        validate_certs: "{{ controller_validate_certs }}"
+
+    # - name: Ensure RHN Activation Key Credential
+    #  awx.awx.credential_type:
+    #    name: "RHN Activation Key"
+    #    description: "Used for RHN"
+    #    kind: cloud
+    #    inputs:
+    #      fields:
+    #        - id: activationkey
+    #          type: string
+    #          label: Activation Key
+    #          secret: true
+    #        - id: orgid
+    #          type: string
+    #          label: Organization ID
+    #          secret: true
+    #      required:
+    #        - activationkey
+    #        - orgid
+    #    injectors:
+    #      extra_vars:
+    #        reg_activation_key: ''
+    #        reg_organization_id: ''
+    #    state: present
+    #    validate_certs:  "{{ controller_validate_certs }}"
+
+
+    - name: Ensure S-User credential exists
+      awx.awx.credential:
+        name: "{{ prefix }}SAP S-User Credential"
+        description: "used for downloading SAP-Software"
+        organization: "{{myorg}}"
+        credential_type: "SAP S-User"
+        state: present
+        inputs:
+          suser_id: "{{ my_suser }}"
+          suser_password: "{{ my_spass }}"
+        validate_certs: "{{ controller_validate_certs }}"
+      tags:
+        - update_credentials
+
+    - name: Ensure Ansible Automation Hub credential exists
+      awx.awx.credential:
+        name: "{{ prefix }}Automation Hub Credential"
+        organization: "{{myorg}}"
+        credential_type: "Ansible Galaxy/Automation Hub API Token"
+        inputs:
+          url: https://console.redhat.com/api/automation-hub/content/published/
+          auth_url: https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
+          token: "{{ ah_token }}"
+        validate_certs: "{{ controller_validate_certs }}"
+      tags:
+        - update_credentials
+
+    - name: Ensure Galaxy Credentials are added to organization
+      awx.awx.organization:
+        name: "{{myorg}}"
+        galaxy_credentials:
+          - "Ansible Galaxy"
+          - "{{ prefix }}Automation Hub Credential"
+        state: present
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Ensure project for sap demo exists
+      awx.awx.project:
+        name: "{{ prefix }}SAP Demo Project"
+        organization: "{{myorg}}"
+        state: present
+        scm_type: git
+        scm_branch: azure
+        scm_url: https://github.com/sap-linuxlab/demo.sap_install.git
+        scm_clean: true
+        scm_delete_on_update: true
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Ensure demo projects are removed
+      awx.awx.project:
+        name: "{{ item }}"
+        state: absent
+        validate_certs: "{{ controller_validate_certs }}"
+      loop:
+        - "Azure Demos"
+        - "Demo Project"
+      tags:
+        - cleanup_demo_projects
+
+    - name: Cleanup demo job templates
+      awx.awx.job_template:
+        name: "{{ item }}"
+        state: absent
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+      loop:
+        - 'Azure web application deployment demo'
+        - 'Azure web application migration demo'
+        - 'Demo Job Template'
+      tags:
+        - cleanup_demo_templates
+
+## CHECK IF THIS NEEDS TO BE CLOUD SPECIFIC
+    - name: Ensure SAP Demo inventory exists
+      awx.awx.inventory:
+        name: "{{ prefix }} SAP Demo" 
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        variables: "{{ lookup('template','02-variable-configs/inventory.yml.j2')|from_yaml|to_json }}"
+      tags:
+        - new_demo_env
+        - update_inventory
