@@ -18,33 +18,33 @@
 # Additional variables which are used for the google cloud
 # are defined in the inventory, where all google machines are created
 
-
-- hosts: localhost
+- name: Server Provisioning on gcp_bdisk_config
+  hosts: localhost
   gather_facts: false
 
   tasks:
-  - name: Output creation dictionary configuration
-    debug:
-      msg:
-        - "Name: {{ item.name }}"
-        - "boot: {{ item.bdisksize }}"
-        - "disk2:{{ item.disk2size }}"
-        - "type: {{ item.vmtype }}"
-        - "group:{{ item.group }}"
-    loop: "{{ server_def }}"
+    - name: Output creation dictionary configuration
+      ansible.builtin.debug:
+        msg:
+          - "Name: {{ item.name }}"
+          - "boot: {{ item.bdisksize }}"
+          - "disk2:{{ item.disk2size }}"
+          - "type: {{ item.vmtype }}"
+          - "group:{{ item.group }}"
+      loop: "{{ server_def }}"
 
-  - name: ensure google-cloud-storage Python library is installed
-    pip:
-      name: google-cloud-storage
-      state: present
+    - name: Ensure google-cloud-storage Python library is installed
+      ansible.builtin.pip:
+        name: google-cloud-storage
+        state: present
 
-  - name: Create GCE VMs
-    include_role:
-      name: gcp_vm_create
-    vars:
-      gcp_vm_name: "{{ item.name }}"
-      gcp_vm_bdisksize: "{{ item.bdisksize }}"
-      gcp_vm_disk2size: "{{ item.disk2size }}"
-      gcp_vm_type: "{{ item.vmtype }}"
-      gcp_vm_awx_group: "{{ item.group }}"
-    loop: "{{ server_def }}"
+    - name: Create GCE VMs
+      ansible.builtin.include_role:
+        name: gcp_vm_create
+      vars:
+        gcp_vm_name: "{{ item.name }}"
+        gcp_vm_bdisksize: "{{ item.bdisksize }}"
+        gcp_vm_disk2size: "{{ item.disk2size }}"
+        gcp_vm_type: "{{ item.vmtype }}"
+        gcp_vm_awx_group: "{{ item.group }}"
+      loop: "{{ server_def }}"
