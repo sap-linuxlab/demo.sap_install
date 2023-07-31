@@ -8,7 +8,7 @@
       google.cloud.gcp_compute_instance_info:
         zone: "{{ gcp_vm_zone }}"
         filters:
-          - name = "{{ gcp_vm_name }}"
+          - name = "{{ inventory_hostname }}"
         auth_kind: serviceaccount
       register: gcp_vm_info
       delegate_to: localhost
