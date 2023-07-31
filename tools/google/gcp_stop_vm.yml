@@ -21,4 +21,5 @@
         name: "{{ gcp_vm_name }}"
         zone: "{{ gcp_vm_zone }}"
         auth_kind: serviceaccount
-        state: stopped
+        labels: "{{ gcp_vm_info.resources[0].labels }}" # Workaround to keep the labels
+        status: TERMINATED
