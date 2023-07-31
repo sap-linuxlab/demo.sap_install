@@ -63,10 +63,11 @@
       - "Subnet"
       - "{{ gcp_subnetwork_config }}"
 
-- name: Ensure the creation of "{{ gcp_vm_name }}"
+- name: Ensure the creation of {{ gcp_vm_name }}
   google.cloud.gcp_compute_instance:
     name: "{{ gcp_vm_name }}"
     machine_type: "{{ gcp_vm_type }}"
+    deletion_protection: 'true'
     disks:
       - auto_delete: 'true'
         boot: 'true'
