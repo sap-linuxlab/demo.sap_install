@@ -23,5 +23,5 @@
         zone: "{{ gcp_vm_zone }}"
         auth_kind: serviceaccount
         labels: "{{ gcp_vm_info.resources[0].labels }}" # Workaround to keep the labels
-        status: running
+        status: "RUNNING"
       delegate_to: localhost
