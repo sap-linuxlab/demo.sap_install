@@ -14,7 +14,8 @@
       delegate_to: localhost
 
     - name: terminates GCP VM instances
-      ansible.builtin.shutdown:
+      community.general.shutdown:
         msg: "Powering off server due to daily ansible schedule"
       when: gcp_vm_info.resources[0].status == "RUNNING"   
+      become: true
 
