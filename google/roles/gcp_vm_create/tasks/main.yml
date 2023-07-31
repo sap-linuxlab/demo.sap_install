@@ -67,7 +67,7 @@
   google.cloud.gcp_compute_instance:
     name: "{{ gcp_vm_name }}" 
     machine_type: "{{ gcp_vm_type }}"
-    deletion_protetion: 'true'
+    deletion_protection: 'true'
     disks:
       - auto_delete: 'true'
         boot: 'true'
