@@ -4,10 +4,17 @@
   gather_facts: false
 
   tasks:
-    - name: terminates GCP VM instances
-      gcp_compute_instance:
-        name: "{{ inventory_hostname }}"
+    - name: Get vm informamtion
+      google.cloud.gcp_compute_instance_info:
         zone: "{{ gcp_vm_zone }}"
+        filters:
+          - name = "{{ gcp_vm_name }}"
         auth_kind: serviceaccount
-        status: TERMINATED
+      register: gcp_vm_info
       delegate_to: localhost
+
+    - name: terminates GCP VM instances
+      ansible.builtin.shutdown:
+        msg: "Powering off server due to daily ansible schedule"
+      when: gcp_vm_info.resources[0].status == "RUNNING"   
+
