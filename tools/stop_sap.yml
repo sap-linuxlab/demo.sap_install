@@ -1,5 +1,5 @@
 - name: Stop SAP Netweaver Server
-  hosts: gcp_awx_group_s4, gcp_awx_group_hana
+  hosts: s4hanas, hanas
   become: true
 
   vars:
