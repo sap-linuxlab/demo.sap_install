@@ -11,7 +11,7 @@
       google.cloud.gcp_compute_instance_info:
         zone: "{{ gcp_vm_zone }}"
         filters:
-          - name = "{{ inventory_hostname }}"
+          - name = "{{ gcp_vm_name }}"
         auth_kind: serviceaccount
       register: gcp_vm_info
       delegate_to: localhost
@@ -22,6 +22,6 @@
         name: "{{ gcp_vm_name }}"
         zone: "{{ gcp_vm_zone }}"
         auth_kind: serviceaccount
-        labels: gcp_vm_info.resources[0].labels # Workaround to keep the labels
+        labels: "{{ gcp_vm_info.resources[0].labels }}" # Workaround to keep the labels
         status: running
       delegate_to: localhost
