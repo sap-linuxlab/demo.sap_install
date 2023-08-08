@@ -16,6 +16,5 @@ collections:
         - name: community.sap_libs
         - name: community.sap_operations
         - name: community.sap_install
-          version: 1.2.0
         - name: https://github.com/sap-linuxlab/community.sap_launchpad.git
           type: git
