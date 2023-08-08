@@ -3,49 +3,39 @@
   hosts: fileserver
   become: true
   collections:
-    - community.sap_launchpad
-
+     - community.sap_launchpad
 
   ### This playbook downloads all the SAP files required for installing
   ### SAP HANA and S/4 HANA from Maintenance Planner
-  vars_prompt:
-    - name: "suser_id"
-      prompt: "S-User ID"
-      private: false
-      default: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME')}}"
-    - name: "suser_password"
-      prompt: "S-User PW"
-      private: true
-      default: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD')}}"
-    - name: "mp_transaction_name"
-      prompt: "Enter Maintenance Planner Transaction Name"
-      private: false
-      default: MP_S4H_DEMO
-    - name: "sap_swpm_software_path"
-      prompt: "Enter Download Path"
-      private: false
-      default: /sap-software
+  ### This script requires the following variables as input
+  #
+  # required:
+  #   suser_id                 : SAP Credentials required for download
+  #   suser_password
+  #
+  # optional:
+  #   download_path           : Pfad in den die Software heruntergeladen wird
+  #   venv                     : virtuelles Python environment für prereqs 
+  #
+  # vars_prompt:
+  #  - name: "suser_id"
+  #    prompt: "S-User ID"
+  #    private: false
+  #    default: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_USERNAME')}}"
+  #  - name: "suser_password"
+  #    prompt: "S-User PW"
+  #    private: true
+  #    default: "{{lookup('env', 'SAP_SUPPORT_DOWNLOAD_PASSWORD')}}"
 
   vars:
-    sap_extra_software:
-            - 'SAPCAR_1115-70006178.EXE'
+      download_path: /sap-software
 
-    # examples of minimum file list
-    #  - 'SAPCAR_1010-70006178.EXE'                 #  Sapcar 7.22 Linux x86_64
-    #  - 'IMDB_SERVER20_059_0-80002031.SAR'         #  HANA 2.0 SPS05
-    #  - 'IMDB_SERVER20_060_0-80002031.SAR'         #  HANA 2.0 SPS06
-    #  - 'saphostagentrpm_175-20005731.rpm'         #  SAP Hostagent
-    #  - 'SWPM20SP10_4-80003424.SAR'                #  Software Provisioning Mgr
-    #  - 'igsexe_9-80003187.sar'                    #  SAP IGS 7.53
-    #  - 'igsexe_0-70005417.sar'                    #  SAP IGS 7.81
-    #  - 'igshelper_17-10010245.sar'                #  SAP IGS HELPER
-    #  - 'SAPEXEDB_201-80003385.SAR'                #  SAP KERNEL 7.73 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
-    #  - 'SAPEXE_201-80003386.SAR'                  #  SAP KERNEL 7.73 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+  vars_files: sap-dl.yml
 
   tasks:
     - name: ensure S-USER and PASSWORD are defined
-      fail:
-            msg: "Please set SAP_SUPPORT_DOWNLOAD_USERNAME and SAP_SUPPORT_DOWNLOAD_PASSWORD"
+      ansible.builtin.fail:
+            msg: "Please set suser_id and suser_password"
       when: ( suser_id|trim ==''  )  or  ( suser_password|trim == '' )
       tags:
         - sap_s4_softwaredownload
@@ -53,58 +43,63 @@
 
     - name: ensure prereqs are installed
       pip:
-            name:
-              - urllib3
-              - beautifulsoup4
-              - lxml
-              - requests
-            state: present
-      tags:
-        - sap_s4_softwaredownload
-        - sap_extra_download
+        name:
+          - urllib3
+          - beautifulsoup4
+          - lxml
+          - requests
+        state: present
+        virtualenv: "{{ venv | default(omit) }}"
 
-    - name: Ensure download directory exists
+    - name: Ensure download directories exist
       file:
-         path: "{{ sap_swpm_software_path }}"
+         path: "{{ item }}"
          state: directory
          mode: '0755'
-      tags:
-        - sap_s4_softwaredownload
-        - sap_extra_download
+      loop:
+        - "{{ download_path }}"
+        - "{{ download_path }}/HANA2SPS06"
+        - "{{ download_path }}/S4HANA2021.FNDN"
 
-    - name: Execute Ansible Module 'maintenance_planner' to get files from MP
-      community.sap_launchpad.maintenance_planner:
-        suser_id: "{{ suser_id }}"
-        suser_password: "{{ suser_password }}"
-        transaction_name: "{{ mp_transaction_name }}"
-      register: sap_maintenance_planner_basket_register
-      tags:
-        - sap_s4_softwaredownload
-
-    # - name: Display Download Basket
-    #   debug:
-    #     msg:
-    #       - "{{ sap_maintenance_planner_basket_register.download_basket }}"
-    #   tags:
-    #     - sap_s4_softwaredownload
-
-    # - name: Execute Ansible Module 'software_center_download' to download files
-    #   community.sap_launchpad.software_center_download:
-    #     suser_id: "{{ suser_id }}"
-    #     suser_password: "{{ suser_password }}"
-    #     download_link: "{{ item.DirectLink }}"
-    #     download_filename: "{{ item.Filename }}"
-    #     dest: "{{ sap_swpm_software_path }}"
-    #   loop: "{{ sap_maintenance_planner_basket_register.download_basket }}"
-    #   tags:
-    #     - sap_s4_softwaredownload
-
-    - name: download additional installation tools
+    - name: download SAPCAR
       community.sap_launchpad.software_center_download:
         suser_id: "{{ suser_id }}"
         suser_password: "{{ suser_password }}"
         softwarecenter_search_query: "{{ item }}"
-        dest: "{{ sap_swpm_software_path }}"
-      loop: "{{ sap_extra_software }}"
-      tags:
-        - sap_extra_download
+        dest: "{{ download_path }}"
+        dry_run: "{{ dryrun|default(false) }}"
+      loop: "{{ sapcar }}"
+      ignore_errors: true
+
+    - name: download Hana Media
+      community.sap_launchpad.software_center_download:
+        suser_id: "{{ suser_id }}"
+        suser_password: "{{ suser_password }}"
+        softwarecenter_search_query: "{{ item }}"
+        dest: "{{ download_path }}/HANA2SPS06"
+        dry_run: "{{ dryrun|default(false) }}"
+      loop: "{{ hdb2sps06 }}"
+      ignore_errors: true
+
+    - name: download S4 Media
+      community.sap_launchpad.software_center_download:
+        suser_id: "{{ suser_id }}"
+        suser_password: "{{ suser_password }}"
+        softwarecenter_search_query: "{{ item }}"
+        dest: "{{ download_path }}/S4HANA2021.FNDN"
+        deduplicate: "last"
+        dry_run: "{{ dryrun|default(false) }}"
+      loop: "{{ s4fndn2021 + swpm }}"
+      ignore_errors: true
+
+    - name: Link SAPCAR
+      ansible.builtin.file:
+        src: '{{ download_path }}/{{ sapcar | first }}'
+        dest: '{{ item }}'
+        state: hard
+        mode: '755'
+      loop:
+        - '{{ download_path }}/S4HANA2021.FNDN/{{ sapcar | first }}'
+        - '{{ download_path }}/HANA2SPS06/{{ sapcar | first }}'
+    
+   

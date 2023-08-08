@@ -1,0 +1,20 @@
+---
+- name: STOP all Google VM in inventory
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Get vm informamtion
+      google.cloud.gcp_compute_instance_info:
+        zone: "{{ gcp_vm_zone }}"
+        filters:
+          - name = "{{ inventory_hostname }}"
+        auth_kind: serviceaccount
+      register: gcp_vm_info
+      delegate_to: localhost
+
+    - name: Terminates GCP VM instances
+      community.general.shutdown:
+        msg: "Powering off server due to daily ansible schedule"
+      when: gcp_vm_info.resources[0].status == "RUNNING"
+      become: true

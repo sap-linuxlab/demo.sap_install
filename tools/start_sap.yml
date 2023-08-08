@@ -1,6 +1,6 @@
 ---
 - name: Start SAP HANA Database  Server
-  hosts: gcp_awx_group_hana
+  hosts: hanas
   become: true
 
   # Source:  https://help.sap.com/doc/saphelp_nw73ehp1/7.31.19/en-US/47/1d6feeff6e0d46e10000000a155369/content.htm?no_cache=true
@@ -30,7 +30,7 @@
       loop: "{{ installed_num }}"
 
 - name: Start SAP Netweaver Server
-  hosts: gcp_awx_group_s4
+  hosts: s4hanas
   become: true
 
   # Source:  https://help.sap.com/doc/saphelp_nw73ehp1/7.31.19/en-US/47/1d6feeff6e0d46e10000000a155369/content.htm?no_cache=true

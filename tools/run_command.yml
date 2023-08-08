@@ -1,0 +1,14 @@
+---
+- hosts: all
+  gather_facts: false
+
+  tasks:
+  - name: Print hello world
+    debug:
+            msg: "Hello World from {{ name | default('the unknown server') }}"
+
+  - name: Check connection
+    ping:
+
+  - name: test
+    command: "{{ tool_command }}"

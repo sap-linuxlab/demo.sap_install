@@ -13,10 +13,10 @@
 # we are good with what the standard image provides
 
 # We need to provide this script the storage configuration
-# for each machine. Hence we need to extend the dictionary "gcp_machines"
+# for each machine. Hence we need to extend the dictionary "server_def"
 # with its individual storage configuration for the second disk, e.g.:
 
-#   vmware_machines:
+#   server_def:
 #           - name: server-name
 #             [...]
 #             storage_pools:
@@ -73,10 +73,10 @@
       include_role:
         name: mk-ansible-roles.subscribe_rhn
 
-    # This picks the correct storage configuration for host inventory_hostname out of the vmware_machines dict
+    # This picks the correct storage configuration for host inventory_hostname out of the server_def dict
     - name: get storage pool setup from server definition
       set_fact:
-         storage_pools: "{{ vmware_machines | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
+         storage_pools: "{{ server_def | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
 
     - name: Ensure storage is configured correctly
       include_role:

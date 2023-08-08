@@ -1,0 +1,25 @@
+---
+- name: Stop a single Google VM by name
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    - gcp_vm_name: rha-hana
+
+  tasks:
+    - name: Get vm informamtion
+      google.cloud.gcp_compute_instance_info:
+        zone: "{{ gcp_vm_zone }}"
+        filters:
+          - name = "{{ gcp_vm_name }}"
+        auth_kind: serviceaccount
+      register: gcp_vm_info
+
+    - name: Power off a GCP VM instance
+      when: gcp_vm_info.resources[0].status == "RUNNING"
+      google.cloud.gcp_compute_instance:
+        name: "{{ gcp_vm_name }}"
+        zone: "{{ gcp_vm_zone }}"
+        auth_kind: serviceaccount
+        labels: "{{ gcp_vm_info.resources[0].labels }}" # Workaround to keep the labels
+        status: TERMINATED

@@ -80,7 +80,7 @@ Repeat Step 2 with proper for the following playbooks:
    ```yaml
 	---
 	## Server Configuration (used in Step1 and Step 2)
-	vmware_machines:
+	server_def:
 	  - name: hana1           # Enter hostname of your first hana server
 	    disk_gb: 400           # Enter diskspace for hana directories
 	    mem_mb: 131072         # Enter memory of hana server (128GB recommended)

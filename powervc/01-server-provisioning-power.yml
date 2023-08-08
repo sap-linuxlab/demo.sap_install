@@ -8,7 +8,7 @@
 # For input this playbook needs a dictionary with
 # the following paramters
 
-#   power_machines:
+#   server_def:
 #           - name: server-name
 #             flavor:
 #             deploy_target:
@@ -47,7 +47,7 @@
         - "Flavor: {{ item.flavor|default(omit) }}"
         - "Target: {{ item.deploy_target|default(omit) }}"
         - "Group : {{ item.group }}"
-    loop: "{{ power_machines }}"
+    loop: "{{ server_def }}"
 
   - name: Create SSH Keypairs to inject into hosts
     include_role:
@@ -63,4 +63,4 @@
       vm_create_deploy_target: "{{ item.deploy_target|default(omit) }}"
       vm_create_group: "{{ item.group }}"
       vm_create_binding_vnic_type: "{{ os_network_vnic_type |default(omit) }}"
-    loop: "{{ power_machines }}"
+    loop: "{{ server_def }}"

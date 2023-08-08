@@ -1,0 +1,14 @@
+---
+# defaults file for az_vm_delete
+
+# Azure Resource Group Name
+az_vm_delete_rg_name: sapdemo
+
+# Azure VM Name
+az_vm_delete_vm_name: "{{ az_vm_create_rg_name + '_VM' }}"
+
+# Azure Location
+#az_vm_delete_location: eastus
+
+# Enable deletion of the resourcegroup if empty
+az_vm_delete_empty_resourcegroup: false

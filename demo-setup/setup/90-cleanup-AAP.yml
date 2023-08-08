@@ -1,0 +1,104 @@
+---
+- name: Configure Ansible Automation Controller
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  ignore_errors: true
+  vars:
+    controller_validate_certs: false
+    myorg: "SAP Demo"
+    prefix: "RHDS "
+
+  # This playbook requires the following environment variables
+  # CONTROLLER_USERNAME
+  # CONTROLLER_OAUTH_TOKEN or CONTROLLER_PASSWORD
+  # CONTROLLER_HOST defaults to localhost
+  vars_prompt:
+    - name: "controller_username"
+      prompt: "Controller Username"
+      private: false
+      default: "{{lookup('env', 'CONTROLLER_USERNAME')}}"
+    - name: "controller_password"
+      prompt: "Controller Password"
+      private: true
+      default: "{{lookup('env', 'CONTROLLER_PASSWORD')}}"
+    - name: "controller_hostname"
+      prompt: "Controller URL"
+      private: false
+      default: "{{lookup('env', 'CONTROLLER_HOST')}}"
+
+  tasks:
+    - name: Remove Workflow templates
+      awx.awx.workflow_job_template:
+        name: "{{ item }}"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: absent
+      loop:
+        - "00 - Set up NFS fileserver"
+        - "00 - Simple HANA + S/4 deployment"
+
+    - name: Remove Job templates
+      awx.awx.job_template:
+        name: "{{ item }}"
+        state: absent
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+      loop:
+        - "01 - Infrastructure Provisioning (Azure)"
+        - "02 - Basic OS Setup"
+        - "03-A Prepare for HANA installation"
+        - "03-B SAP HANA installation"
+        - "03 - CD - Configure SAP HANA Cluster"
+        - "04-A Sap Netweaver preparation"
+        - "04-B S/4 HANA installation"
+        - "91 - Configure NFS Fileserver"
+        - "92 - Download SAP Software"
+
+    - name: Ensure dynamic Azure inventory is removed
+      awx.awx.inventory_source:
+        name: "SAP Hosts"
+        inventory: "{{ prefix }} SAP Demo"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: absent
+
+    - name: Ensure SAP Demo inventory is removed
+      awx.awx.inventory:
+        name: "{{ prefix }} SAP Demo"
+        organization: "{{myorg}}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: absent
+
+    - name: Ensure project for sap demo is removed
+      awx.awx.project:
+        name: "{{ prefix }}SAP Demo Project"
+        organization: "{{myorg}}"
+        state: absent
+        controller_host: "{{ controller_hostname }}"
+
+    - name: Ensure Credentials are removed
+      awx.awx.credential:
+        name: "{{ prefix }}Azure credential"
+        organization: "{{myorg}}"
+        credential_type: "Microsoft Azure Resource Manager"
+        state: absent
+        validate_certs: "{{ controller_validate_certs }}"
+      loop:
+        - "{{ prefix }}Azure credential"
+        - "{{ prefix }}Azure Machine Credential"
+        - "{{ prefix }}Azure SAP S-User Credential"
+        - "{{ prefix }}Automation Hub Credential"
+
+    - name: Ensure credential definition for SAP S-User is removed
+      awx.awx.credential_type:
+        name: "SAP S-User"
+        kind: cloud
+        state: absent
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Ensure organization "{{ myorg }}" is removed
+      awx.awx.organization:
+        name: "{{myorg}}"
+        state: absent
+        validate_certs: "{{ controller_validate_certs }}"

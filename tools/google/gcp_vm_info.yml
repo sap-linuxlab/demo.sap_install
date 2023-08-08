@@ -1,0 +1,17 @@
+---
+- hosts: localhost
+  gather_facts: false
+
+  tasks:
+  - name: get info on an image
+    gcp_compute_instance_info:
+      # filters:
+      # - name = "{{ gcp_instance_name }}"
+      auth_kind: serviceaccount
+      zone: "{{ gcp_vm_zone }}"
+    register: gcp_vm_info
+
+  - name: Print images
+    debug:
+       msg: "{{ item }}"
+    loop: "{{ gcp_vm_info.resources |list }}"

@@ -1,0 +1,59 @@
+---
+- name: Remove AAP and azure groups
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    az_location: "eastus"
+    az_managed_app: "AAPSapDemo"
+
+  vars_prompt:
+    - name: "controller_password"
+      prompt: "Controller Password"
+      private: true
+      default: "{{lookup('env', 'CONTROLLER_PASSWORD')}}"
+    - name: "azure_cli_id"
+      prompt: "Azure Client ID"
+      private: false
+      default: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+    - name: "azure_cli_secret"
+      prompt: "Azure Client Secret"
+      private: true
+      default: "{{ lookup('env', 'AZURE_SECRET') }}"
+    - name: "azure_tenant"
+      prompt: "Azure Tenant"
+      private: false
+      default: "{{ lookup('env', 'AZURE_TENANT') }}"
+    - name: "azure_subscription"
+      prompt: "Azure Subscription ID"
+      private: false
+      default: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
+    - name: "az_resourcegroup"
+      prompt: "Azure Resource Group Name"
+      private: false
+      default: "{{ lookup('env', 'RESOURCEGROUP') }}"
+
+  tasks:
+    - name: Ensure Ansible Automation platform is removed
+      azure.azcollection.azure_rm_deployment:
+        resource_group: "{{ az_resourcegroup }}_AAP"
+        name: "{{ az_managed_app }}_deployment"
+        location: "{{ az_location }}"
+        state: absent
+
+    - name: Ensure Azure Resourcegroups are removed
+      azure.azcollection.azure_rm_resourcegroup:
+        name: "{{ item }}"
+        location: "{{ az_location }}"
+        state: absent
+      loop:
+        - "{{ az_resourcegroup }}"
+        - "{{ az_resourcegroup }}_AAP"
+
+    - name: Delete Azure Service Principal
+      azure.azcollection.azure_rm_adserviceprincipal:
+        tenant: "{{ azure_tenant }}"
+        client_id: "{{ azure_cli_id }}"
+        secret: "{{ azure_cli_secret }}"
+        state: absent
+        app_id: "{{ azure_cli_id }}"

@@ -1,0 +1,143 @@
+---
+####################################################
+#
+# Phase 2: Basic OS Setup
+#
+# This playbook covers the following configuration steps
+#  - subscription and repositories
+#  - network setup
+#  - storage customization
+
+# For our demo, we do not need to install additional packages,
+# configure special services, monitoring and backup etc.
+# we are good with what the standard image provides
+
+# We need to provide this script the storage configuration
+# for each machine. Hence we need to extend the dictionary "server_def"
+# with its individual storage configuration for the second disk, e.g.:
+
+#   server_def:
+#           - name: server-name
+#             [...]
+#             storage_pools:
+#               - name: volume_name
+#                 disks:
+#                  - sdb
+#                 volumes:
+#                   - name: data
+#                     size: "128 GiB"
+#                     mount_point: "/hana/data"
+#                     fs_type: xfs
+#                     state: present
+#                   - name: log
+#                     size: "64 GiB"
+#                     mount_point: "/hana/log"
+#                     fs_type: xfs
+#                     state: present
+
+# Have a look at the documention of the storage role for more configuration options
+
+- name: Ensure Servers are booted and reachable
+  hosts: all
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Wait for SSH to come up
+    ansible.builtin.wait_for:
+      host: "{{ ansible_host }}"
+      port: 22
+      # delay: 10
+      sleep: 10
+      search_regex: OpenSSH
+      state: started
+      timeout: 480
+    delegate_to: localhost
+
+- name: Phase 2 - basic OS Setup
+  hosts: all
+  become: true
+
+  # Default variables for the playbooks can be set here
+  # and can be overwritten in the template file
+  vars:
+    reg_activation_key: "{{ sap_rhsm_activationkey }}"
+    reg_organization_id: "{{ sap_rhsm_org_id }}"
+    reg_osrelease: 8.4
+    repositories:
+      - rhel-8-for-x86_64-baseos-e4s-rpms
+      - rhel-8-for-x86_64-appstream-e4s-rpms
+      - rhel-8-for-x86_64-sap-solutions-e4s-rpms
+      - rhel-8-for-x86_64-sap-netweaver-e4s-rpms
+      - rhel-8-for-x86_64-highavailability-e4s-rpms
+
+  tasks:
+    - name: Ensure Correct subscription and repositories
+      include_role:
+        name: mk-ansible-roles.subscribe_rhn
+
+    - name: ensure network configuration is persistent
+      include_role:
+        name: redhat.rhel_system_roles.network
+      vars:
+         network_provider: nm
+         network_connections:
+           - name: "{{ ansible_default_ipv4.alias }}"
+             mac: "{{ ansible_default_ipv4.macaddress }}"
+             interface_name: "{{ ansible_default_ipv4.interface }}"
+             # state: up
+             # persistent_state: present
+             type: ethernet
+             # autoconnect: true
+             ip:
+                     dhcp4: true
+                     dhcp4_send_hostname: true
+         network_allow_restart: true
+
+    - name: get storage pool setup from server definition
+      set_fact:
+         storage_pools: "{{ server_def | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
+
+    - name: Ensure storage is configured correctly
+      include_role:
+        name: redhat.rhel_system_roles.storage
+
+    - name: Ensure GCS Fuse yum repo is created
+      yum_repository:
+              name: "gcsfuse"
+              description: "gcsfuse (packages.cloud.google.com)"
+              baseurl: "https://packages.cloud.google.com/yum/repos/gcsfuse-el7-x86_64"
+              enabled: true
+              gpgcheck: true
+              gpgkey:
+                  - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+                  - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+    - name: Ensure GCSFuse & NFS client is installed
+      dnf:
+         name:
+           - gcsfuse
+           - nfs-utils
+           - python3-protobuf
+           - python3-pyasn1-modules
+           - google-cloud-sdk
+         state: present
+
+    - name: ensure google-cloud-storage Python library is installed
+      pip:
+         name: google-cloud-storage
+         state: present
+
+
+         #    - name: Ensure Mountpoint exists
+         #      file:
+         #         path: "{{ gcs_bucket_path }}"
+         #         state: directory
+         #         mode: '0755'
+
+         #    - name: Ensure Bucket is mounted
+         #      mount:
+         #         path: "{{ gcs_bucket_path }}"
+         #         src: "{{ gcs_bucket_name }}"
+         #         fstype: gcsfuse
+         #         opts: ro
+         #         state: present

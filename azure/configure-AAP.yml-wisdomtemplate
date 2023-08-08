@@ -1,0 +1,38 @@
+- name: Configure Ansible Automation Controller
+  hosts: localhost
+  gather_facts: false
+
+  # This playbook requires the following environment variables
+  # CONTROLLER_USERNAME
+  # CONTROLLER_OAUTH_TOKEN or CONTROLLER_PASSWORD
+  # CONTROLLER_HOST defaults to localhost
+
+  tasks:
+    - name: Create demo organization
+    
+    - name: Ensure Ansible Controller credential for SAP S-User
+
+    - name: Ensure machine credential
+
+    - name: Ensure S-User credential
+
+    - name: Ensure Azure Credential
+
+    - name: Ensure Ansible Automation Hub credential
+
+    - name: Ensure token is added to organization
+
+    - name: Ensure  project in Ansible Controller
+   
+    - name: Ensure SAP Demo inventory exists
+
+    - name: Add variables to inventory (if not done in previous step)
+
+    - name: Configure dynamic Azure inventory
+
+
+    - name: Configure job templates
+
+    - name: Configure workflow templates
+
+      

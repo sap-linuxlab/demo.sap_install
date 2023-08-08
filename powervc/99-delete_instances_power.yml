@@ -4,10 +4,10 @@
 #
 # After running this playbook you will have
 # all LPARS deleted that are defined in:
-#   power_machines:
+#   server_def:
 #           - name: server-name
 
-- name: 99 - Delete all hosts from power_machines dict
+- name: 99 - Delete all hosts from server_def dict
   hosts: localhost
   gather_facts: false
 
@@ -17,4 +17,4 @@
       name: powervc_vm_delete
     vars:
       vm_delete_name: "{{ item.name }}"
-    loop: "{{ power_machines }}"
+    loop: "{{ server_def }}"
