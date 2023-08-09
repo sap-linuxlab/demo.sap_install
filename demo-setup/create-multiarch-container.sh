@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # see also https://danmanners.com/posts/2022-01-buildah-multi-arch/
+# run buildah login quay.io before running this script
 
 # Set your manifest name
 export MANIFEST_NAME="multiarch-sapdemosetup"
