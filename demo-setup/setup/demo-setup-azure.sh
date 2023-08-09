@@ -172,7 +172,7 @@ if [[ -z "${CONTROLLER_HOST}" || -z "${CONTROLLER_USERNAME}" || -z "${CONTROLLER
       echo "Be patient, this can take up to 3hrs"
       echo "Creation started at $(date) - run 'tail -f ${LOGFILE}' in other window to see the output"
       # undocumented feature: add AAP_TEMPLATE_URL to your docker environment file to change the template
-      [[ -z "AAP_TEMPLATE_URL" ]] && AAP_TEMPLATE_URL=https://raw.githubusercontent.com/sap-linuxlab/demo.sap_install/azure/demo-setup/template.json
+      [[ -z "AAP_TEMPLATE_URL" ]] && AAP_TEMPLATE_URL=https://raw.githubusercontent.com/sap-linuxlab/demo.sap_install/demo-setup/azure-config/template.json
       ansible-playbook -v -i localhost, 01-deploy-AAP-from-marketplace.yml \
         -e controller_password="${CONTROLLER_PASSWORD}" \
         -e azure_cli_id="${CLIENT_ID}" \

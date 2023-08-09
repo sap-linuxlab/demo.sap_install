@@ -13,7 +13,7 @@
 #
 #    ### Cluster Definition
 #    ha_cluster_cluster_name: cluster1
-#    ha_cluster_hacluster_password: 'my_hacluster'
+#    ha_cluster_hacluster_password: 'my_hacluster' # notsecret
 #    
 #    sap_hana_cluster_nodes:
 #      - node_name: hana1
