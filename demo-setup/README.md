@@ -27,6 +27,23 @@ This README contains the developer files for a container to configure and run th
 
 
 ## Build/Update environemnt
+
+To create an image that runs on MacOS (arm) and Linux x86_64 we need to create a multiarch container images.
+The buildah team has created a container to run the build tools and the follwoing command is used to create the
+multiarch container from MacOS:
+
+```[bash]
+podman run --detach --name=buildahctr --net=host --security-opt label=disable --security-opt seccomp=unconfined \
+   --device /dev/fuse:rw \
+   -v /var/home/core/.local/share/containers:/var/lib/containers \
+   -v ${HOME}/ansible:/root/ansible \
+   stable sh -c 'while true ;do sleep 100000 ; done'
+```
+
+see also https://danmanners.com/posts/2022-01-buildah-multi-arch/
+
+
+
 To create a proper working image for your environment you have to modify the
 template file with the appropriate template for your marketplace app in
 `setup/01-deploy-AAP-from-marketplace.yml`.
@@ -58,5 +75,5 @@ AH_TOKEN=your Automation Hub Token here
 ```
 Then run the following command
 ```[bash]
-docker run --rm -it -h demosetup --name sapdemosetup --env-file ./testenv.docker <containerimage>
+podman run --rm -it -h demosetup --name sapdemosetup --env-file ./testenv.docker <containerimage>
 ```
