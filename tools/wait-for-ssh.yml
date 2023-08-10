@@ -1,0 +1,23 @@
+---
+####################################################
+#
+# TOOL: wait for ssh
+#
+# This playbook can be used in workflows to wait for the ssh connection
+# in case a system is freschly deployed or rebooted
+
+- name: Ensure Servers are booted and reachable
+  hosts: all
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Wait for SSH to come up
+    ansible.builtin.wait_for:
+      host: "{{ ansible_host }}"
+      port: 22
+      # delay: 10
+      sleep: 10
+      search_regex: OpenSSH
+      state: started
+      timeout: 480
+    delegate_to: localhost
