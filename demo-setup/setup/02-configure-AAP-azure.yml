@@ -469,7 +469,7 @@
         playbook: misc/download-sap-media.yml
         credentials:
           - "{{ prefix }}Azure Machine Credential"
-          - "{{ prefix }}Azure SAP S-User Credential"
+          - "{{ prefix }}SAP S-User Credential"
         allow_simultaneous: false
         ask_verbosity_on_launch: true
         ask_variables_on_launch: true
