@@ -6,7 +6,6 @@
   vars:
     az_location: "eastus"
     az_managed_app: "AAPSapDemo"
-    az_aap_template_url: 'https://raw.githubusercontent.com/sap-linuxlab/demo.sap_install/demo-setup/azure-config/template.json'
 
   vars_prompt:
     - name: "controller_password"
@@ -33,6 +32,11 @@
       prompt: "Azure Resource Group Name"
       private: false
       default: "{{ lookup('env', 'RESOURCEGROUP') }}"
+    - name: "az_aap_template_url"
+      prompt: "Azure AAP Template URL"
+      private: false
+      default: "{{ lookup('env', 'AAP_TEMPLATE_URL') }}"
+   
 
   tasks:
     - name: Create Azure resource group "{{ az_resoucegroup }}"
@@ -70,12 +74,12 @@
             value: {}
           vnetConfig:
             value:
+              name: vnet01_doNotEditName
               addressPrefix: 10.1.0.0/24
+              resourceGroup: "{{ az_resourcegroup }}_AAP"
               addressPrefixes:
                 - 10.1.0.0/24
-              name: vnet01_doNotEditName
               newOrExisting: new
-              resourceGroup: "{{ az_resourcegroup }}_AAP"
               subnets:
                 aks:
                   addressPrefix: 10.1.0.0/26

@@ -41,7 +41,7 @@
             "type": "bool"
         },
         "engineTemplateUrl": {
-            "defaultValue": "https://rhaap.blob.core.windows.net/templates/templates_1.0.28.zip",
+            "defaultValue": "https://rhaap.blob.core.windows.net/templates/templates_1.1.zip",
             "type": "string"
         },
         "location": {
@@ -52,7 +52,7 @@
             "type": "string"
         },
         "operatorsChannel": {
-            "defaultValue": "stable-2.3-cluster-scoped",
+            "defaultValue": "stable-2.4-cluster-scoped",
             "type": "string"
         },
         "operatorsIndex": {
@@ -83,7 +83,7 @@
         },
         "applicationResourceName": {
             "type": "string",
-            "defaultValue": "c825c45889264b368c855c1f09f52ca4"
+            "defaultValue": "1503c1089f2c435e9cb72f67210fae76"
         },
         "managedResourceGroupId": {
             "type": "string",
@@ -108,7 +108,7 @@
                 "name": "rh-aap-azure0int-z1",
                 "product": "rhaapomsa",
                 "publisher": "redhat",
-                "version": "1.0.30"
+                "version": "1.1.0"
             },
             "identity": "[if(empty(parameters('managedIdentity')),json('null'),parameters('managedIdentity'))]",
             "properties": {
