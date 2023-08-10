@@ -33,7 +33,8 @@ The buildah team has created a container to run the build tools and the follwoin
 multiarch container from MacOS:
 
 ```[bash]
-podman run --detach --name=buildahctr --net=host --security-opt label=disable --security-opt seccomp=unconfined \
+podman run --detach --name=buildahctr --hostname=buildahctr \
+   --net=host --security-opt label=disable --security-opt seccomp=unconfined \
    --device /dev/fuse:rw \
    -v /var/home/core/.local/share/containers:/var/lib/containers \
    -v ${HOME}/ansible:/root/ansible \

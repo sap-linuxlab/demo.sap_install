@@ -39,7 +39,14 @@
    
 
   tasks:
-    - name: Create Azure resource group "{{ az_resoucegroup }}"
+    - name: Debug prompted variables
+      ansible.builtin.debug:
+        msg:
+          - "Azure AAP Template URL: {{ az_aap_template_url }}"
+          - "Azure Resource Group Name: {{ az_resourcegroup }}"
+          - "AAP Controller Password: {{ controller_password }}"
+
+    - name: Create Azure resource group
       azure.azcollection.azure_rm_resourcegroup:
         name: "{{ az_resourcegroup }}_AAP"
         location: "{{ az_location }}"

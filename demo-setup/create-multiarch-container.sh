@@ -11,7 +11,7 @@ export BUILD_PATH="."
 export REGISTRY="quay.io"
 export USER="mkoch-redhat"
 export IMAGE_NAME="sapdemosetup"
-export IMAGE_TAG="0.2.15"
+export IMAGE_TAG="0.2.16"
 
 # Create a multi-architecture manifest
 buildah manifest create ${MANIFEST_NAME}:${IMAGE_TAG}
