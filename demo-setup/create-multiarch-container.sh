@@ -11,7 +11,7 @@ export BUILD_PATH="."
 export REGISTRY="quay.io"
 export USER="mkoch-redhat"
 export IMAGE_NAME="sapdemosetup"
-export IMAGE_TAG="0.2.16"
+export IMAGE_TAG="0.2.17"
 
 # Create a multi-architecture manifest
 buildah manifest create ${MANIFEST_NAME}:${IMAGE_TAG}
@@ -37,3 +37,6 @@ buildah manifest push --all \
     ${MANIFEST_NAME}:${IMAGE_TAG} \
     "docker://${REGISTRY}/${USER}/${IMAGE_NAME}:${IMAGE_TAG}"
 
+buildah manifest push --all \
+    ${MANIFEST_NAME}:${IMAGE_TAG} \
+    "docker://${REGISTRY}/${USER}/${IMAGE_NAME}:latest"

@@ -57,6 +57,7 @@ spinner() {
 }
 
 cache_var() {
+  export ${1}=${2}
   ansible -i localhost, localhost \
    -e ansible_connection=local \
    -m lineinfile \
