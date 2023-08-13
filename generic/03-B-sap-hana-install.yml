@@ -7,7 +7,11 @@
 - name: Phase 3-B - Install Hana
   hosts: hanas
   become: true
-
+  vars:
+#    sap_domain: example.com
+#
+    sap_hana_sid: 'DB1'
+    sap_hana_instance_number: '00'
   tasks:
     # This step is already included in version 1.0.2. of the collection
     # name: Detect Existing HANA installation
