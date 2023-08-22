@@ -70,6 +70,7 @@
 
   roles:
     # SAP Hana preparation and installation
+    - name: community.sap_install
     - name: sap_general_preconfigure
     - name: sap_hana_preconfigure
     - name: sap_hana_install
