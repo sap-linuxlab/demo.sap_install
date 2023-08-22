@@ -16,5 +16,6 @@ collections:
         - name: community.sap_libs
         - name: community.sap_operations
         - name: community.sap_install
+        - name: community.sap_install.sap_ha_pacemaker_cluster
         - name: https://github.com/sap-linuxlab/community.sap_launchpad.git
           type: git
