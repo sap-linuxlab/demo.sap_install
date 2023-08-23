@@ -7,9 +7,9 @@
   # test comment
   tasks:
 
-    - name: run sap_control
+    - name: "sapcontrol"
       ansible.builtin.include_role:
         name: community.sap_operations.sap_control
         register: sap_control_result
-        
+
 
