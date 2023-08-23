@@ -10,7 +10,7 @@
 #    sap_hana_install_master_password: 'my_hana_password'
 #
 #
-# Prerequisites of this playbook
+# Prerequisites of this playbook test
 #
 #  az_rg:     Name of Azure Resource Group
 #  az_subnet: name of Azure Subnet
