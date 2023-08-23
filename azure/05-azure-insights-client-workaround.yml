@@ -8,21 +8,21 @@
   tasks:
     - name: loop through files defined by items list
       block: ### check if file exists ###
+        - name: check if file exists
           stat: 
             path: "/var/lib/insights/{{ item }}"
           register: file_exists
+        - name: copy file if exists
           copy:
             src: "/var/lib/insights/{{ item }}"
-              remote_src: yes
+            remote_src: yes
             dest: /tmp/
-          when: file_exists.stat.exists == true
-
-      with_items:
+          when: file_exists.stat.exists == true 
+        with_items:
         - "last_stable.egg*"
         - "newest.eg*"
-
+      
     - name: register Red Hat insights-client
-
       shell: "insights-client --register --display-name=SAPdemo-{{ inventory_hostname }} --force"
       
       
