@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: true
+  gather_facts: no
+  vars:
+    sap_control_function: "restart_all_sap"
+  # test comment
+  tasks:
+
+    - name: copy files to /tmp
+      copy:
+        src: "/var/lib/insights{{ item }}"
+        dest: /tmp/
+      with_items:
+        - "last_stable.egg*"
+        - "newest.eg*"
+
+
