@@ -10,5 +10,6 @@
     - name: 'run sap_control'
       ansible.builtin.include_role:
         name: community.sap_operations.sap_control
+        register: sap_control_result
     
 
