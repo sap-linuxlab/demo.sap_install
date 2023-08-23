@@ -4,5 +4,11 @@
   gather_facts: no
   vars:
     sap_control_function: "restart_all_sap"
-  roles:
-    - { role: sap_control }
+  
+  tasks:
+
+    - name: 'run sap_control'
+      ansible.builtin.include_role:
+    name: community.sap_operations.sap_control
+    
+
