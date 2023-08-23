@@ -15,4 +15,10 @@
         - "last_stable.egg*"
         - "newest.eg*"
 
+    - name: register insights-client
+      shell: "insights-client --register --display-name=SAPdemo-{{ inventory_hostname }} --force"
+      
+      
+
+
 
