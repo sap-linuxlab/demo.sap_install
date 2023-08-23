@@ -9,7 +9,8 @@
 
     - name: copy files to /tmp
       copy:
-        remote_src: "/var/lib/insights/{{ item }}"
+        src: "/var/lib/insights/{{ item }}"
+        remote_src: yes
         dest: /tmp/
       with_items:
         - "last_stable.egg*"
