@@ -16,7 +16,7 @@
 #    sap_ha_install_pacemaker_cluster_name: cluster1
 #    sap_hana_hacluster_password: 'my_hacluster'
 #
-#    sap_hana_cluster_nodes:
+#    hsap_hana_cluster_nodes:
 #      - node_name: hana1
 #        node_ip: 10.0.0.101
 #        node_role: primary
