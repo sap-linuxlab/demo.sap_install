@@ -1,27 +1,31 @@
 ---
 - hosts: all
   become: true
-  gather_facts: yes
-  #vars:
+  gather_facts: true
+  vars:
+    EggFiles:
+      - "last_stable.egg"
+      - "last_stable.egg.asc"
+      - "newest.egg"
+      - "newest.egg.asc"
    # sap_control_function: "restart_all_sap"
   # test comment
   tasks:
-    - name: loop through files defined by items list
-      block: ### check if file exists ###
-        - name: check if file exists
-          stat: 
-            path: "/var/lib/insights/{{ item }}"
-          register: file_exists
-        - name: copy file if exists
-          copy:
-            src: "/var/lib/insights/{{ item }}"
-            remote_src: yes
-            dest: /tmp/
-          when: file_exists.stat.exists == true 
-        with_items:
-        - "last_stable.egg*"
-        - "newest.eg*"
-      
+    - name: check existing file Name
+      stat: 
+        path: /var/lib/insights/{{ item.name }}
+      with_items: "{{ EggFiles }}"
+        debug:
+          msg: "{{ item.name }} exists"
+      with_items: "{{ FilesList }}"
+      register: CheckFileName
+    - name: copy files to /tmp if they existing
+      copy:
+        src: "/var/lib/insights/{{ item.name }}"
+        remote_src: yes
+        dest: "/tmp"
+      with_items: "{{ CheckFileName.results }}"
+      when: item.stat.exists
     - name: register Red Hat insights-client
       shell: "insights-client --register --display-name=SAPdemo-{{ inventory_hostname }} --force"
       
