@@ -14,8 +14,8 @@
     - name: check existing file Name
       stat: 
         path: /var/lib/insights/{{ item.name }}
-      debug:
-        msg: "{{ item.name }} exists"
+        debug:
+          msg: "{{ item.name }} exists"
       with_items: "{{ EggFiles }}"
       register: CheckFileName
     - name: copy files to /tmp if they existing
