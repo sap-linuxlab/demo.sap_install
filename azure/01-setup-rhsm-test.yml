@@ -11,5 +11,5 @@
       private: yes
 
 
-  roles:
+  include_role:
      - { role: redhat_sap.sap_rhsm }
