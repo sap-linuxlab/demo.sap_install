@@ -1,0 +1,15 @@
+---
+- name: test variables of rhsm
+  hosts: hanas
+  become: true
+  vars_prompt:
+    - name: "sap_rhsm_username"
+      prompt: "Enter your Red Hat login username"
+      private: no
+    - name: "sap_rhsm_password"
+      prompt: "Enter your Red Hat login password"
+      private: yes
+
+
+  roles:
+     - { role: redhat_sap.sap_rhsm }

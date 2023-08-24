@@ -5,6 +5,16 @@
   become: true
 
   vars:
+      sap_hana_cluster_nodes:
+      - node_name: hana1
+#        node_ip: 10.0.0.101
+        node_role: primary
+        hana_site: DC01
+#
+      - node_name: hana2
+#        node_ip: 10.0.0.102
+        node_role: secondary
+        hana_site: DC02
 #    sap_domain: example.com
 #
 
@@ -25,16 +35,17 @@
 #    sap_ha_install_pacemaker_cluster_name: cluster1
 #    sap_hana_hacluster_password: 'my_hacluster'
 #
-    sap_hana_cluster_nodes:
-      - node_name: hana1
-#        node_ip: 10.0.0.101
-        node_role: primary
-        hana_site: DC01
-#
-      - node_name: hana2
-#        node_ip: 10.0.0.102
-        node_role: secondary
-        hana_site: DC02
+  roles:
+         - { role: redhat_sap.sap_rhsm }
+         - { role: redhat_sap.sap_hana_mediacheck }
+         - { role: redhat_sap.sap_hostagent }
+         - { role: linux-system-roles.timesync }
+         - { role: linux-system-roles.storage }
+         - { role: sap-preconfigure }
+         - { role: sap-hana-preconfigure }
+         - { role: redhat_sap.sap_hana_deployment }
+         - { role: redhat_sap.sap_hana_hsr }
+
 
 
 #
