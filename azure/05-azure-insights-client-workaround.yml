@@ -4,10 +4,10 @@
   gather_facts: true
   vars:
     EggFiles:
-      - "last_stable.egg"
-      - "last_stable.egg.asc"
-      - "newest.egg"
-      - "newest.egg.asc"
+      - name: last_stable.egg
+      - name: last_stable.egg.asc
+      - name: newest.egg
+      - name: newest.egg.asc
    # sap_control_function: "restart_all_sap"
   # test comment 2
   tasks:
