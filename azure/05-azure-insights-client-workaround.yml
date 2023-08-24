@@ -15,9 +15,6 @@
       stat: 
         path: /var/lib/insights/ {{ item.name }}
       loop: "{{ EggFiles|flatten(levels=1) }}"
-    - debug:
-        msg: "{{ item.name }} exists"
-      with_items: "{{ EggFiles }}"
       register: CheckFileName
     - name: copy files to /tmp if they existing
       copy:
