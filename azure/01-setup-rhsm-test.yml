@@ -2,14 +2,18 @@
 - name: test variables of rhsm
   hosts: hanas
   become: true
-  vars_prompt:
-    - name: "sap_rhsm_username"
-      prompt: "Enter your Red Hat login username"
-      private: no
-    - name: "sap_rhsm_password"
-      prompt: "Enter your Red Hat login password"
-      private: yes
+  vars:
+    sap_rhsm_username: "{{ lookup('env', 'RHSM_USERNAME') }}"
+    sap_rhsm_password: "{{ lookup('env', 'RHSM_PASSWORD') }}"
+  # vars_prompt:
+  #   - name: "sap_rhsm_username"
+  #     prompt: "Enter your Red Hat login username"
+  #     private: no
+  #   - name: "sap_rhsm_password"
+  #     prompt: "Enter your Red Hat login password"
+  #     private: yes
 
 
-  include_role:
+  name: "Red Hat Subscription Manager
+  ansible.builtin.include_role:
      - { role: redhat_sap.sap_rhsm }
