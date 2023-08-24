@@ -14,6 +14,6 @@
   #     private: yes
 
 
-  name: "Red Hat Subscription Manager"
-  ansible.builtin.include_role:
-     - { role: redhat_sap.sap_rhsm }
+  name: Red Hat Subscription Manager
+  include_role: 
+    name: redhat_sap.sap_rhsm
