@@ -7,8 +7,17 @@
   vars:
 #    sap_domain: example.com
 #
-    sap_hana_sid: 'RHA'
-    sap_hana_instance_number: '00'
+
+    # resource_group: ResourceGroupHana
+    # virtual_network: ResourceGroupHana-vnet
+    # virtual_subnet: default
+    # virtual_machine1: saphana01
+    # virtual_machine2: saphana02
+    # nic1: NicHana01
+    # nic2: NicHana02
+    # security_group: SecurityGroupHana
+    # sap_hana_sid: 'RHA'
+    # sap_hana_instance_number: '00'
 #    sap_hana_install_master_password: 'my_hana_password'
 #    # It is recommended to use vault instead of plain text passwords. Example please check README
 #
