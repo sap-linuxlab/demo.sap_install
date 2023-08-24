@@ -1,14 +1,14 @@
 ---
 # call playbook with # ansible-playbook example_in_one_file.yml
-- name: "Phase 03-C and 03-D -Setup HANA System Replication"
+- name: "Setup HANA System Replication Cluster"
   hosts: hanas
   become: true
 
   vars:
 #    sap_domain: example.com
 #
-#    sap_hana_sid: 'DB1'
-#    sap_hana_instance_number: '00'
+    sap_hana_sid: 'RHA'
+    sap_hana_instance_number: '00'
 #    sap_hana_install_master_password: 'my_hana_password'
 #    # It is recommended to use vault instead of plain text passwords. Example please check README
 #
