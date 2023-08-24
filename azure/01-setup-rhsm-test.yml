@@ -1,5 +1,5 @@
 ---
-- name: test variables of rhsm
+- name: "test rhsm"
   hosts: hanas
   become: true
   vars:
