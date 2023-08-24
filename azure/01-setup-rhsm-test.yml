@@ -1,5 +1,5 @@
 ---
-- name: "test rhsm"
+- name: Subscribe Red Hat
   hosts: hanas
   become: true
   vars:
