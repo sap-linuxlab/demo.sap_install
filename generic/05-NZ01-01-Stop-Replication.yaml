@@ -1,0 +1,13 @@
+---
+- name: NZDT Stop Hana Replication
+  gather_facts: true
+  hosts: hanas
+  tasks:
+    - name: stop HANA System Replication
+    
+      vyos.vyos.vyos_facts:
+        gather_subset: all
+
+    - name: Display the config
+      debug:
+        msg: "The hostname is {{ ansible_net_hostname }} and the OS is {{ ansible_net_version }}"
