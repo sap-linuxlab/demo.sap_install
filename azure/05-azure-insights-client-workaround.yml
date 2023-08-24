@@ -11,9 +11,10 @@
    # sap_control_function: "restart_all_sap"
   # test comment 2
   tasks:
-    - name: check existing file Name
+    - name: check existing file Name -> loop
       stat: 
-        path: /var/lib/insights/{{ item.name }}
+        path: /var/lib/insights/ {{ item.name }}
+      loop: "{{ EggFiles|flatten(levels=1) }}"
     - debug:
         msg: "{{ item.name }} exists"
       with_items: "{{ EggFiles }}"
