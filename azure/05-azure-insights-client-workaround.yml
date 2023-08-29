@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: azs4
   become: true
   gather_facts: true
   vars:
