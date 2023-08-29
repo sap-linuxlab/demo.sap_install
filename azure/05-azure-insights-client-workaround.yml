@@ -1,5 +1,5 @@
 ---
-- hosts: azs4
+- hosts: "azhana1,azs4"
   become: true
   gather_facts: true
   vars:
