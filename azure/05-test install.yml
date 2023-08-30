@@ -1,5 +1,5 @@
 ---
-- hosts: azhana1,azs4
+- hosts: azhana1,azs4 
   become: true
   roles:
     - role: sap_swpm
