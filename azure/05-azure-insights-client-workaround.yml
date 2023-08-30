@@ -23,8 +23,12 @@
         dest: "/tmp"
       with_items: "{{ CheckFileName.results }}"
       when: item.stat.exists
-    - name: register Red Hat insights-client
-      shell: "insights-client --register --display-name=SAPdemo-{{ inventory_hostname }} --force"
+    # Force a Reregister (for config changes, etc)  
+    - name: register the insights client
+      insights_register:
+        state: present
+        force_reregister: true
+      
       
       
 
