@@ -1,0 +1,10 @@
+---
+- hosts: azhana1,azs4
+  become: true
+  roles:
+    - role: sap_swpm
+      tags: sap_swpm_generate_inifile
+
+
+
+
