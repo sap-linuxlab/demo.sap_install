@@ -1,6 +1,7 @@
 ---
 - name: Ansible Play for executing SAP HANA installation to all hosts in Ansible Inventory
-  hosts: all
+#  hosts: all
+  hosts: hanas
   become: true
   pre_tasks:
     - name: Include variables
