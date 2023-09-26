@@ -8,4 +8,6 @@ pip install ansible ansible-builder ansible-navigator
 
 ansible-galaxy collection install -r requirements.yml  --collections-path /usr/share/ansible/collections
 
+ansible-builder build --tag mkoch-redhat/sap-ee:0.0.1 --container-runtime podman -f execution-environment.yml
+
 
