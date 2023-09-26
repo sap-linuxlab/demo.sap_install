@@ -86,6 +86,7 @@
       dnf:
          name:
            - nfs-utils
+           - cifs-utils
          state: present
 
     - name: Ensure Mountpoint exists
@@ -94,12 +95,12 @@
          state: directory
          mode: '0755'
 
-    - name: Ensure NFS Server with SAP Software is mounted
+    - name: Ensure Software is mounted from file server
       ansible.posix.mount:
-        src: "{{ nfs_software_archive_srv }}"
-        path: "{{ nfs_software_archive_dir }}"
-        opts: rw,sync,hard,noatime
-        fstype: nfs
+        src: "{{ fs_software_archive_srv | d(nfs_software_archive_srv) }}"
+        path: "{{ fs_software_archive_dir | d(fs_software_archive_dir) }}"
+        opts: "{{ fs_mount_opts | d('rw,sync,hard,noatime') }}"
+        fstype: "{{ fs_filetype | d('nfs') }}"
         state: present
 
     # VMWare image provisioning leaves an unusal /etc/hosts entry, that needs to be removed
