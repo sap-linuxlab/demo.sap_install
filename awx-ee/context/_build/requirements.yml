@@ -1,0 +1,20 @@
+---
+collections:
+        - name: azure.azcollection
+        - name: google.cloud
+        - name: vmware.vmware_rest
+        - name: community.vmware
+          version: 3.4.0
+        - name: openstack.cloud
+          version: 1.8.0
+        - name: redhat.rhel_system_roles
+          # version: 1.7.3
+          # source: https://cloud.redhat.com/api/automation-hub/
+        - name: fedora.linux_system_roles
+        - name: community.general
+        - name: ansible.posix
+        - name: community.sap_libs
+        - name: community.sap_operations
+        - name: community.sap_install
+        - name: https://github.com/sap-linuxlab/community.sap_launchpad.git
+          type: git

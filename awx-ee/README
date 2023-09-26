@@ -1,0 +1,11 @@
+
+Create Build environment
+
+python3 -m venv ~/bin/vnev-ansible
+. ~/venv-ansible/bin/acrtivate
+pip install --upgrade pip
+pip install ansible ansible-builder ansible-navigator
+
+ansible-galaxy collection install -r requirements.yml  --collections-path /usr/share/ansible/collections
+
+
