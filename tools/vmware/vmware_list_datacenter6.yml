@@ -3,10 +3,16 @@
   gather_facts: false
 
   tasks:
-  - name: Collect the list of the datacenters
-    community.vmware.vmware_datacenter_info:
-      validate_certs: false
-    register: my_datacenters
+    - name: Ensure required Python Libraries are installed
+      ansible.builtin.pip:
+        name:
+          - pyVmomi>=6.7
+          - git+https://github.com/vmware/vsphere-automation-sdk-python.git
+    - name: Collect the list of the datacenters
+      community.vmware.vmware_datacenter_info:
+        validate_certs: false
+      register: my_datacenters
 
-  - debug:
-         var: my_datacenters
+    - name: Output datacenters
+      debug:
+        var: my_datacenters
