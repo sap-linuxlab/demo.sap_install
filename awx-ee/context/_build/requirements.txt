@@ -1,5 +1,0 @@
-git+https://github.com/ansible/ansible-sign
-cryptography==37.0.4
-pyVmomi>=6.7
-git+https://github.com/vmware/vsphere-automation-sdk-python.git
-openstacksdk>=0.36

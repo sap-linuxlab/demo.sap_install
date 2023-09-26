@@ -2,3 +2,5 @@ python38-devel [platform:rpm compile]
 subversion [platform:rpm]
 subversion [platform:dpkg]
 git-lfs [platform:rpm]
+openssl [platform:rpm]
+
