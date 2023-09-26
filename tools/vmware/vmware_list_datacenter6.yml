@@ -6,6 +6,7 @@
     - name: Ensure required Python Libraries are installed
       ansible.builtin.pip:
         name:
+          - requests
           - pyVmomi>=6.7
           - git+https://github.com/vmware/vsphere-automation-sdk-python.git
     - name: Collect the list of the datacenters
