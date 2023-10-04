@@ -1,0 +1,20 @@
+---
+#  dns_update
+#
+#  This role udates the DNS server
+
+- name: Update DNS Server
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Add or modify ansible.example.org A to 192.168.1.1"
+      community.general.nsupdate:
+        key_name: "{{ dns_key_name | default(omit) }}"
+        key_secret: "{{ dns_key_secret }}"
+        server: "{{ dns_server }}"
+        key_algorithm: "{{ dns_key_algoithm | default(omit) }}"
+        zone: "{{ sap_domain | deafult(ansible_domain) }}"
+        record: "{{ name }}"
+        value: "{{  ansible_default_ipv4.address }}"
+        state: "{{ dns_entry_state | default('present') }}"
