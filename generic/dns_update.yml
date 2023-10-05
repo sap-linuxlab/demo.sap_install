@@ -14,7 +14,7 @@
         key_secret: "{{ dns_key_secret }}"
         server: "{{ dns_server }}"
         key_algorithm: "{{ dns_key_algoithm | default(omit) }}"
-        zone: "{{ sap_domain | deafult(ansible_domain) }}"
+        zone: "{{ sap_domain | default(ansible_domain) }}"
         record: "{{ name }}"
         value: "{{  ansible_default_ipv4.address }}"
         state: "{{ dns_entry_state | default('present') }}"
