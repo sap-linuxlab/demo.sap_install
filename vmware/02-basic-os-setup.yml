@@ -116,7 +116,7 @@
 
     - name: Ensure Mountpoint exists
       ansible.builtin.file:
-        path: "{{ fs_software_archive_dir | d(fs_software_archive_dir) }}"
+        path: "{{ fs_software_archive_dir | d(nfs_software_archive_dir) }}"
         state: directory
         mode: '0755'
       tags:
@@ -125,7 +125,7 @@
     - name: Ensure Software is mounted from file server
       ansible.posix.mount:
         src: "{{ fs_software_archive_srv | d(nfs_software_archive_srv) }}"
-        path: "{{ fs_software_archive_dir | d(fs_software_archive_dir) }}"
+        path: "{{ fs_software_archive_dir | d(nfs_software_archive_dir) }}"
         opts: "{{ fs_mount_opts | d('rw,sync,hard,noatime') }}"
         fstype: "{{ fs_filetype | d('nfs') }}"
         state: present
