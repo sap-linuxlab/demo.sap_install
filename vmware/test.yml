@@ -68,7 +68,6 @@
       - { name: rhel-8-for-x86_64-sap-netweaver-e4s-rpms, state: enabled }
       - { name: rhel-8-for-x86_64-highavailability-e4s-rpms, state: enabled }
     system_roles: fedora.linux_system_roles
-
   tasks:
 # Old roles are deprecated. Need to replace by rhc
 #    - name: Ensure Correct subscription and repositories
@@ -84,11 +83,6 @@
             keys: ["{{ sap_rhsm_activationkey }}"]
         rhc_organization: "{{ sap_rhsm_org_id }}"
         rhc_repositories: "{{ repositories }}"
-        rhc_server:
-          hostname: subscription.rhsm.redhat.com
-          port: 443
-          prefix: /subscription
-          insecure: false
         rhc_release: "{{ reg_osrelease }}"
         rhc_insights:
           state: absent
