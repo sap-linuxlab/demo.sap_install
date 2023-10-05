@@ -1,9 +1,8 @@
 ---
 roles:
-  - src: mk-ansible-roles.check_reboot
-  - src: mk-ansible-roles.subscribe_rhn
-  - src: mk-ansible-roles.setup_nfs_server
-      
+        - src: mk-ansible-roles.check_reboot
+        - src: mk-ansible-roles.subscribe_rhn
+        - src: mk-ansible-roles.setup_nfs_server
 collections:
         - name: azure.azcollection
         - name: google.cloud

@@ -42,14 +42,14 @@
   gather_facts: false
   become: false
   tasks:
-  - name: Wait for SSH to come up
-    wait_for:
-      host: "{{ ansible_host }}"
-      port: 22
-      delay: 10
-      state: started
-      timeout: 480
-    delegate_to: localhost
+    - name: Wait for SSH to come up
+      ansible.builtin.wait_for:
+        host: "{{ ansible_host }}"
+        port: 22
+        delay: 10
+        state: started
+        timeout: 480
+      delegate_to: localhost
 
 - name: Phase 2 - basic OS Setup
   hosts: hanas, s4hanas
@@ -79,11 +79,9 @@
       ansible.builtin.include_role:
         name: "{{ system_roles + '.rhc' }}"
       vars:
-        rhc_state: present
         rhc_auth:
           activation_keys:
-            keys:
-              - "{{ sap_rhsm_activationkey }}"
+            keys: ["{{ sap_rhsm_activationkey }}"]
         rhc_organization: "{{ sap_rhsm_org_id }}"
         rhc_repositories: "{{ repositories }}"
         rhc_release: "{{ reg_osrelease }}"
