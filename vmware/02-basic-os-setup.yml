@@ -86,24 +86,33 @@
         rhc_organization: "{{ sap_rhsm_org_id }}"
         rhc_repositories: "{{ repositories }}"
         rhc_release: "{{ reg_osrelease }}"
+        rhc_state: "{{ presnt }}"
         rhc_insights:
           state: absent
+      tags:
+        - rhn_registration
 
     # This picks the correct storage configuration for host inventory_hostname out of the server_def dict
     - name: Get storage pool setup from server definition
       ansible.builtin.set_fact:
         storage_pools: "{{ server_def | selectattr('name', 'equalto', inventory_hostname) | sum(attribute='storage_pools', start=[]) }}"
+      tags:
+        - storage_setup
 
     - name: Ensure storage is configured correctly
       ansible.builtin.include_role:
         name: "{{ system_roles + '.storage' }}"
+      tags:
+        - storage_setup
 
-    - name: NFS client is installed
+    - name: NFS/CIFS client is installed
       ansible.builtin.dnf:
         name:
           - nfs-utils
           - cifs-utils
         state: present
+      tags:
+        - software_mount
 
     - name: Ensure Mountpoint exists
       ansible.builtin.file:
@@ -118,8 +127,10 @@
         opts: "{{ fs_mount_opts | d('rw,sync,hard,noatime') }}"
         fstype: "{{ fs_filetype | d('nfs') }}"
         state: present
+      tags:
+        - software_mount
 
-    # VMWare image provisioning leaves an unusal /etc/hosts entry, that needs to be removed
+    # VMWare image provisioning may leave an unusal /etc/hosts entry, that needs to be removed
     # Otherwise it impacts deployment negatively
     - name: Ensure VMware localhost entry is removed from /etc/hosts
       ansible.builtin.lineinfile:
