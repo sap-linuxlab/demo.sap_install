@@ -105,7 +105,7 @@
       tags:
         - storage_setup
 
-    - name: NFS/CIFS client is installed
+    - name: Ensure NFS/CIFS clients are installed
       ansible.builtin.dnf:
         name:
           - nfs-utils
@@ -116,7 +116,7 @@
 
     - name: Ensure Mountpoint exists
       ansible.builtin.file:
-        path: "{{ nfs_software_archive_dir }}"
+        path: "{{ fs_software_archive_dir | d(fs_software_archive_dir) }}"
         state: directory
         mode: '0755'
       tags:
