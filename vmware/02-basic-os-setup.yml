@@ -119,6 +119,8 @@
         path: "{{ nfs_software_archive_dir }}"
         state: directory
         mode: '0755'
+      tags:
+        - software_mount
 
     - name: Ensure Software is mounted from file server
       ansible.posix.mount:
