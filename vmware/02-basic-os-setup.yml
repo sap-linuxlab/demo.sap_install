@@ -77,7 +77,8 @@
 
     - name: Get subscription state (Workaround for rhc role)
       ansible.builtin.command:
-        name: "/sbin/subscription-manager identity"
+        cmd: /sbin/subscription-manager identity
+      become: true
       changed_when: false
       register: _rc_identity
       tags:
