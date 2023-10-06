@@ -4,7 +4,7 @@
 #  This role udates the DNS server
 
 - name: Update DNS Server
-  hosts: all
+  hosts: hanas,s4hanas
   become: true
 
   tasks:

@@ -70,12 +70,12 @@
     system_roles: fedora.linux_system_roles
 
   tasks:
-# Old roles are deprecated. Need to replace by rhc
-#    - name: Ensure Correct subscription and repositories
-#      include_role:
-#        name: mk-ansible-roles.subscribe_rhn
+    # A workaround is required, if you use an activation key for registering the system
+    # if the system is already registered, the rhc role will fail if you pass an
+    # activation key. I have not tested it with user authentication yet, but it should
+    # be the same
 
-    - name: Get subscription state (Workaround for rhc role)
+    - name: Get subscription state
       ansible.builtin.command:
         cmd: /sbin/subscription-manager identity
       become: true
@@ -85,9 +85,8 @@
       tags:
         - rhn_registration
 
-    - name: Ensure Auth data is set for rhn_registration (Workaround for rhc role)
+    - name: Ensure Auth data is set for rhn_registration with activation key
       ansible.builtin.set_fact:
-        #rhc_auth: { "activation_keys": { "keys:" [  "{{ sap_rhsm_activationkey }}" ] } }
         rhc_auth:
           activation_keys:
             keys:
@@ -95,6 +94,8 @@
       when: _rc_identity.rc != 0
       tags:
         - rhn_registration
+
+    ## TODO: add user/password registration as well
 
     - name: Ensure Correct subscription and repositories
       ansible.builtin.include_role:
