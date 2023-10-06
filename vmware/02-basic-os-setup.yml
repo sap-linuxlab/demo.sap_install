@@ -75,14 +75,33 @@
 #      include_role:
 #        name: mk-ansible-roles.subscribe_rhn
 
-    - name: Ensure Correct subscription and repositories
-      ansible.builtin.include_role:
-        name: "{{ system_roles + '.rhc' }}"
-      vars:
+    - name: Get subscription state (Workaround for rhc role)
+      ansible.builtin.command:
+        name: "/sbin/subscription-manager identity"
+      changed_when: false
+      register: _rc_identity
+      tags:
+        - rhn_registration
+
+    - name: Ensure Auth data is set for rhn_registration (Workaround for rhc role)
+      ansible.builtin.set_fact:
+        #rhc_auth: { "activation_keys": { "keys:" [  "{{ sap_rhsm_activationkey }}" ] } }
         rhc_auth:
           activation_keys:
             keys:
               - "{{ sap_rhsm_activationkey }}"
+      when: _rc_identity.rc != 0
+      tags:
+        - rhn_registration
+
+    - name: Ensure Correct subscription and repositories
+      ansible.builtin.include_role:
+        name: "{{ system_roles + '.rhc' }}"
+      vars:
+        # rhc_auth:
+        #  activation_keys:
+        #    keys:
+        #      - "{{ sap_rhsm_activationkey }}"
         rhc_organization: "{{ sap_rhsm_org_id }}"
         rhc_repositories: "{{ repositories }}"
         rhc_release: "{{ reg_osrelease }}"
