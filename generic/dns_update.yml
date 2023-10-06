@@ -8,6 +8,11 @@
   become: true
 
   tasks:
+    - name: HACK - Install dnspython on EE
+      ansible.builtin.pip:
+        name: dnspython
+      delegate_to: localhost
+
     - name: Add or modify ansible.example.org A to 192.168.1.1"
       community.general.nsupdate:
         key_name: "{{ dns_key_name | default(omit) }}"
@@ -15,6 +20,6 @@
         server: "{{ dns_server }}"
         key_algorithm: "{{ dns_key_algoithm | default(omit) }}"
         zone: "{{ sap_domain | default(ansible_domain) }}"
-        record: "{{ name }}"
+        record: "{{ inventory_hostname }}"
         value: "{{  ansible_default_ipv4.address }}"
         state: "{{ dns_entry_state | default('present') }}"
