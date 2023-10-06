@@ -80,6 +80,7 @@
         cmd: /sbin/subscription-manager identity
       become: true
       changed_when: false
+      failed_when: false
       register: _rc_identity
       tags:
         - rhn_registration
