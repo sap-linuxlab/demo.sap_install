@@ -24,7 +24,7 @@
 
 - name: Set default values
   ansible.builtin.set_fact:
-    __update_etc_hosts_comment: "{{ ( item.comment|d('') + ' ' item.hana_site|d('') ) | trim }}"
+    __update_etc_hosts_comment: "{{ ( item.comment|d('') + ' ' + item.hana_site|d('') ) | trim }}"
     __update_etc_hosts_alias_mode: "{{ item.alias_mode | default('merge') }}"
     __update_etc_hosts_state: "{{ item.state | default('present') }}"
 
