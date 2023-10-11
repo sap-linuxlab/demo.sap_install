@@ -3,6 +3,7 @@
 - name: Add entry to /etc/hosts
   loop: "{{ update_etc_hosts_list }}"
   loop_control:
-    label: "{{ item.node_name }}"
+    label: "{{ thishost.node_name }}"
+    loop_var: thishost
   ansible.builtin.include_tasks:
     file: update_hosts.yml

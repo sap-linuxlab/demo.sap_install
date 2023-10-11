@@ -18,6 +18,6 @@
         name: update_etc_hosts
       vars:
         update_etc_hosts_list:
-          - node_ip: hostvars['{{ item }}'].ansible_host
-            node_name: item
+          - node_ip: "{{ hostvars['{{ item }}'].ansible_host }}"
+            node_name: "{{ item }}"
       loop: "{{ play_hosts }}"

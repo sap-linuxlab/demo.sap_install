@@ -2,17 +2,17 @@
 # TODO CHECK/SET Variables
 - name: Verify that variable node_ip is set
   ansible.builtin.assert:
-    that: not( ( item.node_ip is undefined) or ( item.node_ip is none) or ( item.node_ip | trim == '') )
+    that: not( ( thishost.node_ip is undefined) or ( thishost.node_ip is none) or ( thishost.node_ip | trim == '') )
     msg: "Variable 'node_ip' is undefined or empty. Please define it your host list"
 
 - name: Verify that variable node_name is set
   ansible.builtin.assert:
-    that: not( ( item.node_name is undefined) or ( item.node_name is none) or ( item.node_name | trim == '') )
+    that: not( ( thishost.node_name is undefined) or ( thishost.node_name is none) or ( thishost.node_name | trim == '') )
     msg: "Variable 'node_name' is undefined or empty. Please define it your host list"
 
 - name: Ensure node_domain is set
   ansible.builtin.set_fact:
-    __update_etc_hosts_domain: "{{ item.node_domain | default(sap_domain | default(ansible_domain)) }}"
+    __update_etc_hosts_domain: "{{ thishost.node_domain | default(sap_domain | default(ansible_domain)) }}"
 
 - name: Verify that variable domain_name is set
   ansible.builtin.assert:
@@ -24,16 +24,16 @@
 
 - name: Set default values
   ansible.builtin.set_fact:
-    __update_etc_hosts_comment: "{{ ( item.comment|d('') + ' ' + item.hana_site|d('') ) | trim }}"
-    __update_etc_hosts_alias_mode: "{{ item.alias_mode | default('merge') }}"
-    __update_etc_hosts_state: "{{ item.state | default('present') }}"
+    __update_etc_hosts_comment: "{{ ( thishost.comment|d('') + ' ' + thishost.hana_site|d('') ) | trim }}"
+    __update_etc_hosts_alias_mode: "{{ thishost.alias_mode | default('merge') }}"
+    __update_etc_hosts_state: "{{ thishost.state | default('present') }}"
 
-- name: Get all existing hostname aliases of {{ item.node_ip }}
+- name: Get all existing hostname aliases of {{ thishost.node_ip }}
   ansible.builtin.shell: |
-    awk '( $1 == "{{ item.node_ip }}" ) {
+    awk '( $1 == "{{ thishost.node_ip }}" ) {
       for (i=2; i<=NF; ++i) {
         if ( $i == "#" ) { break }
-        if (( $i != "{{ item.node_name }}" ) && ( $i != "{{ item.node_name }}.{{ __update_etc_hosts_domain }}" )) { printf " "$i }
+        if (( $i != "{{ thishost.node_name }}" ) && ( $i != "{{ thishost.node_name }}.{{ __update_etc_hosts_domain }}" )) { printf " "$i }
       }
     }' /etc/hosts
   register: __update_etc_hosts_register_aliases
@@ -42,18 +42,18 @@
 
 - name: Add defined aliases
   ansible.builtin.set_fact:
-    # __update_etc_hosts_aliases: "{{ __update_etc_hosts_register_aliases.stdout.split[' '] + item.node_aliases| d([''])|uniq|join(' ') }}"
+    # __update_etc_hosts_aliases: "{{ __update_etc_hosts_register_aliases.stdout.split[' '] + thishost.node_aliases| d([''])|uniq|join(' ') }}"
     __update_etc_hosts_aliases: "{{ __update_etc_hosts_register_aliases.stdout }}"
-# TODO: ADD or replace by item.aliases
+# TODO: ADD or replace by thishost.aliases
 
 - name: Display host and domain name, and IP address before the modification
   ansible.builtin.debug:
     msg:
-      - "hostname = {{ item.node_name }}"
+      - "hostname = {{ thishost.node_name }}"
       - "domain   = {{ __update_etc_hosts_domain }}"
-      - "ip       = {{ item.node_ip }}"
+      - "ip       = {{ thishost.node_ip }}"
       - "comment  = {{ __update_etc_hosts_comment }}"
-      - "aliases  = {{ item.aliases | d('') }}"
+      - "aliases  = {{ thishost.aliases | d('') }}"
       - "alias mode = {{ __update_etc_hosts_alias_mode }}"
       - "state      = {{ __update_etc_hosts_state }}"
 
@@ -64,7 +64,7 @@
 - name: Check if ipv4 address, FQDN, and hostname are in /etc/hosts
   block:
     - name: Perform the /etc/hosts completeness check
-      ansible.builtin.command: awk 'BEGIN{a=0}/{{ item.node_ip }}/&&/{{ item.node_name }}.{{ __update_etc_hosts_domain }}/&&/{{ item.node_name }}/{a++}END{print a}' /etc/hosts
+      ansible.builtin.command: awk 'BEGIN{a=0}/{{ thishost.node_ip }}/&&/{{ thishost.node_name }}.{{ __update_etc_hosts_domain }}/&&/{{ thishost.node_name }}/{a++}END{print a}' /etc/hosts
       register: __update_etc_hosts_register_ipv4_fqdn_sap_hostname_once_check
       changed_when: false
 
@@ -77,7 +77,7 @@
       ansible.builtin.debug:
         msg:
           - "Expected:"
-          - "{{ item.node_ip }} {{ item.node_name }}.{{ __update_etc_hosts_domain }} {{ item.node_name }}"
+          - "{{ thishost.node_ip }} {{ thishost.node_name }}.{{ __update_etc_hosts_domain }} {{ thishost.node_name }}"
       when:
         - __update_etc_hosts_register_ipv4_fqdn_sap_hostname_once_check.stdout != "1"
 
@@ -86,15 +86,15 @@
         msg:
           - "Server's ip4 address, FQDN, or hostname are not in /etc/hosts!"
           - "Expected:"
-          - "{{ item.node_ip }} {{ item.node_name }}.{{ __update_etc_hosts_domain }} {{ item.node_name }}"
+          - "{{ thishost.node_ip }} {{ thishost.node_name }}.{{ __update_etc_hosts_domain }} {{ thishost.node_name }}"
       when:
         - __update_etc_hosts_register_ipv4_fqdn_sap_hostname_once_check.stdout != "1"
       ignore_errors: "{{ ansible_check_mode }}"
 
 # We allow more than one line containing sap_ip:
-- name: Check for duplicate entries of {{ item.node_ip }}
+- name: Check for duplicate entries of {{ thishost.node_ip }}
   ansible.builtin.shell: |
-    n=$(grep "^{{ item.node_ip }}\s" /etc/hosts | wc -l)
+    n=$(grep "^{{ thishost.node_ip }}\s" /etc/hosts | wc -l)
     if [ $n -gt 1 ]; then
       echo "Duplicate IP entry in /etc/hosts!"
       exit 1
@@ -109,7 +109,7 @@
 - name: Report if there is more than one line with the IP address
   ansible.builtin.debug:
     msg:
-      - "More than one line containing {{ item.node_ip }}. File /etc/hosts will not be modified."
+      - "More than one line containing {{ thishost.node_ip }}. File /etc/hosts will not be modified."
   when:
     - not ansible_check_mode
     - __update_etc_hosts_register_duplicate_ip_check.stdout == 'Duplicate IP entry in /etc/hosts!'
@@ -117,8 +117,8 @@
 - name: Ensure that the entry in /etc/hosts is correct
   ansible.builtin.lineinfile:
     path: /etc/hosts
-    regexp: '^{{ item.node_ip }}\s'
-    line: "{{ item.node_ip }} {{ item.node_name }}.{{ __update_etc_hosts_domain }} {{ item.node_name }}{{ __update_etc_hosts_aliases }}"
+    regexp: '^{{ thishost.node_ip }}\s'
+    line: "{{ thishost.node_ip }} {{ thishost.node_name }}.{{ __update_etc_hosts_domain }} {{ thishost.node_name }}{{ __update_etc_hosts_aliases }}"
     backup: yes
   when:
     - not ansible_check_mode
@@ -134,8 +134,8 @@
       exit 1
     fi
   loop:
-    - '{{ item.node_name }}.{{ __update_etc_hosts_domain }}'
-    - '{{ item.node_name }}'
+    - '{{ thishost.node_name }}.{{ __update_etc_hosts_domain }}'
+    - '{{ thishost.node_name }}'
   changed_when: false
   loop_control:
     loop_var: line_item
