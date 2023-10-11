@@ -8,17 +8,16 @@
   become: true
 
   tasks:
-    - name: Ensure all hosts will go to /etc/hosts
+    - name: Host IP to add
+      ansible.builtin.debug:
+        var: hostvars['{{ item }}'].ansible_host
       loop: "{{ play_hosts }}"
-      block:
-        - name: Host IP to add
-          ansible.builtin.debug:
-            var: hostvars['{{ item }}'].ansible_host
 
-        - name: Execute role
-          ansible.builtin.include_role:
-            name: update_etc_hosts
-          vars:
-            update_etc_hosts_list:
-              - node_ip: hostvars['{{ item }}'].ansible_host
-                node_name: item
+    - name: Execute role
+      ansible.builtin.include_role:
+        name: update_etc_hosts
+      vars:
+        update_etc_hosts_list:
+          - node_ip: hostvars['{{ item }}'].ansible_host
+            node_name: item
+      loop: "{{ play_hosts }}"
