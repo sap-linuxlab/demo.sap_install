@@ -133,7 +133,7 @@
     else
       exit 1
     fi
-  with_items:
+  loop:
     - '{{ item.node_name }}.{{ __update_etc_hosts_domain }}'
     - '{{ item.node_name }}'
   changed_when: false

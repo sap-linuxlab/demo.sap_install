@@ -1,7 +1,6 @@
 ---
 # tasks file for update_etc_hosts
 - name: Add entry to /etc/hosts
-  when: item.state == "present"
   loop: "{{ update_etc_hosts_list }}"
   loop_control:
     label: "{{ item.node_name }}"
