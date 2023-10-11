@@ -150,7 +150,7 @@
         path: "{{ fs_software_archive_dir | d(nfs_software_archive_dir) }}"
         opts: "{{ fs_mount_opts | d('rw,sync,hard,noatime') }}"
         fstype: "{{ fs_filetype | d('nfs') }}"
-        state: present
+        state: mounted
       tags:
         - software_mount
 
