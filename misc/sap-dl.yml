@@ -17,7 +17,18 @@ s4fndn2021:
   # SAPEXE_100-80005374.SAR
   - SAPEXE_200-80005374.SAR
   # SAPEXEDB_100-80005373.SAR
-  - SAPEXEDB_200-80005373.SAR
+  - 
+ERROR. More than 1 result, manual intervention required....
+Identified SAPEXEDB_100-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
+Identified SAPEXEDB_16-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
+Identified SAPEXEDB_200-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
+Identified SAPEXEDB_300-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
+Identified SAPEXEDB_5-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
+Identified SAPEXEDB_50-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
+Identified SAPEXEDB_69-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
+Identified SAPEXEDB_7-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
+Identified SAPEXEDB_9-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
+Identified lib_dbsl_314-80005373.sar : Database Library, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
   - SAPHOSTAGENT58_58-80004822.SAR
 s4fndn2022: []
 swpm:
