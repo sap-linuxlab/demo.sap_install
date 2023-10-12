@@ -48,7 +48,6 @@ argument_specs:
               - absent
             description:
               - Defines if an entry is added or removed from /etc/hosts
-
           example:
             update_etc_hosts_list:
               - node_ip: 1.2.3.4
