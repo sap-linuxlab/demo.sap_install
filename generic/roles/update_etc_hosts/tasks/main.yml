@@ -6,4 +6,4 @@
     label: "{{ thishost.node_name }}"
     loop_var: thishost
   ansible.builtin.include_tasks:
-    file: update_host_{{ item.state | default('present') }}.yml
+    file: update_host_{{ thishost.state | default('present') }}.yml

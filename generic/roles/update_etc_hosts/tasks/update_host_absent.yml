@@ -1,11 +1,7 @@
 ---
-- name: Remove host from "{{ __update_etc_hosts_file }}"
-  ansible.builtin.debug:
-    msg: "Warning: Not yet implemented. {{ thishost.node_name }} remains in {{ __update_etc_hosts_file }}"
-
 - name: Verify that variable node_ip is in the correct format
   ansible.builtin.assert:
-    that: thisnode.node_ip is ansible.utils.ip
+    that: thishost.node_ip is ansible.utils.ip
     msg: "Variable 'node_ip' is not an IP adress. Please use the correct format"
   when: thisnode.node_ip is defined
 
@@ -19,7 +15,7 @@
     - thishost.node_ip is defined
     - not ansible_check_mode
 
-- name: Ensure that the entry all enries in hosts file are removed with name {{ thishost.node_ip | d('undefined') }}
+- name: Ensure that the entry all enries in hosts file are removed with name {{ thishost.node_name | d('undefined') }}
   ansible.builtin.lineinfile:
     path: "{{ __update_etc_hosts_file }}"
     regexp: '^.*\s{{ thishost.node_name }}\s'

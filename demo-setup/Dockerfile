@@ -8,8 +8,8 @@ RUN dnf update -y && \
     dnf install -y gcc python3-devel &&\
     dnf install -y python3 python3-pip jq azure-cli && \
     dnf clean all && \
-    pip3 install -q ansible==8.1.0 &&\
-    pip3 install -r /usr/local/lib/python3.9/site-packages/ansible_collections//azure/azcollection/requirements-azure.txt 
+    pip3 install -q ansible==8.1.0 azure-core==1.28.0 &&\
+    pip3 install -r /usr/local/lib/python3.9/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt 
 
 RUN mkdir /etc/ansible &&\
     echo "[defaults]" > /etc/ansible/ansible.cfg &&\
