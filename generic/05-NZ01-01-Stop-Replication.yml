@@ -1,4 +1,16 @@
 ---
+
+- name: Stop SAP HANA
+  gather_facts: true
+  hosts: hanas
+  tasks:
+    - name: stop HANA System Replication
+      community.sap_install
+
+    - name: Display the config
+      debug:
+        msg: "The hostname is {{ ansible_net_hostname }} and the OS is {{ ansible_net_version }}"
+        
 - name: NZDT Stop Hana Replication
   gather_facts: true
   hosts: hanas
