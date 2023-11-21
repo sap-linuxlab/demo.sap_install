@@ -33,7 +33,7 @@
       rhc_insights:
         state: absent
     become: true
-    ignore_unreachable: true
+    ignore_errors: true
     when: inventory_hostname in server_def|map(attribute="name")
 
   - name: Delete VM
