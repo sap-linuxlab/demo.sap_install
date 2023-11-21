@@ -37,7 +37,7 @@
   ansible.builtin.set_fact:
     __update_etc_hosts_comment: "# {{ __update_etc_hosts_comment }}"
 
-- name: Merge existing aliases with new alis list
+- name: Merge existing aliases with new alias list
   when: __update_etc_hosts_alias_mode != "overwrite"
   block:
     - name: Get all existing hostname aliases of {{ thishost.node_ip }}
@@ -90,7 +90,7 @@
       - "More than one line containing {{ thishost.node_ip }}. File {{ __update_etc_hosts_file }} will not be modified."
   when:
     - not ansible_check_mode
-    - __update_etc_hosts_register_duplicate_ip_check.rc == 1'
+    - __update_etc_hosts_register_duplicate_ip_check.rc == 1
 
 - name: Ensure that the entry in hosts file is correct
   ansible.builtin.lineinfile:
@@ -141,7 +141,7 @@
     - name: Fail if ip4 address, FQDN, or hostname are not in hosts file
       ansible.builtin.fail:
         msg:
-          - "Server's ip4 address, FQDN, or hostname are not in {{ __update_etc_hosts_file }}!"
+          - "Server ip4 address, FQDN, or hostname are not in {{ __update_etc_hosts_file }}!"
           - "Expected:"
           - "{{ thishost.node_ip }} {{ thishost.node_name }}.{{ __update_etc_hosts_domain }} {{ thishost.node_name }}"
       when:

@@ -108,7 +108,7 @@
         rhc_organization: "{{ sap_rhsm_org_id }}"
         rhc_repositories: "{{ repositories }}"
         rhc_release: "{{ reg_osrelease }}"
-        rhc_state: "{{ presnt }}"
+        rhc_state: "present"
         rhc_insights:
           state: absent
       tags:
