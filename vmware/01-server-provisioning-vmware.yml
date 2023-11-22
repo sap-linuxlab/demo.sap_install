@@ -88,7 +88,8 @@
             controller_type: 'paravirtual'
             controller_number: 0
             unit_number: 1
-            type: eagerzeroedthick
+            #type: eagerzeroedthick
+            type: thin
         networks:
           - start_connected: true
             device_type: "{{ vmware_net_device | default('vmxnet3') }}"
