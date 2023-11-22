@@ -1,0 +1,8 @@
+---
+- hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+  - name: Change password
+    shell: echo {{ root_password }}| passwd --stdin root
