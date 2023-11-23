@@ -1,5 +1,5 @@
 ---
-- hosts: hanas-{{ nick }},s4hanas-{{ nick }} 
+- hosts: hanas_{{ nick }},s4hanas_{{ nick }} 
   gather_facts: false
   become: true
 
