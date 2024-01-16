@@ -1,5 +1,5 @@
 hdb2sps06:
-  - IMDB_SERVER20_067_3-80002031.SAR
+  - IMDB_SERVER20_067_2-80002031.SAR
 s4fndn2021:
   - IMDB_CLIENT20_014_24-80002082.SAR
   - S4FND106_INST_EXPORT_1.zip
@@ -14,25 +14,12 @@ s4fndn2021:
   - S4FND106_NW_LANG_EN.SAR
   - igsexe_1-70005417.sar
   - igshelper_17-10010245.sar
-  # SAPEXE_100-80005374.SAR
   - SAPEXE_200-80005374.SAR
-  # SAPEXEDB_100-80005373.SAR
-  - 
-ERROR. More than 1 result, manual intervention required....
-Identified SAPEXEDB_100-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
-Identified SAPEXEDB_16-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
-Identified SAPEXEDB_200-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
-Identified SAPEXEDB_300-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
-Identified SAPEXEDB_5-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
-Identified SAPEXEDB_50-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
-Identified SAPEXEDB_69-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
-Identified SAPEXEDB_7-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
-Identified SAPEXEDB_9-80005373.SAR : Kernel Part II (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
-Identified lib_dbsl_314-80005373.sar : Database Library, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit SAP HANA database
+  - SAPEXEDB_200-80005373.SAR
   - SAPHOSTAGENT58_58-80004822.SAR
 s4fndn2022: []
 swpm:
-  - SUM20SP17_9-80002456.SAR
-  - SWPM20SP15_6-80003424.SAR
+  - SUM20SP17_4-80002456.SAR
+  - SWPM20SP15_3-80003424.SAR
 sapcar:
   - SAPCAR_1115-70006178.EXE
