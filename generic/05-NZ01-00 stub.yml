@@ -1,0 +1,57 @@
+---
+# call playbook with # ansible-playbook example_in_one_file.yml
+- name: "Setup HANA System Replication Cluster"
+  hosts: hanas
+  become: true
+
+  vars:
+      sap_hana_cluster_nodes:
+      - node_name: hana1
+#        node_ip: 10.0.0.101
+        node_role: primary
+        hana_site: DC01
+#
+      - node_name: hana2
+#        node_ip: 10.0.0.102
+        node_role: secondary
+        hana_site: DC02
+#    sap_domain: example.com
+#
+
+    # resource_group: ResourceGroupHana
+    # virtual_network: ResourceGroupHana-vnet
+    # virtual_subnet: default
+    # virtual_machine1: saphana01
+    # virtual_machine2: saphana02
+    # nic1: NicHana01
+    # nic2: NicHana02
+    # security_group: SecurityGroupHana
+    # sap_hana_sid: 'RHA'
+    # sap_hana_instance_number: '00'
+#    sap_hana_install_master_password: 'my_hana_password'
+#    # It is recommended to use vault instead of plain text passwords. Example please check README
+#
+#    ### Cluster Definition
+#    sap_ha_install_pacemaker_cluster_name: cluster1
+#    sap_hana_hacluster_password: 'my_hacluster'
+#
+  roles:
+         - { role: redhat_sap.sap_rhsm }
+         - { role: redhat_sap.sap_hana_mediacheck }
+         - { role: redhat_sap.sap_hostagent }
+         - { role: linux-system-roles.timesync }
+         - { role: linux-system-roles.storage }
+         - { role: sap-preconfigure }
+         - { role: sap-hana-preconfigure }
+         - { role: redhat_sap.sap_hana_deployment }
+         - { role: redhat_sap.sap_hana_hsr }
+
+
+
+#
+
+  roles:
+    - community.sap_install.sap_ha_install_hana_hsr
+  #  - community.sap_install.sap_ha_prepare_pacemaker
+  #  - community.sap_install.sap_ha_install_pacemaker
+   # - community.sap_install.sap_ha_set_hana

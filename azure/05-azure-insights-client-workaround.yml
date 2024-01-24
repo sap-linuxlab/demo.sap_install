@@ -1,0 +1,38 @@
+---
+- hosts: "azhana1,azs4"
+  roles:
+    - role: "ansible-role-insights"
+  become: true
+  gather_facts: true
+  #vars:
+  #  EggFiles:
+  #    - name: last_stable.egg
+  #    - name: last_stable.egg.asc
+  #    - name: newest.egg
+  #    - name: newest.egg.asc
+  # sap_control_function: "restart_all_sap"
+  # test comment 2
+  tasks:
+    # - name: check existing file Name -> loop
+    #  stat: 
+    #    path: /var/lib/insights/ {{ item.name }}
+    #  loop: "{{ EggFiles|flatten(levels=1) }}"
+    #  register: CheckFileName
+    #- name: copy files to /tmp if they existing
+    #  copy:
+    #    src: "/var/lib/insights/{{ item.name }}"
+    #    remote_src: yes
+    #    dest: "/tmp"
+    #  with_items: "{{ CheckFileName.results }}"
+    #  when: item.stat.exists
+    # Force a Reregister (for config changes, etc)  
+    - name: register the insights client
+      insights_register:
+        state: present
+    #    force_reregister: true
+      
+      
+      
+
+
+

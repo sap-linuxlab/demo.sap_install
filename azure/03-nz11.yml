@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: true
+  gather_facts: no
+  vars:
+    sap_control_function: "restart_all_sap"
+  # test comment
+  tasks:
+
+    - name: "sapcontrol"
+      ansible.builtin.include_role:
+        name: community.sap_operations.sap_control
+        register: sap_control_result
+
+

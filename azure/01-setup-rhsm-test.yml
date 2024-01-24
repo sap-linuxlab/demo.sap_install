@@ -1,0 +1,17 @@
+---
+- name: Subscribe Red Hat
+  hosts: hanas
+  become: true
+  vars:
+    sap_rhsm_username: "{{ lookup('env', 'RHSM_USERNAME') }}"
+    sap_rhsm_password: "{{ lookup('env', 'RHSM_PASSWORD') }}"
+  # vars_prompt:
+  #   - name: "sap_rhsm_username"
+  #     prompt: "Enter your Red Hat login username"
+  #     private: no
+  #   - name: "sap_rhsm_password"
+  #     prompt: "Enter your Red Hat login password"
+  #     private: yes
+
+
+  roles: sap_rhsm

@@ -1,0 +1,12 @@
+---
+- hosts: azhana1,azs4 
+  become: true
+  tasks:
+    - name: execute the SWPM Installation
+      include_role:
+        name: community.sap_install.sap_swpm
+      tags: sap_swpm_generate_inifile
+
+
+
+

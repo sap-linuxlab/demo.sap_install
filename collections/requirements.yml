@@ -7,6 +7,16 @@ collections:
           version: 3.4.0
         - name: openstack.cloud
           version: 1.8.0
+
+        # - name: redhat_sap.sap_rhsm
+        # - name: redhat_sap.sap_hana_mediacheck
+        # - name: linux-system-roles.timesync
+        # - name: linux-system-roles.storage
+        # - name: redhat_sap.sap_hana_deployment
+        # - name: redhat_sap.sap_hostagent
+        # - name: redhat_sap.sap_hana_hsr
+
+
         - name: redhat.rhel_system_roles
           # version: 1.7.3
           # source: https://cloud.redhat.com/api/automation-hub/

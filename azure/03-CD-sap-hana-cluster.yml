@@ -4,11 +4,11 @@
   hosts: hanas
   become: true
 
-#  vars:
+  vars:
 #    sap_domain: example.com
 #
-#    sap_hana_sid: 'DB1'
-#    sap_hana_instance_number: '00'
+    sap_hana_sid: 'DB1'
+    sap_hana_instance_number: '00'
 #    sap_hana_install_master_password: 'my_hana_password'
 #
 #
@@ -41,21 +41,21 @@
               "resourceGroup=lookup"
               "pcmk_host_list=inventroy hostnames der gruppe hanas"
       
-      - name: Create Azure basic internal loadbalancer
-        azure.azcollection.azure_rm_loadbalancer:
-          resource_group: "{{ az_rg }}"
-          name: "{{  az_rg + '_LB'}}"
-          sku: "Basic"
-          fontend_ip_configuration:
-            name: "{{  az_rg + '_LB_FE' }}"
-            private_ip_allocation_method: "Dynamic"
-            subnet: "{{ az_subnet }}"
-          backend_address_pools:
-            name: "{{ az_rg + '_LB_BE }}"
-          probes:
-            - name: "{{  az_rg + '_probe' }}"
-              port: 61000
-              protocol: "Tcp"
+    - name: "Create Azure basic internal loadbalancer"
+      azure.azcollection.azure_rm_loadbalancer:
+        resource_group: "{{ az_rg }}"
+        name: "{{  az_rg + '_LB'}}"
+        sku: "Basic"
+        fontend_ip_configuration:
+          name: "{{  az_rg + '_LB_FE' }}"
+          private_ip_allocation_method: "Dynamic"
+          subnet: "{{ az_subnet }}"
+        backend_address_pools:
+          name: "{{ az_rg + '_LB_BE }}"
+        probes:
+          name: "{{  az_rg + '_probe' }}"
+          port: 61000
+          protocol: "Tcp"
         register: lb
       
       # Internal loadbalancer, Basic SKU, Dynamic IP adress assignment
