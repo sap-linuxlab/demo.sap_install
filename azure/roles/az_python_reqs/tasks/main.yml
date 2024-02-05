@@ -21,4 +21,3 @@
     virtualenv: "{{ venv | d(omit) }}"
   loop: "{{ collection_path | list }}"
   ignore_errors: true
-  
