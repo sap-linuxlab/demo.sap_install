@@ -1,10 +1,10 @@
 
 # Create Build environment
 
-## Install ansible builder 
+## Install ansible builder
 
 There might be a package available for your platform. If not you can install the latest ansible builder
-with the following commands 
+with the following commands
 
 ```bash
 python3 -m venv ~/venv-ansible
@@ -41,15 +41,11 @@ export ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_REPO_TOKEN=_your token_
 podman login registry.redhat.io
 ansible-builder build -v 3 \
   --tag myregistry/sap-rh-ee:version \
-  --container-runtime=podman \
   --build-arg ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_REPO_TOKEN \
   -f execution-environment-rh.yml
 ```
 
 > [!NOTE]
-> These building instructions are only tested on Linux. 
+> These building instructions are only tested on Linux.
 > These instructions do not work on Apple Silicon for x86 containers.
-> If you know how to build cross-platform EEs, feel free to contact me. 
-
-
-
+> If you know how to build cross-platform EEs with ansible builder, feel free to contact me or create a pull request.
