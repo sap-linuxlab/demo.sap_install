@@ -31,5 +31,5 @@ dependencies:
 additional_build_steps:
   prepend_base:
     - RUN dnf update -y
-  append:
+  append_final:
     - RUN dnf clean all
