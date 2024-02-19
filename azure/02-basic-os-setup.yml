@@ -38,7 +38,7 @@
 # Have a look at the documention of the storage role for more configuration options
 
 - name: Ensure Servers are booted and reachable
-  hosts: hanas, s4hanas
+  hosts: "{{ group_hana | d('hanas') }}, {{ group_nw | d('s4hanas') }}"
   gather_facts: false
   become: false
   tasks:
@@ -52,7 +52,7 @@
     delegate_to: localhost
 
 - name: Phase 2 - basic OS Setup
-  hosts: hanas, s4hanas
+  hosts: "{{ group_hana | d('hanas') }}, {{ group_nw | d('s4hanas') }}"
   become: true
 
   tasks:

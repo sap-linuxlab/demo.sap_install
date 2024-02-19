@@ -4,7 +4,7 @@
 #  This role udates the DNS server
 
 - name: Ensure all hosts are in /etcHosts
-  hosts: hanas,s4hanas
+  hosts: "{{ group_hana | d('hanas') }}, {{ group_nw | d('s4hanas') }}"
   become: true
 
   tasks:

@@ -27,6 +27,9 @@ dependencies:
         - name: community.sap_launchpad
   python: requirements.txt
   # system: bindep.txt
+  
+options:
+  package_manager_path: /usr/bin/dnf
 
 additional_build_steps:
   prepend_base:

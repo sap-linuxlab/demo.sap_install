@@ -6,14 +6,13 @@
 # servers with RHEL8 running on VMware
 #
 
-- name: phase 1 -- Server Provisioning
+- name: Phase 1 -- Server Provisioning
   hosts: localhost
   gather_facts: false
 
   tasks:
-
-  - name: Create VM
-    debug:
-      msg:
-        - "This is a generic template"
-        - "You have to put your platform code here"
+    - name: Create VM
+      ansible.builtin.debug:
+        msg:
+          - "This is a generic template"
+          - "You have to put your platform code here"
