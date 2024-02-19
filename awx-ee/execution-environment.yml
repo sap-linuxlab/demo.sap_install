@@ -26,7 +26,10 @@ dependencies:
         - name: community.sap_install
         - name: community.sap_launchpad
   python: requirements.txt
-  system: bindep.txt
+  # system: bindep.txt
 
-options:
-  package_manager_path: /usr/bin/microdnf
+additional_build_steps:
+  prepend_base:
+    - RUN dnf update -y
+  append:
+    - RUN dnf clean all

@@ -5,13 +5,12 @@ build_arg_defaults:
 
 images:
   base_image:
-    name: registry.redhat.io/ansible-automation-platform-24/ee-supported-rhel9:latest
+    name: registry.redhat.io/ansible-automation-platform-24/ee-minimal-rhel9:latest
 
 dependencies:
   galaxy:
     roles:
         - src: mk-ansible-roles.check_reboot
-        - src: mk-ansible-roles.subscribe_rhn
         - src: mk-ansible-roles.setup_nfs_server
     collections:
         - name: azure.azcollection
@@ -28,11 +27,11 @@ dependencies:
         - name: community.sap_operations
         - name: community.sap_install
         - name: community.sap_launchpad
-        - name: redhat-rhel_system_roles
+        - name: redhat.rhel_system_roles
         - name: redhat.sap_install
         - name: sap.sap_operations
   python: requirements.txt
-  system: bindep.txt
+  #system: bindep.txt
 
 options:
   package_manager_path: /usr/bin/microdnf
@@ -48,7 +47,6 @@ additional_build_steps:
   #  - COPY _build/configs/cert.pem /etc/pki/ca-trust/source/anchors/
   #  - RUN update-ca-trust
   prepend_galaxy:
-    - ARG ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_REPO_TOKEN    
     - COPY _build/configs/ansible.cfg /etc/ansible/ansible.cfg
-
-  ##
+    - ARG ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_REPO_TOKEN
+      #- ARG ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_REPO_TOKEN

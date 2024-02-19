@@ -39,16 +39,17 @@ If you want to add supported Automation Hub content, get your Automation Hub tok
 ```bash
 export ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_REPO_TOKEN=_your token_
 podman login registry.redhat.io
-ansible-builder build -v3 \
-  --tag myregistry/sap-galaxy-ee:version \
+ansible-builder build -v 3 \
+  --tag myregistry/sap-rh-ee:version \
   --container-runtime=podman \
-   --build-arg ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_REPO_TOKEN \
-  --execution-environment execution-environment-rh.yml
+  --build-arg ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_REPO_TOKEN \
+  -f execution-environment-rh.yml
 ```
 
 > [!NOTE]
-> These building instructions are testef on Linux and MacOS. 
-> If you are using MacOS on Apple Siclicon follow [these instructions for setting up x86_64 containers](https://developer.ibm.com/tutorials/running-x86-64-containers-mac-silicon-m1/)
+> These building instructions are only tested on Linux. 
+> These instructions do not work on Apple Silicon for x86 containers.
+> If you know how to build cross-platform EEs, feel free to contact me. 
 
 
 
