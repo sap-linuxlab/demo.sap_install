@@ -1,0 +1,304 @@
+---
+- name: Collect all input variables and configure local AAP
+  hosts: localhost
+  gather_facts: false
+   
+  vars:
+    demo_setup_org: "RHPDS Setup"
+
+  tasks:
+    - name: Generate unique ID
+      ansible.builtin.set_fact:
+        guid: "{{ lookup('community.general.random_string', length=5, upper=false, special=false) }}"
+      when: 
+        - guid is undefined
+
+    - name: Display created to_uuid
+      ansible.builtin.debug:
+        var: guid
+        verbosity: 2
+
+    - name: Create unique variables
+      ansible.builtin.set_fact:
+        controller_instance_name: "ctrl_{{ guid }}"
+        demo_org: "{{ guid }} Demo Setup"
+
+    - name: Ensure organization "{{ demo_org }}" exists
+      awx.awx.organization:
+        name: "{{ demo_org }}"
+        description: "Temporary organization for creating demo {{ guid }}"
+        state: present
+
+    - name: Ensure Ansible Controller credential for Demo Setup exists
+      awx.awx.credential_type:
+        name: "Ansible SSA demo setup"
+        description: "Credential to collect all variables for Ansible SSA demo"
+        kind: cloud
+        inputs:
+          fields:
+            - id: controller_instance_name
+              type: string
+              label: "Automation Controller Instance Name"
+              secret: false
+            - id: controller_admin_password
+              type: string
+              label: "Automation Controller password"
+              secret: true
+            - id: rhaap_manifest
+              type: string
+              label: "Manifest for AAP registration"
+              secret: true
+              multiline: true
+            - id: rhsm_username
+              type: string
+              label: "RHSM Username"
+              secret: false
+            - id: rhsm_password
+              type: string
+              label: "RHSM Password"
+              secret: true
+            - id: rhsm_poolid
+              type: string
+              label: "RHSM Pool ID with AAP Subscription"
+              secret: false
+            - id: controller_ah_enable
+              type: boolean
+              label: "Enable Private Automation Hub"
+            - id: controller_ah_instance_name
+              type: string
+              label: "Private Automation Hub Instance Name"
+              secret: false
+            - id: automation_hub_server_url
+              type: string
+              label: "Automation HUB Server URL"
+            - id: quay_registry_username
+              type: string
+              label: "Quay.io Username" 
+            - id: quay_registry_password
+              type: string
+              label: "Quay.io Password"
+              secret: true
+            - id: rhsm_ah_offline_token
+              type: string
+              label: "Offline access token for Automation Hub"
+            - id: controller_eda_enable
+              type: boolean
+              label: "Enable Event Driven Ansible"
+            - id: controller_eda_instance_name
+              type: string
+              label: "EDA Controller name"
+            - id: type
+              type: string
+              label: "Select Deployment Environment"
+              choices: [ "azure", "aws" ]
+            - id: letsencrypt_skip
+              type: boolean
+              label: "Skip LetsEncrypt certtifacte generation"
+            # TODO: Let's Encrypt variables
+            - id: dns_update
+              type: boolean
+              label: "Use Ansible SSA DynDNS Server"
+            - id: dns_suffix
+              type: string
+              label: "DynDNS Domain Suffix"
+            - id: dns_key
+              type: string
+              label: "DNS Key File"
+              multiline: true
+              secret: true
+            - id: dns_private
+              type: string
+              label: "DNS Private File"
+              multiline: true
+              secret: true
+          required:
+            - controller_instance_name
+            - controller_instance_password
+            - rhaap_manifest
+            - rhsm_username
+            - rhsm_password
+            - rhsm_poolid
+            - controller_ah_enable
+            - quay_registry_username
+            - quay_registry_password
+            - controller_eda_enable
+            - letsencrypt_skip
+            - dns_update
+        injectors:
+          extra_vars:
+            controller_instance_name: '"{{ controller_instance_name  }}"'
+            controller_admin_password: '"{{ controller_admin_password  }}"'
+            rhaap_manifest: '"{{ rhaap_manifest  }}"'
+            rhsm_username: '"{{ rhsm_username  }}"'
+            rhsm_password: '"{{ rhsm_password  }}"'
+            rhsm_poolid: '"{{ rhsm_poolid  }}"'
+            controller_ah_enable: '"{{ controller_ah_enable  }}"'
+            controller_ah_instance_name: '"{{ controller_ah_instance_name  }}"'
+            automation_hub_server_url: '"{{ automation_hub_server_url  }}"'
+            quay_registry_username: '"{{ quay_registry_username  }}"'
+            quay_registry_password: '"{{ quay_registry_password  }}"'
+            rhsm_ah_offline_token: '"{{ rhsm_ah_offline_token  }}"'
+            controller_eda_enable: '"{{ controller_eda_enable  }}"'
+            controller_eda_instance_name: '"{{ controller_eda_instance_name  }}"'
+            letsencrypt_skip: '"{{ letsencrypt_skip  }}"'
+            type: '"{{ type  }}"'
+            dns_update: '"{{ dns_update  }}"'
+            dns_suffix: '"{{ dns_suffix  }}"'
+            dns_key: '"{{ dns_key  }}"'
+            dns_private: '"{{ dns_private  }}"'
+        state: present
+        validate_certs: "{{ controller_validate_certs }}"
+
+    # create SSH Key/Machine Credential type
+    - name: Ensure Ansible Controller credential type for SSH keypair exists
+      awx.awx.credential_type:
+        name: Ansible SSA ssh keypair
+        description: Credential to use for SSH keypair for Ansible Controller
+        kind: cloud
+        inputs:
+          fields:
+            - id: controller_ansible_private_key
+              type: string
+              label: SSH Private Key
+              multilline: true
+              secret: true
+            - id: controller_ansible_public_key
+              type: string
+              label: SSH Public Key
+              multiline: true
+              secret: true
+        injectors:
+          extra_vars:
+            controller_ansible_private_key: '"{{ controller_ansible_private_key  }}"'
+            controller_ansible_public_key: '"{{ controller_ansible_public_key  }}"'
+        state: present
+
+    - name: Ensure SSH KeyPair is stored    
+      awx.awx.credential:
+        name: '{{ guid }} SSH Keypair'
+        credential_type: "Ansible SSA ssh keypair"
+        organization: "{{ demo_org }}"
+        inputs:
+          controller_ansible_private_key: '"{{ controller_ansible_private_key  }}"'
+          controller_ansible_public_key: '"{{ controller_ansible_public_key  }}"'
+
+    - name: Ensure Machine credential exists
+      awx.awx.credential:
+        name: "{{ guid }} Machine Credential"
+        description: "used for login into VMs"
+        organization: "{{ demo_org }}"
+        credential_type: Machine
+        state: present
+        inputs:
+          username: "ansible"
+          ssh_private_key: "{{ controller_ansible_private_key }}" 
+      
+    - name: Create Controller Credential
+      awx.awx.credential:
+        name: "{{ guid }} Controller"
+        description: "Demo Controller Credentials"
+        organization: "{{ demo_org }}"
+        credential_type: ""
+        inputs: "{{ item.inputs }}"
+        update_secrets: "{{ _update_secrets_ }}"
+        state: "present"
+    
+    - name: Create Ansible SSA Demo Credential
+      awx.awx.credential:
+        name: '{{ guid }} Demo Setup Credential'
+        description: Demo Credential
+        organization: "{{ demo_org }}"
+        credential_type: Ansible SSA demo setup
+        inputs:
+          controller_instance_name: "ctrl_{{ guid }}"
+          controller_admin_password: "{{ controller_admin_password }}"
+          rhaap_manifest: "{{ rhaap_manifest }}" # evtl. b64encode filter anhängen
+          rhsm_username: "{{ rhsm_username }}"
+          rhsm_password: "{{ rhsm_password }}"
+          rhsm_poolid: "{{ rhsm_poolid }}"
+          controller_ah_enable: "{{ controller_ah_enable | bool }}"
+          controller_ah_instance_name: "hub_{{ guid }}"
+          automation_hub_server_url: "{{ automation_hub_server_url }}"
+          quay_registry_username: "{{ quay_registry_username  }}"
+          quay_registry_password: "{{ quay_registry_password  }}"
+          rhsm_ah_offline_token: "{{ rhsm_ah_offline_token  }}"
+          controller_eda_enable: "{{ controller_eda_enable | bool  }}"
+          controller_eda_instance_name: "{{ controller_eda_instance_name  }}"
+          letsencrypt_skip: "{{ letsencrypt_skip  }}"
+          type: "{{ type  }}"
+          dns_update: "{{ dns_update  }}"
+          dns_suffix: "{{ dns_suffix  }}"
+          dns_key: "{{ dns_key  }}"
+          dns_private: "{{ dns_private  }}"
+          
+    # - name: Create Red Hat Subscription Credential
+    #  awx.awx.credential:
+    #    name: "{{ guid }} RHEL Subscription"
+    #    organization: "{{ demo_org }}"
+    #    credential_type: Red Hat Satellite
+    #    inputs:
+    #      username: "{{ username }}"
+    #      password: "{{ _password_ }}"
+    #      force_basic_auth: true
+    #      force_mc_with_auth: true
+    #    state: present
+    #  register: rhel_subscription
+
+    - name: Ensure Ansible SSA project is synced
+      awx.awx.project:
+        name: "{{ guid }} Ansible SSA Demo Project"
+        organization: "{{ demo_org }}"
+        state: present0
+        scm_type: git
+        scm_branch: release
+        scm_url: http://gitlab.com/ansible-ssa/playbook-rhaap.git
+        scm_clean: true
+        scm_delete_on_update: true
+    
+    - name: Ensure demo inventory is created
+      awx.awx.inventory:
+        name: "{{ guid }} Ansible SSA Demo" 
+        organization: "{{ demo_org }}"
+        validate_certs: "{{ controller_validate_certs }}"
+        state: present
+        #variables: "{{ lookup('template','configs/inventory.yml.j2')|from_yaml|to_json }}"
+
+    - name: Ensure Cloud specific credentials and Inventory is created
+      ansible.builtin.import_tasks: cloud_credential_{{ type }}.yml
+
+    - name: Configure Job template - Infrastructure Creation
+      awx.awx.job_template:
+        name: sub01-infra-create
+        organization: "{{ demo_org }}"
+        inventory: '{{ guid }} Ansible SSA Demo'
+        project: '{{ guid }} Ansible SSA Demo Project'
+        playbook: controller-instance.yml
+        credentials: 
+          - '{{ guid }} Cloud Credential'
+          - '{{ guid }} Cloud Extra Variables'
+          - '{{ guid }} SSH Keypair'
+          - '{{ guid }} Demo Setup Credential'
+          # '{{ guid }} Machine Credential'
+          # '{{ guid }} Controller'
+        #survey_enabled: false
+        #survey_spec: "{{ _survey_spec_ }}"
+        state: present
+    
+    - name: Configure Job template - Full configuration 
+      awx.awx.job_template:
+        name: sub03-full-create
+        organization: "{{ demo_org }}"
+        inventory: '{{ guid }} Ansible SSA Demo'
+        project: '{{ guid }} Ansible SSA Demo Project'
+        playbook: rhaap-install.yml
+        credentials: 
+          - '{{ guid }} Cloud Credential'
+          - '{{ guid }} Cloud Extra Variables'
+          - '{{ guid }} SSH Keypair'
+          - '{{ guid }} Demo Setup Credential'
+          - '{{ guid }} Machine Credential'
+          - '{{ guid }} Controller'
+        #survey_enabled: false
+        #survey_spec: "{{ _survey_spec_ }}"
+        state: present
+    
