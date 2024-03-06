@@ -127,26 +127,26 @@
             - dns_update
         injectors:
           extra_vars:
-            controller_instance_name: '"{{ controller_instance_name  }}"'
-            controller_admin_password: '"{{ controller_admin_password  }}"'
-            rhaap_manifest: '"{{ rhaap_manifest }}"'
-            rhsm_username: '"{{ rhsm_username  }}"'
-            rhsm_password: '"{{ rhsm_password  }}"'
-            rhsm_poolid: '"{{ rhsm_poolid  }}"'
-            controller_ah_enable: '"{{ controller_ah_enable  }}"'
-            controller_ah_instance_name: '"{{ controller_ah_instance_name  }}"'
-            automation_hub_server_url: '"{{ automation_hub_server_url  }}"'
-            quay_registry_username: '"{{ quay_registry_username  }}"'
-            quay_registry_password: '"{{ quay_registry_password  }}"'
-            rhsm_ah_offline_token: '"{{ rhsm_ah_offline_token  }}"'
-            controller_eda_enable: '"{{ controller_eda_enable  }}"'
-            controller_eda_instance_name: '"{{ controller_eda_instance_name  }}"'
-            letsencrypt_skip: '"{{ letsencrypt_skip  }}"'
-            type: '"{{ type  }}"'
-            dns_update: '"{{ dns_update  }}"'
-            dns_suffix: '"{{ dns_suffix  }}"'
-            dns_key: '"{{ dns_key  }}"'
-            dns_private: '"{{ dns_private  }}"'
+            controller_instance_name: '\{\{ controller_instance_name  \}\}'
+            controller_admin_password: '\{\{ controller_admin_password  \}\}"'
+            rhaap_manifest: '\{\{ rhaap_manifest \}\}'
+            rhsm_username: '\{\{ rhsm_username  \}\}'
+            rhsm_password: '\{\{ rhsm_password  \}\}'
+            rhsm_poolid: '\{\{ rhsm_poolid  \}\}'
+            controller_ah_enable: '\{\{ controller_ah_enable  \}\}'
+            controller_ah_instance_name: '\{\{ controller_ah_instance_name  \}\}'
+            automation_hub_server_url: '\{\{ automation_hub_server_url  \}\}'
+            quay_registry_username: '\{\{ quay_registry_username  \}\}'
+            quay_registry_password: '\{\{ quay_registry_password  \}\}'
+            rhsm_ah_offline_token: '\{\{ rhsm_ah_offline_token  \}\}'
+            controller_eda_enable: '\{\{ controller_eda_enable  \}\}'
+            controller_eda_instance_name: '\{\{ controller_eda_instance_name  \}\}'
+            letsencrypt_skip: '\{\{ letsencrypt_skip  \}\}'
+            type: '\{\{ type  \}\}'
+            dns_update: '\{\{ dns_update  \}\}'
+            dns_suffix: '\{\{ dns_suffix  \}\}'
+            dns_key: '\{\{ dns_key  \}\}'
+            dns_private: '\{\{ dns_private  \}\}'
         state: present
 
     # create SSH Key/Machine Credential type
@@ -169,8 +169,8 @@
               secret: true
         injectors:
           extra_vars:
-            controller_ansible_private_key: '"{{ controller_ansible_private_key  }}"'
-            controller_ansible_public_key: '"{{ controller_ansible_public_key  }}"'
+            controller_ansible_private_key: '\{\{ controller_ansible_private_key  \}\}'
+            controller_ansible_public_key: '\{\{ controller_ansible_public_key  \}\}'
         state: present
 
     - name: Ensure SSH KeyPair is stored    
@@ -179,8 +179,8 @@
         credential_type: "Ansible SSA ssh keypair"
         organization: "{{ demo_org }}"
         inputs:
-          controller_ansible_private_key: '"{{ controller_ansible_private_key  }}"'
-          controller_ansible_public_key: '"{{ controller_ansible_public_key  }}"'
+          controller_ansible_private_key: '{{ controller_ansible_private_key  }}'
+          controller_ansible_public_key: '{{ controller_ansible_public_key  }}'
 
     - name: Ensure Machine credential exists
       awx.awx.credential:
