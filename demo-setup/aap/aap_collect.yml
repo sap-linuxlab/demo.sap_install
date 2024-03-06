@@ -21,7 +21,7 @@
       ansible.builtin.set_fact:
         controller_instance_name: "ctrl_{{ guid }}"
         controller_ah_instance_name: "hub_{{ guid }}"
-        contorller_eda_instance_name: "eda_{{ guid }}"
+        controller_eda_instance_name: "eda_{{ guid }}"
         demo_org: "{{ guid }} Demo Setup"
 
     - name: Ensure organization "{{ demo_org }}" exists
