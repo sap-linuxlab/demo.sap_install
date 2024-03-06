@@ -222,18 +222,17 @@
           dns_key: "{{ dns_key  }}"
           dns_private: "{{ dns_private  }}"
           
-    # - name: Create Red Hat Subscription Credential
-    #  awx.awx.credential:
-    #    name: "{{ guid }} RHEL Subscription"
-    #    organization: "{{ demo_org }}"
-    #    credential_type: Red Hat Satellite
-    #    inputs:
-    #      username: "{{ username }}"
-    #      password: "{{ _password_ }}"
-    #      force_basic_auth: true
-    #      force_mc_with_auth: true
-    #    state: present
-    #  register: rhel_subscription
+    - name: Create New Controller Dummy Credential
+      awx.awx.credential:
+        name: "{{ guid }} Controller"
+        organization: "{{ demo_org }}"
+        credential_type: Red Hat Ansible Automation Platform
+        inputs:
+          host: https://dummy.example.com/
+          password: '{{ controller_admin_password }}'
+          username: admin
+          verify_ssl: '{{ not ( letsencrypt_skip | bool ) }}'
+        state: present
 
     - name: Ensure Ansible SSA project is synced
       awx.awx.project:
@@ -258,11 +257,12 @@
 
     - name: Configure Job template - Infrastructure Creation
       awx.awx.job_template:
-        name: sub01-infra-create
+        name: "{{ guid }} sub01-infra-create"
         organization: "{{ demo_org }}"
         inventory: "{{ guid }} Ansible SSA Demo"
         project: "{{ guid }} Ansible SSA Demo Project"
         playbook: controller-instance.yml
+        execution_environment: "Ansible SSA EE"
         credentials: 
           - '{{ guid }} Cloud Credential'
           - '{{ guid }} Cloud Extra Variables'
@@ -272,11 +272,12 @@
           # '{{ guid }} Controller'
         #survey_enabled: false
         #survey_spec: "{{ _survey_spec_ }}"
+        #become_enabled: true
         state: present
   
     - name: Configure Job template - Full configuration 
       awx.awx.job_template:
-        name: sub03-full-create
+        name: "{{ guid }} sub03-full-create"
         organization: "{{ demo_org }}"
         inventory: '{{ guid }} Ansible SSA Demo'
         project: '{{ guid }} Ansible SSA Demo Project'
