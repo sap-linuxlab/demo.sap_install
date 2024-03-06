@@ -10,8 +10,7 @@
     - name: Generate unique ID
       ansible.builtin.set_fact:
         guid: "{{ lookup('community.general.random_string', length=5, upper=false, special=false) }}"
-      when: 
-        - guid is undefined
+      when: guid is undefined
 
     - name: Display created to_uuid
       ansible.builtin.debug:
@@ -21,6 +20,8 @@
     - name: Create unique variables
       ansible.builtin.set_fact:
         controller_instance_name: "ctrl_{{ guid }}"
+        controller_ah_instance_name: "hub_{{ guid }}"
+        contorller_eda_instance_name: "eda_{{ guid }}"
         demo_org: "{{ guid }} Demo Setup"
 
     - name: Ensure organization "{{ demo_org }}" exists
