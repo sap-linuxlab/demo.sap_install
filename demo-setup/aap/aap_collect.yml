@@ -192,16 +192,6 @@
         inputs:
           username: "ansible"
           ssh_key_data: "{{ controller_ansible_private_key }}" 
-      
-    - name: Create Controller Credential
-      awx.awx.credential:
-        name: "{{ guid }} Controller"
-        description: "Demo Controller Credentials"
-        organization: "{{ demo_org }}"
-        credential_type: ""
-        inputs: "{{ item.inputs }}"
-        update_secrets: "{{ _update_secrets_ }}"
-        state: "present"
     
     - name: Create Ansible SSA Demo Credential
       awx.awx.credential:
