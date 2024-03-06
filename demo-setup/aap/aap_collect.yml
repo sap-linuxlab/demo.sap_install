@@ -199,6 +199,7 @@
         description: Demo Credential
         organization: "{{ demo_org }}"
         credential_type: Ansible SSA demo setup
+        state: present
         inputs:
           controller_instance_name: "ctrl_{{ guid }}"
           controller_admin_password: "{{ controller_admin_password }}"
@@ -238,7 +239,7 @@
       awx.awx.project:
         name: "{{ guid }} Ansible SSA Demo Project"
         organization: "{{ demo_org }}"
-        state: present0
+        state: present
         scm_type: git
         scm_branch: release
         scm_url: http://gitlab.com/ansible-ssa/playbook-rhaap.git
