@@ -128,7 +128,7 @@
           extra_vars:
             controller_instance_name: '"{{ controller_instance_name  }}"'
             controller_admin_password: '"{{ controller_admin_password  }}"'
-            rhaap_manifest: '"{{ rhaap_manifest  }}"'
+            rhaap_manifest: '"{{ rhaap_manifest | b64encode }}"'
             rhsm_username: '"{{ rhsm_username  }}"'
             rhsm_password: '"{{ rhsm_password  }}"'
             rhsm_poolid: '"{{ rhsm_poolid  }}"'
