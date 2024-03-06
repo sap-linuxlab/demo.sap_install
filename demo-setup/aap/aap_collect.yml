@@ -160,7 +160,7 @@
             - id: controller_ansible_private_key
               type: string
               label: SSH Private Key
-              multilline: true
+              multiline: true
               secret: true
             - id: controller_ansible_public_key
               type: string
