@@ -148,7 +148,6 @@
             dns_key: '"{{ dns_key  }}"'
             dns_private: '"{{ dns_private  }}"'
         state: present
-        validate_certs: "{{ controller_validate_certs }}"
 
     # create SSH Key/Machine Credential type
     - name: Ensure Ansible Controller credential type for SSH keypair exists
@@ -260,7 +259,6 @@
       awx.awx.inventory:
         name: "{{ guid }} Ansible SSA Demo" 
         organization: "{{ demo_org }}"
-        validate_certs: "{{ controller_validate_certs }}"
         state: present
         #variables: "{{ lookup('template','configs/inventory.yml.j2')|from_yaml|to_json }}"
 
