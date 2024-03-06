@@ -260,8 +260,8 @@
       awx.awx.job_template:
         name: sub01-infra-create
         organization: "{{ demo_org }}"
-        inventory: '{{ guid }} Ansible SSA Demo'
-        project: '{{ guid }} Ansible SSA Demo Project'
+        inventory: "{{ guid }} Ansible SSA Demo"
+        project: "{{ guid }} Ansible SSA Demo Project"
         playbook: controller-instance.yml
         credentials: 
           - '{{ guid }} Cloud Credential'
