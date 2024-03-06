@@ -191,7 +191,7 @@
         state: present
         inputs:
           username: "ansible"
-          ssh_private_key: "{{ controller_ansible_private_key }}" 
+          ssh_key_data: "{{ controller_ansible_private_key }}" 
       
     - name: Create Controller Credential
       awx.awx.credential:
