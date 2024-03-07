@@ -24,7 +24,7 @@
         username: "{{ mailuser }}"
         password: "{{ mailpass }}"
         secure: always
-        from: Ansible Demo Deployment <no-reply@redhat.com>
+        from: Ansible Demo Deployment <admin@familie-koch.eu>
         to: "{{ creator_email }}"
         subject: Your AAP Demo Setup is started with ID "{{ guid }}"
         body: |
