@@ -17,6 +17,15 @@
         var: guid
         verbosity: 2
 
+    - name: Send Initiation Email
+      community.general.mail:
+        from: Ansible Demo Deployment <no-reply@redhat.com>
+        to: "{{ creator_email }}"
+        subject: Your AAP Demo Setup is started with ID "{{ guid }}"
+        body: |
+          " Hello, "
+          " The deployment of your demo is started"
+
     - name: Create unique variables
       ansible.builtin.set_fact:
         controller_instance_name: "ctrl-{{ guid }}"
@@ -357,8 +366,23 @@
             state: present
           
         # Add host "ctrl-{{ guid }}" to group "controller" in inventory "{{ guid }} Ansible SSA Demo"
+    - name: Launch job template to create Infrastructure
+      awx.awx.job_launch:
+        job_template: '{{ guid }} sub03-full-create'
+        wait: true
+        timeout: 1300
+      register: register_infra_deployment  
 
-
+    - name: Send Completion Email
+      community.general.mail:
+        from: Ansible Demo Deployment <no-reply@redhat.com>
+        to: "{{ creator_email }}"
+        subject: Your AAP Demo Setup is completed with ID "{{ guid }}"
+        body: |
+          " Hello,"
+          " The deployment of your demo is completed"
+          " Your Controller can be accessed at https://{{ controller_instance_name }}"
+          " with User admin and the password you submitted"
         
 
 
