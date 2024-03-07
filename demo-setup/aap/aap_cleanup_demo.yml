@@ -69,4 +69,4 @@
         state: absent
 
     - name: Ensure Cloud specific credentials and Inventory is absent
-      ansible.builtin.import_tasks: cloud_credential_remove_{{ type }}.yml
+      ansible.builtin.import_tasks: cloud_credential_{{ type }}_remove.yml
