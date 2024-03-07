@@ -30,7 +30,7 @@
         description: "Temporary organization for creating demo {{ guid }}"
         state: present
 
-    - name: Ensure Ansible Controller credential for Demo Setup exists
+    - name: Ensure Ansible Controller credential type for Demo Setup exists
       awx.awx.credential_type:
         name: "Ansible SSA demo setup"
         description: "Credential to collect all variables for Ansible SSA demo"
@@ -299,11 +299,11 @@
         - name: Launch job template to create Infrastructure
           awx.awx.job_launch:
             job_template: '{{ guid }} sub01-infra-create'
-          register: infra-deployment  
+          register: register_infra_deployment  
         
         - name: Debug infrastructure Deployment
           ansible.builtin.debug:
-            var: infra-deployment
+            var: register_infra_deployment
         
         - name: print IP Addresses of host "ctrl-{{guid}}"
           ansible.builtin.debug:
