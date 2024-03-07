@@ -201,14 +201,14 @@
         credential_type: Ansible SSA demo setup
         state: present
         inputs:
-          controller_instance_name: "ctrl_{{ guid }}"
+          controller_instance_name: "{{ controller_instance_name }}"
           controller_admin_password: "{{ controller_admin_password }}"
-          rhaap_manifest: "{{ rhaap_manifest }}" # evtl. b64encode filter anhängen
+          rhaap_manifest: "{{ rhaap_manifest }}" # needs to be base64 encoded
           rhsm_username: "{{ rhsm_username }}"
           rhsm_password: "{{ rhsm_password }}"
           rhsm_poolid: "{{ rhsm_poolid }}"
           controller_ah_enable: "{{ controller_ah_enable | bool }}"
-          controller_ah_instance_name: "hub_{{ guid }}"
+          controller_ah_instance_name: "{{ controller_ah_instance_name }}"
           automation_hub_server_url: "{{ automation_hub_server_url }}"
           quay_registry_username: "{{ quay_registry_username  }}"
           quay_registry_password: "{{ quay_registry_password  }}"
