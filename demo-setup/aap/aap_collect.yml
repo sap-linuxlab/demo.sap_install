@@ -222,13 +222,13 @@
           dns_key: "{{ dns_key  }}"
           dns_private: "{{ dns_private  }}"
           
-    - name: Create New Controller Dummy Credential
+    - name: Create New Controller Credential for DynDNS
       awx.awx.credential:
         name: "{{ guid }} Controller"
         organization: "{{ demo_org }}"
         credential_type: Red Hat Ansible Automation Platform
         inputs:
-          host: https://dummy.example.com/
+          host: 'https://{{ controller_instance_name }}.{{ dns_suffix }}.ansible-labs.de/'
           password: '{{ controller_admin_password }}'
           username: admin
           verify_ssl: '{{ not ( letsencrypt_skip | bool ) }}'
@@ -333,6 +333,23 @@
         - name: print IP Addresses of host "ctrl-{{ guid }}"
           ansible.builtin.debug:
             msg: "{{ hostvars['ctrl-' + guid]['ansible_host'] }}"
+            verbosity: 2
+        
+        - name: Update Controller Credential with IP address
+          awx.awx.credential:
+            name: "{{ guid }} Controller"
+            organization: "{{ demo_org }}"
+            credential_type: Red Hat Ansible Automation Platform
+            inputs:
+              host: "https://{{ hostvars['ctrl-' + guid]['ansible_host'] }}/"
+              password: '{{ controller_admin_password }}'
+              username: admin
+              verify_ssl: '{{ not ( letsencrypt_skip | bool ) }}'
+            state: present
+          
+        # Add host "ctrl-{{ guid }}" to group "controller" in inventory "{{ guid }} Ansible SSA Demo"
+        
+
         
 
 
