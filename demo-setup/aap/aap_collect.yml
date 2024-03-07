@@ -19,6 +19,11 @@
 
     - name: Send Initiation Email
       community.general.mail:
+        host: "{{ mailhost }}"
+        port: "{{ mailport }}"
+        username: "{{ mailuser }}"
+        password: "{{ mailpass }}"
+        secure: always
         from: Ansible Demo Deployment <no-reply@redhat.com>
         to: "{{ creator_email }}"
         subject: Your AAP Demo Setup is started with ID "{{ guid }}"
@@ -375,6 +380,11 @@
 
     - name: Send Completion Email
       community.general.mail:
+        host: "{{ mailhost }}"
+        port: "{{ mailport }}"
+        username: "{{ mailuser }}"
+        password: "{{ mailpass }}"
+        secure: always
         from: Ansible Demo Deployment <no-reply@redhat.com>
         to: "{{ creator_email }}"
         subject: Your AAP Demo Setup is completed with ID "{{ guid }}"
