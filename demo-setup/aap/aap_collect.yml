@@ -303,6 +303,8 @@
         - name: Launch job template to create Infrastructure
           awx.awx.job_launch:
             job_template: '{{ guid }} sub01-infra-create'
+            wait: true
+            timeout: 1300
           register: register_infra_deployment  
         
         - name: Debug infrastructure Deployment
