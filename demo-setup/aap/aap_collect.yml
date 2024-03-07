@@ -251,11 +251,7 @@
         organization: "{{ demo_org }}"
         state: present
         #variables: "{{ lookup('template','configs/inventory.yml.j2')|from_yaml|to_json }}"
-      register: register_demo_inventory
-
-    - name: Debug register_demo_inventory variable
-      ansible.builtin.debug:
-        var: register_demo_inventory
+      register: register_guid_demo_inventory
 
     - name: Ensure Cloud specific credentials and Inventory is created
       ansible.builtin.import_tasks: cloud_credential_{{ type }}.yml
@@ -315,10 +311,17 @@
         - name: Debug infrastructure Deployment
           ansible.builtin.debug:
             var: register_infra_deployment
-        
+            verbosity: 2
+
+        - name: get id of inventory "Ansible SSA Demo Setup"
+          awx.awx.inventory:
+            name: "Ansible SSA Demo Setup"
+            state: exists
+          register: register_demo_inventory
+
         - name: Launch inventory sync in Ansible Automation Platform
           ansible.builtin.uri:
-            url: "{{ lookup('env','CONTROLLER_HOST') }}/api/v2/inventories/{{ register_demo_inventory.id }}/update_inventory_sources/"
+            url: "{{ lookup('env','CONTROLLER_HOST') }}/api/v2/inventories/{{ item }}/update_inventory_sources/"
             method: POST
             user: "{{ lookup('env','CONTROLLER_USERNAME') }}"
             password: "{{ lookup('env','CONTROLLER_PASSWORD') }}"
@@ -329,7 +332,10 @@
           until: sync_inventory_result.status == 200
           retries: 10
           delay: 10
-        
+          loop:
+            - register_demo_inventory.id
+            - register_guid_demo_inventory.id
+
         - name: print IP Addresses of host "ctrl-{{ guid }}"
           ansible.builtin.debug:
             msg: "{{ hostvars['ctrl-' + guid]['ansible_host'] }}"
@@ -348,7 +354,7 @@
             state: present
           
         # Add host "ctrl-{{ guid }}" to group "controller" in inventory "{{ guid }} Ansible SSA Demo"
-        
+
 
         
 
