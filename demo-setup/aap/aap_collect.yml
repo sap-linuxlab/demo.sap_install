@@ -406,14 +406,14 @@
         email_body: "Access the controller at https://{{ hostvars[controller_instance_name]['ansible_host'] }}/\n"
       
     - name: Prepare Email body for Automation Hub
-      when: controller_ah_enable
       ansible.builtin.set_fact:
-        email_body: '{{ email_body + "Access the controller at https://" + hostvars[controller_ah_instance_name]['ansible_host'] + "/\n" }}' 
+        email_body: "{{ email_body + 'Access the controller at https://' + hostvars[controller_ah_instance_name]['ansible_host'] + '/\n' }}" 
+      when: controller_ah_enable
     
     - name: Prepare Email body for EDA Controller
-      when: controller_eda_enable
       ansible.builtin.set_fact:
-        email_body: '{{ email_body + "Access the controller at https://" + hostvars[controller_eda_instance_name]['ansible_host'] + "/\n" }}' 
+        email_body: "{{ email_body + 'Access the controller at https://' + hostvars[controller_eda_instance_name]['ansible_host'] + '/\n' }}" 
+      when: controller_eda_enable
     
     - name: Send Completion Email
       community.general.mail:
