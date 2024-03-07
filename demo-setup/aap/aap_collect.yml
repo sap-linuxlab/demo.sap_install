@@ -251,6 +251,11 @@
         organization: "{{ demo_org }}"
         state: present
         #variables: "{{ lookup('template','configs/inventory.yml.j2')|from_yaml|to_json }}"
+      register: register_demo_inventory
+
+    - name: Debug register_demo_inventory variable
+      ansible.builtin.debug:
+        var: register_demo_inventory
 
     - name: Ensure Cloud specific credentials and Inventory is created
       ansible.builtin.import_tasks: cloud_credential_{{ type }}.yml
@@ -297,7 +302,7 @@
       ansible.builtin.debug:
         msg: "dns_update: {{ dns_update }}"
     
-    - name: create infrastructure first if dyndns is not used
+    - name: Create infrastructure first if dyndns is not used
       when: not (dns_update | bool)
       block:
         - name: Launch job template to create Infrastructure
@@ -311,9 +316,23 @@
           ansible.builtin.debug:
             var: register_infra_deployment
         
-        - name: print IP Addresses of host "ctrl-{{guid}}"
+        - name: Launch inventory sync in Ansible Automation Platform
+          ansible.builtin.uri:
+            url: "{{ lookup('env','CONTROLLER_HOST') }}/api/v2/inventories/{{ register_demo_inventory.id }}/update_inventory_sources/"
+            method: POST
+            user: "{{ lookup('env','CONTROLLER_USER') }}"
+            password: "{{ lookup('env','CONTROLLER_PASSWORD') }}"
+            force_basic_auth: true
+            status_code: 200
+            validate_certs: false
+          register: sync_inventory_result
+          until: sync_inventory_result.status == 200
+          retries: 10
+          delay: 10
+        
+        - name: print IP Addresses of host "ctrl-{{ guid }}"
           ansible.builtin.debug:
-            msg: "{{ hostvars['ctrl-{{guid}}'].ansible_host }}"
+            msg: "{{ hostvars['ctrl-' + guid]['ansible_host'] }}"
         
 
 
