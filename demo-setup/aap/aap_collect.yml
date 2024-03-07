@@ -316,6 +316,7 @@
         - name: get id of inventory "Ansible SSA Demo Setup"
           awx.awx.inventory:
             name: "Ansible SSA Demo Setup"
+            organization: "{{ demo_setup_org }}"
             state: exists
           register: register_demo_inventory
 
