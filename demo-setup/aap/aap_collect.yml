@@ -364,7 +364,7 @@
             organization: "{{ demo_org }}"
             credential_type: Red Hat Ansible Automation Platform
             inputs:
-              host: "https://{{ hostvars['ctrl-' + guid]['ansible_host'] }}/"
+              host: "https://{{ hostvars[controller_instance_name]['ansible_host'] }}/"
               password: '{{ controller_admin_password }}'
               username: admin
               verify_ssl: '{{ not ( letsencrypt_skip | bool ) }}'
@@ -385,7 +385,7 @@
             hosts: 
               - '{{ controller_ah_instance_name }}'
           when: controller_ah_enable
-    
+
         - name: Add controller host to group in inventory "{{ guid }} Ansible SSA Demo"
           awx.awx.group:
             name: 'eda_controller_group' 
@@ -401,12 +401,20 @@
         timeout: 1300
       register: register_infra_deployment  
 
-    - name: Prepare Email body
+    - name: Prepare Email body for Controller
       ansible.builtin.set_fact:
-        email_body: "Access the controller at https://"
-    
+        email_body: "Access the controller at https://{{ hostvars[controller_instance_name]['ansible_host'] }}/\n"
       
-
+    - name: Prepare Email body for Automation Hub
+      when: controller_ah_enable
+      ansible.builtin.set_fact:
+        email_body: '{{ email_body + "Access the controller at https://" + hostvars[controller_ah_instance_name]['ansible_host'] + "/\n" }}' 
+    
+    - name: Prepare Email body for EDA Controller
+      when: controller_eda_enable
+      ansible.builtin.set_fact:
+        email_body: '{{ email_body + "Access the controller at https://" + hostvars[controller_eda_instance_name]['ansible_host'] + "/\n" }}' 
+    
     - name: Send Completion Email
       community.general.mail:
         host: "{{ mailhost }}"
@@ -420,9 +428,8 @@
         body: |
           "Hello,"
           "The deployment of your demo is completed"
-          "Your Controller can be accessed at https://{{ controller_instance_name }}"
-          "Your "
-          "with User admin and the password you submitted"
+          "{{ email_body }}"
+          "You need to loagin as user admin with the password you have provided"
         
 
 
