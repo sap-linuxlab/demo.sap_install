@@ -337,10 +337,12 @@
             - '{{ register_demo_inventory.id }}'
             - '{{ register_guid_demo_inventory.id }}'
 
+        # Try multipe times until sync is done
         - name: print IP Addresses of host "ctrl-{{ guid }}"
           ansible.builtin.debug:
             msg: "{{ hostvars['ctrl-' + guid]['ansible_host'] }}"
-            verbosity: 2
+          retries: 20
+          delay: 10
         
         - name: Update Controller Credential with IP address
           awx.awx.credential:
