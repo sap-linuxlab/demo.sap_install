@@ -320,11 +320,11 @@
           ansible.builtin.uri:
             url: "{{ lookup('env','CONTROLLER_HOST') }}/api/v2/inventories/{{ register_demo_inventory.id }}/update_inventory_sources/"
             method: POST
-            user: "{{ lookup('env','CONTROLLER_USER') }}"
+            user: "{{ lookup('env','CONTROLLER_USERNAME') }}"
             password: "{{ lookup('env','CONTROLLER_PASSWORD') }}"
             force_basic_auth: true
             status_code: 200
-            validate_certs: false
+            validate_certs: "{{ lookup('env','CONTROLLER_VERIFY_SSL') }}"
           register: sync_inventory_result
           until: sync_inventory_result.status == 200
           retries: 10
