@@ -27,9 +27,7 @@
         from: Ansible Demo Deployment <admin@familie-koch.eu>
         to: "{{ creator_email }}"
         subject: Your AAP Demo Setup is started with ID "{{ guid }}"
-        body: |
-          " Hello, "
-          " The deployment of your demo is started"
+        body: Hello, the deployment of your demo is started
 
     - name: Create unique variables
       ansible.builtin.set_fact:
@@ -297,6 +295,7 @@
         inventory: '{{ guid }} Ansible SSA Demo'
         project: '{{ guid }} Ansible SSA Demo Project'
         playbook: rhaap-install.yml
+        execution_environment: "Ansible SSA EE"
         credentials: 
           - '{{ guid }} Cloud Credential'
           - '{{ guid }} Cloud Extra Variables'
