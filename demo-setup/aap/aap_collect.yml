@@ -334,8 +334,8 @@
           retries: 10
           delay: 10
           loop:
-            - register_demo_inventory.id
-            - register_guid_demo_inventory.id
+            - '{{ register_demo_inventory.id }}'
+            - '{{ register_guid_demo_inventory.id }}'
 
         - name: print IP Addresses of host "ctrl-{{ guid }}"
           ansible.builtin.debug:
