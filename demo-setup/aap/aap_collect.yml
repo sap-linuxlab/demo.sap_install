@@ -352,9 +352,9 @@
             - '{{ register_guid_demo_inventory.id }}'
 
         # Try multipe times until sync is done
-        - name: print IP Addresses of host "ctrl-{{ guid }}"
+        - name: print IP Addresses of host "{{ controller_instance_name }}"
           ansible.builtin.debug:
-            msg: "{{ hostvars['ctrl-' + guid]['ansible_host'] }}"
+            msg: "{{ hostvars[controller_instance_name]['ansible_host'] }}"
           retries: 20
           delay: 10
         
@@ -369,14 +369,43 @@
               username: admin
               verify_ssl: '{{ not ( letsencrypt_skip | bool ) }}'
             state: present
-          
-        # Add host "ctrl-{{ guid }}" to group "controller" in inventory "{{ guid }} Ansible SSA Demo"
+       
+        # WORKAROUND for missing tagging: 
+        - name: Add controller host to group in inventory "{{ guid }} Ansible SSA Demo"
+          awx.awx.group:
+            name: 'controller_group' 
+            inventory: '{{ guid }} Ansible SSA Demo'
+            hosts: 
+              - '{{ controller_instance_name }}'
+    
+        - name: Add AH host to group in inventory "{{ guid }} Ansible SSA Demo"
+          awx.awx.group:
+            name: 'automation_hub_group' 
+            inventory: '{{ guid }} Ansible SSA Demo'
+            hosts: 
+              - '{{ controller_ah_instance_name }}'
+          when: controller_ah_enable
+    
+        - name: Add controller host to group in inventory "{{ guid }} Ansible SSA Demo"
+          awx.awx.group:
+            name: 'eda_controller_group' 
+            inventory: '{{ guid }} Ansible SSA Demo'
+            hosts: 
+              - '{{ controller_eda_instance_name }}'
+          when: controller_eda_enable
+    
     - name: Launch job template to create Infrastructure
       awx.awx.job_launch:
         job_template: '{{ guid }} sub03-full-create'
         wait: true
         timeout: 1300
       register: register_infra_deployment  
+
+    - name: Prepare Email body
+      ansible.builtin.set_fact:
+        email_body: "Access the controller at https://"
+    
+      
 
     - name: Send Completion Email
       community.general.mail:
@@ -385,14 +414,15 @@
         username: "{{ mailuser }}"
         password: "{{ mailpass }}"
         secure: always
-        from: Ansible Demo Deployment <no-reply@redhat.com>
+        from: Ansible Demo Deployment <admin@familie-koch.eu>
         to: "{{ creator_email }}"
         subject: Your AAP Demo Setup is completed with ID "{{ guid }}"
         body: |
-          " Hello,"
-          " The deployment of your demo is completed"
-          " Your Controller can be accessed at https://{{ controller_instance_name }}"
-          " with User admin and the password you submitted"
+          "Hello,"
+          "The deployment of your demo is completed"
+          "Your Controller can be accessed at https://{{ controller_instance_name }}"
+          "Your "
+          "with User admin and the password you submitted"
         
 
 
