@@ -12,7 +12,7 @@
         guid: "{{ lookup('community.general.random_string', length=5, upper=false, special=false) }}"
       when: guid is undefined
 
-    - name: Display created to_uuid
+    - name: Display created GUID
       ansible.builtin.debug:
         var: guid
         verbosity: 2
@@ -293,3 +293,22 @@
         #survey_spec: "{{ _survey_spec_ }}"
         state: present
     
+    - name: create infrastructure first if dyndns is not used
+      when: not dns_update
+      block:
+        - name: Launch job template to create Infrastructure
+          awx.awx.job_launch:
+            job_template: '{{ guid }} sub01-infra-create'
+          register: infra-deployment  
+        
+        - name: Debug infrastructure Deployment
+          ansible.builtin.debug:
+            var: infra-deployment
+        
+        - name: print IP Addresses of host "ctrl-{{guid}}"
+          ansible.builtin.debug:
+            msg: "{{ hostvars['ctrl-{{guid}}'].ansible_host }}"
+        
+
+
+            
