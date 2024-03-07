@@ -293,8 +293,12 @@
         #survey_spec: "{{ _survey_spec_ }}"
         state: present
     
+    - name: Debug dns_update
+      ansible.builtin.debug:
+        msg: "dns_update: {{ dns_update }}"
+    
     - name: create infrastructure first if dyndns is not used
-      when: not dns_update
+      when: not (dns_update | bool)
       block:
         - name: Launch job template to create Infrastructure
           awx.awx.job_launch:
