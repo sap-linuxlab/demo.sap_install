@@ -350,6 +350,11 @@
             - '{{ register_demo_inventory.id }}'
             - '{{ register_guid_demo_inventory.id }}'
 
+        - name: Debug variable sync_inventory_result
+          ansible.builtin.debug:
+            var: sync_inventory_result
+            #verbosity: 2
+
         # Try multipe times until sync is done
         - name: print IP Addresses of host "{{ controller_instance_name }}"
           ansible.builtin.debug:
