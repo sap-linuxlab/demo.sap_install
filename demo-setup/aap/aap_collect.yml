@@ -414,13 +414,13 @@
               controller_fqdn: "{{ hostvars[controller_instance_name]['ansible_host'] }}.nip.io"
               controller_ah_fqdn: |-
                 {%- if controller_ah_enable| bool -%}
-                "{{ hostvars[controller_ah_instance_name]['ansible_host'] }}.nip.io"
+                {{ hostvars[controller_ah_instance_name]['ansible_host'] }}.nip.io
                 {%- else -%}
                 {{ omit }}
                 {%- endif -%}
               controller_eda_fqdn: |-
                 {%- if controller_eda_enable| bool -%}
-                "{{ hostvars[controller_eda_instance_name]['ansible_host'] }}.nip.io"
+                {{ hostvars[controller_eda_instance_name]['ansible_host'] }}.nip.io
                 {%- else -%}
                 {{ omit }}
                 {%- endif -%}
