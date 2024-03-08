@@ -353,18 +353,23 @@
         - name: Debug variable sync_inventory_result
           ansible.builtin.debug:
             var: sync_inventory_result
-            #verbosity: 2
+            verbosity: 2
 
-        - name: wait 60s to give directory sync some time
-          ansible.builtin.pause:
-            seconds: 60
+        - name: Wait until sync jobs are finished
+          awx.awx.job_wait:
+            job_id: "{{ result_item.json[0]['id'] }}"
+          loop: "{{ sync_inventory_result.results }}"
+          loop_control:
+            label: "Job Id: {{ result_item.json[0]['id'] }}"
+            loop_var: result_item
 
-        # Try multipe times until sync is done
+        #- name: wait 10s to give directory sync some time
+        #  ansible.builtin.pause:
+        #    seconds: 10
+
         - name: print IP Addresses of host "{{ controller_instance_name }}"
           ansible.builtin.debug:
             msg: "{{ hostvars[controller_instance_name]['ansible_host'] }}"
-          retries: 20
-          delay: 10
         
         - name: Update Controller Credential with IP address
           awx.awx.credential:
