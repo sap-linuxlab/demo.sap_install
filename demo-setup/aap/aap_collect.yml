@@ -434,7 +434,7 @@
                 {{ omit }}
                 {%- endif -%}
     
-    - name: Launch job template to create Infrastructure
+    - name: Launch job template to configure infrastructure and install AAP components
       awx.awx.job_launch:
         job_template: '{{ guid }} sub03-full-create'
         wait: true
