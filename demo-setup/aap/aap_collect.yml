@@ -392,6 +392,38 @@
             hosts: 
               - '{{ controller_eda_instance_name }}'
           when: controller_eda_enable
+
+        # Add extravars a and b to sub03-full-create job template
+        - name: Add fqdn extravars to sub03-full-create job template
+          awx.awx.job_template:
+            name: '{{ guid }} sub03-full-create'
+            organization: "{{ demo_org }}"
+            inventory: '{{ guid }} Ansible SSA Demo'
+            project: '{{ guid }} Ansible SSA Demo Project'
+            playbook: rhaap-install.yml
+            execution_environment: Ansible SSA EE
+            credentials:
+              - '{{ guid }} Cloud Credential'
+              - '{{ guid }} Cloud Extra Variables'
+              - '{{ guid }} SSH Keypair'
+              - '{{ guid }} Demo Setup Credential'
+              - '{{ guid }} Machine Credential'
+              - '{{ guid }} Controller'
+            state: present
+            extra_vars:
+              controller_fqdn: "{{ hostvars[controller_instance_name]['ansible_host'] }}.nip.io"
+              controller_ah_fqdn: |-
+                {%- if controller_ah_enable| bool -%}
+                "{{ hostvars[controller_ah_instance_name]['ansible_host'] }}.nip.io"
+                {%- else -%}
+                {{ omit }}
+                {%- endif -%}
+              controller_eda_fqdn: |-
+                {%- if controller_eda_enable| bool -%}
+                "{{ hostvars[controller_eda_instance_name]['ansible_host'] }}.nip.io"
+                {%- else -%}
+                {{ omit }}
+                {%- endif -%}
     
     - name: Launch job template to create Infrastructure
       awx.awx.job_launch:
@@ -402,17 +434,15 @@
 
     - name: Prepare Email body for Controller
       ansible.builtin.set_fact:
-        email_body: "Access the controller at https://{{ hostvars[controller_instance_name]['ansible_host'] }}/\n"
-      
-    - name: Prepare Email body for Automation Hub
-      ansible.builtin.set_fact:
-        email_body: "{{ email_body + 'Access the controller at https://' + hostvars[controller_ah_instance_name]['ansible_host'] + '/\n' }}" 
-      when: controller_ah_enable
-    
-    - name: Prepare Email body for EDA Controller
-      ansible.builtin.set_fact:
-        email_body: "{{ email_body + 'Access the controller at https://' + hostvars[controller_eda_instance_name]['ansible_host'] + '/\n' }}" 
-      when: controller_eda_enable
+        email_body: |-
+          "Access the controller at https://{{ hostvars[controller_instance_name]['ansible_host'] }}/\n"
+          {%- if controller_ah_enable| bool -%}
+          "Access the controller at https://{{ hostvars[controller_ah_instance_name]['ansible_host']}}/\n"
+          {%- endif -%}
+          controller_eda_fqdn: |-
+          {%- if controller_eda_enable| bool -%}
+          "Access the controller at https://{{ hostvars[controller_eda_instance_name]['ansible_host']}}/\n"
+          {%- endif -%}
     
     - name: Send Completion Email
       community.general.mail:
