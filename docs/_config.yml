@@ -1,7 +1,8 @@
 
 title: SAP Install
 description: How to Use Ansible Collection `community.sap_install`
-url: "http://sap-linuxlab.github.io/demo.sap_install"
+#url: "http://sap-linuxlab.github.io/demo.sap_install"
+url: "http://redhat-sap.github.io/demo.sap_install"
 markdown: GFM
 remote_theme: just-the-docs/just-the-docs
 # https://just-the-docs.github.io/just-the-docs/docs/configuration/

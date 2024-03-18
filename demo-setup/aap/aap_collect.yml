@@ -318,9 +318,14 @@
           awx.awx.job_launch:
             job_template: '{{ guid }} sub01-infra-create'
             wait: true
-            timeout: 1300
+            # add timeout in s?
           register: register_infra_deployment  
-        
+
+        - name: Wait for job template to finish
+          awx.awx.job_wait:
+            job_id: "{{ register_infra_deployment.id }}"
+            timeout: 1300
+
         - name: Debug infrastructure Deployment
           ansible.builtin.debug:
             var: register_infra_deployment
@@ -443,8 +448,13 @@
       awx.awx.job_launch:
         job_template: '{{ guid }} sub03-full-create'
         wait: true
-        timeout: 1300
-      register: register_infra_deployment  
+        # add timeout ??
+      register: register_infra_config
+
+    - name: Wait for job template to finish
+      awx.awx.job_wait:
+        job_id: "{{ register_infra_config.id }}"
+        # add timeout in s ?? (6hrs?)
 
     - name: Prepare Email body for Controller
       ansible.builtin.set_fact:
