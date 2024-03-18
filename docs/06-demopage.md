@@ -5,5 +5,5 @@ nav_order: 6
 has_children: false
 ---
 
-# AAP Demo setup
-<iframe src="demo-request-form.html" ></iframe>
+{% capture main %}{% include_relative /demo-request-form.html %}{% endcapture %}
+{{ main }}
