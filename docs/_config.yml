@@ -14,7 +14,7 @@ aux_links:
   "Source Code for these Examples":
     - "//github.com/redhat-sap/demo.sap_install"
   "More Source Code Examples":
-    - "//github.com/saüp-linuxlab/ansible.playbooks"
+    - "//github.com/sap-linuxlab/ansible.playbooks"
 aux_links_new_tab: true
 
 search_enabled: true

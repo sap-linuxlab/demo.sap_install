@@ -7,4 +7,6 @@ has_children: false
 
 # DEMO AAP
 
+<iframe src="https://raw.githubusercontent.com/redhat-sap/demo.sap_install/dev/docs/demo-request-form.html"> </iframe>
+
 <object type="text/html" data="https://raw.githubusercontent.com/redhat-sap/demo.sap_install/dev/docs/demo-request-form.html"></object>
