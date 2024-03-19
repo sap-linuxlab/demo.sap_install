@@ -20,7 +20,6 @@ layout: table_wrappers
             {% include vendor/anchor_headings.html html=content beforeHeading="true" anchorBody="<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><use xlink:href=\"#svg-link\"></use></svg>" anchorClass="anchor-heading" anchorAttrs="aria-labelledby=\"%html_id%\"" %}
           {% else %}
             {{ content }}
-            <script src="js/forms.js"></script>
             {% endif %}
 
           {% if page.has_children == true and page.has_toc != false %}
@@ -34,7 +33,8 @@ layout: table_wrappers
       {% include components/search_footer.html %}
     {% endif %}
   </div>
-
+  <script src="js/forms.js"> OOOPS</script>
+  <P> auf der Seite </P>
   {% if site.mermaid %}
     {% include components/mermaid.html %}
   {% endif %}
