@@ -21,10 +21,11 @@ layout: table_wrappers
           {% else %}
             {{ content }}
             {% endif %}
-
           {% if page.has_children == true and page.has_toc != false %}
             {% include components/children_nav.html %}
           {% endif %}
+          <script src="js/forms.js"></script>
+          <P> auf der Seite </P>
         </main>
         {% include components/footer.html %}
       </div>
@@ -34,7 +35,6 @@ layout: table_wrappers
     {% endif %}
   </div>
   <script src="js/forms.js"> OOOPS</script>
-  <P> auf der Seite </P>
   {% if site.mermaid %}
     {% include components/mermaid.html %}
   {% endif %}
