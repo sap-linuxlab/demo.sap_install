@@ -5,7 +5,9 @@ nav_order: 6
 has_children: false
 ---
 
-# AAP Cloud Deployment
+# Deploy Ansible Automation Platform
+
+Just fill out the following form to install your instance of Red Hat Ansible Automation platform
 
 <form id="regForm" action="/action_page.php" autocomplete="on">
   <!-- One "tab" for each step in the form: -->
