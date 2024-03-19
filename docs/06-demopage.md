@@ -5,8 +5,9 @@ nav_order: 6
 has_children: false
 ---
 
+# AAP Cloud Deployment
+
 <form id="regForm" action="/action_page.php" autocomplete="on">
-  <h1>AAP Cloud Deployment:</h1>
   <!-- One "tab" for each step in the form: -->
   <!-- TAB 1 -->
   <div class="formtab">
