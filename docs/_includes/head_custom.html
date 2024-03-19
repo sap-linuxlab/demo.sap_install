@@ -1,3 +1,16 @@
 <script defer>
-  showTab(currentTab); // Display the current tab
+   /*
+     Only trigger the initial rendering after document fully rendered.
+     This is      necessary for cases where page load takes a significant length
+     of time to fully load.
+*/
+if (document.readyState == 'complete') {
+    showTab(currentTab); // Display the current tab
+} else {
+    document.onreadystatechange = function () {
+        if (document.readyState === "complete") {
+            showTab(currentTab); // Display the current tab
+        }
+    }
+}
 </script>
