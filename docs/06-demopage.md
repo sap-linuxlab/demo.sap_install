@@ -85,6 +85,7 @@ has_children: false
   <!-- Buttons -->
   <div style="overflow:auto;">
     <div style="float:right;">
+      <button type="button" id="init" onclick="initTabs()">Init</button>
       <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
       <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
     </div>
