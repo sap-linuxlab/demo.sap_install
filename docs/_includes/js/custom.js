@@ -1,6 +1,6 @@
-// Need to put this somewhere else ....
+var currentTab = 0; // Current tab is set to be the first tab (0)
+
 function initTabs() {
-  var currentTab = 0; // Current tab is set to be the first tab (0)
   showTab(currentTab); // Display the current tab
 }
 
@@ -19,7 +19,7 @@ function showTab(n) {
   } else {
     document.getElementById("nextBtn").innerHTML = "Next";
   }
-  //... and run a function that will display the correct step indicator: 
+  //... and run a function that will display the correct step indicator:
   fixStepIndicator(n)
 }
 
