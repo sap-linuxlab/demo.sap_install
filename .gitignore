@@ -5,4 +5,5 @@
 **myazure_rm.yml
 **.swp
 **.vscode
+**.DS_store
 awx-ee/context

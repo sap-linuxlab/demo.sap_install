@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default-forms
 title: AAP Demo Setup
 nav_order: 6
 has_children: false
