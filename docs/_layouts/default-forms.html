@@ -24,7 +24,11 @@ layout: table_wrappers
           {% if page.has_children == true and page.has_toc != false %}
             {% include components/children_nav.html %}
           {% endif %}
-          <iframe src="img/demo-request-form.html"></iframe>
+          <!--iframe src="img/demo-request-form.html"></iframe-->
+          <script>
+            var currentTab = 0; // Current tab is set to be the first tab (0)
+            showTab(currentTab); // Display the current tab
+          </script>
           <P> auf der Seite </P>
         </main>
         {% include components/footer.html %}
