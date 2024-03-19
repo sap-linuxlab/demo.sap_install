@@ -25,10 +25,6 @@ layout: table_wrappers
             {% include components/children_nav.html %}
           {% endif %}
           <!--iframe src="img/demo-request-form.html"></iframe-->
-          <script>
-            var currentTab = 0; // Current tab is set to be the first tab (0)
-            showTab(currentTab); // Display the current tab
-          </script>
           <P> auf der Seite </P>
         </main>
         {% include components/footer.html %}
@@ -41,5 +37,9 @@ layout: table_wrappers
   {% if site.mermaid %}
     {% include components/mermaid.html %}
   {% endif %}
+  <script>
+    var currentTab = 0; // Current tab is set to be the first tab (0)
+    showTab(currentTab); // Display the current tab
+  </script>
 </body>
 </html>
