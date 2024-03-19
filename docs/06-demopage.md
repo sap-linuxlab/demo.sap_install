@@ -9,7 +9,7 @@ has_children: false
   <h1>AAP Cloud Deployment:</h1>
   <!-- One "tab" for each step in the form: -->
   <!-- TAB 1 -->
-  <div class="tab">
+  <div class="formtab">
     <h3>Name:</h3>
     <p><input type="text"  placeholder="Nickname..." oninput="this.className = ''" name="nickname" required> </p>
     <p><input type="email" placeholder="Email..." oninput="this.className = ''" name="email" required></p>
@@ -21,7 +21,7 @@ has_children: false
     </select></p>
   </div>
   <!-- TAB 2 -->
-  <div class="tab">
+  <div class="formtab">
     <h3 id="cloudtype" >Enter Cloud Configuration:</h3>
     <p><input type="text"  placeholder="Azure Client Id" oninput="this.className=''" name="azure_cli_id" id="azure_cli_id"></p>
     <p><input type="text"  placeholder="Azure Password" oninput="this.className=''" name="azure_cli_secret" id="azure_cli_secret"></p>
@@ -32,7 +32,7 @@ has_children: false
     <p><input type="text"  placeholder="Instance Flavour" oninput="this.className=''" name="instance_flavor" id="instance_flavor" value="Standard_D4s_v3" required></p>
   </div>
   <!-- TAB 3 -->
-  <div class="tab">Enter Controller Configuration:
+  <div class="formtab">Enter Controller Configuration:
       <p><input type="password"  placeholder="Controller Admin Password" oninput="this.className=''" name="controller_admin_password" id="controller_admin_password" required></p>
       <p>RH AAP Manifest File<input type="file" name="rhaap_manifest" id="rhaap_manifest" required></p>
       <p><input type="checkbox" name="controller_ah_enable" id="controller_ah_enable" oninput="this.className=''" value=true>
@@ -41,7 +41,7 @@ has_children: false
         <label for="controller_eda_enable">Enable Event Driven Ansible</label></p>
   </div>
   <!-- TAB 4 -->
-  <div class="tab">Enter Private Automation Hub Configuration:
+  <div class="formtab">Enter Private Automation Hub Configuration:
     <!-- Auto Generated
     <p><input type="text"  placeholder="XXX..." oninput="this.className=''" name="controller_ah_instance_name" id="controller_ah_instance_name"></p>
     -->
@@ -55,13 +55,13 @@ has_children: false
     <p><input type="text"  placeholder="RHSM Automation Hub Access Token" oninput="this.className=''" name="rhsm_ah_offline_token" id="rhsm_ah_offline_token"></p>
   </div>
   <!-- TAB 5 -->
-  <div class="tab">Enter Red Hat Subscription Credentials:
+  <div class="formtab">Enter Red Hat Subscription Credentials:
     <p><input type="text"  placeholder="RHSM Username" oninput="this.className=''" name="rhsm_username" id="rhsm_username" required></p>
     <p><input type="text"  placeholder="RHSM Password" oninput="this.className=''" name="rhsm_password" id="rhsm_password" required></p>
     <p><input type="text"  placeholder="RHSM PoolId" oninput="this.className=''" name="rhsm_poolid" id="rhsm_poolid" required></p>  
   </div>
   <!-- TAB 6 -->
-  <div class="tab">SSH Keypair Configuration
+  <div class="formtab">SSH Keypair Configuration
     <p><label for="controller_ansible_private_key">SSH Private Key</label> 
        <input type="file"  oninput="this.className=''" name="controller_ansible_private_key" id="controller_ansible_private_key" required></p>    
     <p><label for="controller_ansible_public_key">SSH Public Key</label>
@@ -69,13 +69,13 @@ has_children: false
 
   </div>
   <!-- TAB 7 -->
-  <div class="tab">Let's encrypt:
+  <div class="formtab">Let's encrypt:
     <p><input type="checkbox" name="letsencrypt_skip" id="letsencrypt_skip" value="true" checked>
        <label for="letsencrypt_skip">Disable Let's Encrypt Certificates</label></p>
 
   </div>
   <!-- TAB 8 -->
-  <div class="tab">Ansible SSA DynDns Config
+  <div class="formtab">Ansible SSA DynDns Config
     <p><input type="checkbox"  name="dns_update" id="dns_update" value="true">
       <label for="dns_update">Enable DynDns (only for Red Hat Employees)</label></p>
     <p><input type="text"  placeholder="DNS Subdomain Suffix" oninput="this.className=''" name="dns_suffix" id="dns_suffix"></p>
