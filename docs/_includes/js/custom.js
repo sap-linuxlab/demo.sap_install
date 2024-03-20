@@ -116,7 +116,7 @@ function fixStepIndicator(n) {
   x[n].className += " active";
 }
 
-function kick_workflow() {
+function start_github_workflow(workflow) {
   // var nickname=document.getElementById("nickname").value;
   // ** fill up all vars
   var apiKey = document.getElementById("token").value
@@ -126,7 +126,7 @@ function kick_workflow() {
   };
   
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", "https://api.github.com/repos/redhat-sap/demo.sap_install/actions/workflows/create_demo/actions/runs", true);
+  xhr.open("POST", "https://api.github.com/repos/redhat-sap/demo.sap_install/actions/workflows/${workflow}/actions/runs", true);
   xhr.setRequestHeader("Authorization", `Bearer ${apiKey}`);
   xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
   xhr.setRequestHeader("Content-Type", "application/json");
@@ -143,13 +143,35 @@ function kick_workflow() {
   }));
 }
 
+function encodeToBase64(fileContent) {
+  return btoa(fileContent); // Base64 encoding
+}
+
+function loadFileContent(inputfield) {
+  const fileName = document.getElementById(inputfield).value;
+  fetch(fileName)
+      .then(response => response.text())
+      .then(data => {
+          return data;
+      })
+      .catch(error => {
+          alert ("Error loading file. Please check the filename.");
+      });
+}
 function submit_AAP() {
   // Maybe apiURL und/oder apiKey als parameter?
   // Define the API URL
   var apiKey = document.getElementById("token").value;
   const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/167/launch/';
   const data = {
-    "extra_vars": { "tool_command": "echo successful", "xxx": "yyy" },
+    "extra_vars": {
+      "creator_email": document.getElementById("email").value,
+      "controller_admin_password": document.getElementById("controller_admin_password").value,
+      "rhaap_manifest": btoa(loadFileContent(document.getElementById("rhaap_manifest").value)),
+      "rhsm_username": document.getElementById("rhsm_username").value,
+      "rhsm_password": document.getElementById("rhsm_password").value,
+      "rhsm_poolid": document.getElementById("rhsm_poolid").value,
+    },
   };
 
   // disable cert check
@@ -169,14 +191,13 @@ function submit_AAP() {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      return response.json();
+      alert(response.json());
     })
+    // Use alert instead
     .then(data => {
-      console.log(data);
+      alert(data);
     })
     .catch(error => {
-      console.error
-
-  ('Error:', error);
+      alert(error);
     });
   }
