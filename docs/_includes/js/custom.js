@@ -155,7 +155,7 @@ function submit_AAP() {
   // const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/170/launch/'; // Create demo
   const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/185/launch/'; // Debug only
   const data = {
-    "extra_vars": formdata;
+    "extra_vars": { formdata },
   };
 
   alert(formdata.token)
