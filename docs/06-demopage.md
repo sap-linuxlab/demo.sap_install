@@ -9,14 +9,16 @@ has_children: false
 
 Just fill out the following form to install your instance of Red Hat Ansible Automation platform
 
-<form id="regForm" action="/action_page.php" autocomplete="on">
+<form id="regForm" autocomplete="on">
   <!-- One "tab" for each step in the form: -->
   <!-- TAB 1 -->
   <div class="formtab">
+    <h3>Access Token:</h3>
+    <p><input type="text"  placeholder="Access Token&ast;" oninput="this.className = ''" name="token" required> </p>
     <h3>Name:</h3>
-    <p><input type="text"  placeholder="Nickname..." oninput="this.className = ''" name="nickname" required> </p>
-    <p><input type="email" placeholder="Email..." oninput="this.className = ''" name="email" required></p>
-    <h3>Cloud Provider:</h3>
+    <p><input type="text"  placeholder="Nickname*" oninput="this.className = ''" name="nickname" required> </p>
+    <p><input type="email" placeholder="Email*" oninput="this.className = ''" name="email" required></p>
+    <h3>Cloud Provider*:</h3>
     <p><select name="type" id="type" oninput="this.className = ''" >
       <option value="azure">Microsoft Azure</option>
       <option value="aws">Amazon WebService</option>
@@ -26,13 +28,14 @@ Just fill out the following form to install your instance of Red Hat Ansible Aut
   <!-- TAB 2 -->
   <div class="formtab">
     <h3 id="cloudtype" >Enter Cloud Configuration:</h3>
-    <p><input type="text"  placeholder="Azure Client Id" oninput="this.className=''" name="azure_cli_id" id="azure_cli_id"></p>
-    <p><input type="text"  placeholder="Azure Password" oninput="this.className=''" name="azure_cli_secret" id="azure_cli_secret"></p>
-    <p><input type="text"  placeholder="Azure Tenant" oninput="this.className=''" name="azure_tenant" id="azure_tenant"></p>
-    <p><input type="text"  placeholder="Azure Subscription Id" oninput="this.className=''" name="azure_subscription" id="azure_subscription"></p>
-    <p><input type="text"  placeholder="Azure Location" oninput="this.className=''" name="azure_location" id="azure_location" value=westeurope></p>
+    <!-- Azure variables -->
+    <p><input type="text"  placeholder="Azure Client Id*" oninput="this.className=''" name="azure_cli_id" id="azure_cli_id"></p>
+    <p><input type="text"  placeholder="Azure Password*" oninput="this.className=''" name="azure_cli_secret" id="azure_cli_secret"></p>
+    <p><input type="text"  placeholder="Azure Tenant*" oninput="this.className=''" name="azure_tenant" id="azure_tenant"></p>
+    <p><input type="text"  placeholder="Azure Subscription Id*" oninput="this.className=''" name="azure_subscription" id="azure_subscription"></p>
+    <p><input type="text"  placeholder="Azure Location*" oninput="this.className=''" name="azure_location" id="azure_location" value=westeurope></p>
     <p><input type="text"  placeholder="Azure Resource Group" oninput="this.className=''" name="azure_resource_group" id="azure_resource_group"></p>
-    <p><input type="text"  placeholder="Instance Flavour" oninput="this.className=''" name="instance_flavor" id="instance_flavor" value="Standard_D4s_v3" required></p>
+    <p><input type="text"  placeholder="Instance Flavour*" oninput="this.className=''" name="instance_flavor" id="instance_flavor" value="Standard_D4s_v3" required></p>
   </div>
   <!-- TAB 3 -->
   <div class="formtab">Enter Controller Configuration:
@@ -85,6 +88,7 @@ Just fill out the following form to install your instance of Red Hat Ansible Aut
     <p><input type="file"  placeholder="DNS Key" oninput="this.className=''" name="dns_key" id="dns_key"></p>
     <p><input type="file"  placeholder="DNS Private Key" oninput="this.className=''" name="dns_private" id="dns_private"></p>
   </div>
+  <p id="required"> (*) input required</p>
   <!-- Buttons -->
   <div style="overflow:auto;">
     <div style="float:right;">
