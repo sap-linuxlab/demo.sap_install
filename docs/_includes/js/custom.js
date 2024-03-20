@@ -38,6 +38,7 @@ function nextPrev(n) {
   if (currentTab >= x.length) {
     // ... the form gets submitted:
     //document.getElementById("regForm").submit();
+    currentTab = x.length
     document.getElementById("regForm").onclick = "submit_AAP()"
     return false;
   }
