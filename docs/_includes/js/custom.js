@@ -162,8 +162,8 @@ function submit_AAP() {
   // Maybe apiURL und/oder apiKey als parameter?
   // Define the API URL
   var apiKey = document.getElementById("token").value;
-  // const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/167/launch/'; # Create demo
-  const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/175/launch/'; # Debug only
+  // const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/170/launch/'; # Create demo
+  const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/185/launch/'; # Debug only
   const data = {
     "extra_vars": {
       "creator_email": document.getElementById("email").value,
