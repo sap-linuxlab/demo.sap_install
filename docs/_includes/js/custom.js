@@ -151,14 +151,14 @@ function fixStepIndicator(n) {
 function submit_AAP() {
   // Maybe apiURL und/oder apiKey als parameter?
   // Define the API URL
-  const apiKey = formdata.token
+  const apiKey = formdata.token.toString();
   // const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/170/launch/'; // Create demo
   const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/185/launch/'; // Debug only
   const data = {
     "extra_vars": { formdata },
   };
 
-  alert(formdata.token)
+  alert("Token " + apiKey);
   // disable cert check
   process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
