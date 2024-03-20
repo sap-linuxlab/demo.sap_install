@@ -16,8 +16,10 @@ function showTab(n) {
   }
   if (n == (x.length - 1)) {
     document.getElementById("nextBtn").innerHTML = "Submit";
+    document.getElementById("nextBtn").onclick = "nextPrev(1)";
   } else {
     document.getElementById("nextBtn").innerHTML = "Next";
+    document.getElementById("nextBtn").onclick = "submit_AAP";
   }
   //... and run a function that will display the correct step indicator:
   fixStepIndicator(n)
@@ -37,8 +39,7 @@ function nextPrev(n) {
   // if you have reached the end of the form...
   if (currentTab >= x.length) {
     // ... the form gets submitted:
-    //document.getElementById("regForm").submit()
-    document.getElementById("regForm").onclick = "submit_AAP()";
+    document.getElementById("regForm").submit();
     return false;
   }
   // Otherwise, display the correct tab:
@@ -115,7 +116,54 @@ function fixStepIndicator(n) {
   x[n].className += " active";
 }
 
-function submit_AAP() {
+/*
+function start_github_workflow(workflow) {
+  // var nickname=document.getElementById("nickname").value;
+  // ** fill up all vars
+  var apiKey = document.getElementById("token").value
+  var actionInputs = {
+      "nickname": document.getElementById("nickname").value,
+      "email": document.getElementById("email").value,
+  };
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "https://api.github.com/repos/redhat-sap/demo.sap_install/actions/workflows/${workflow}/actions/runs", true);
+  xhr.setRequestHeader("Authorization", `Bearer ${apiKey}`);
+  xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
+  xhr.setRequestHeader("Content-Type", "application/json");
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 201) {
+      alert("GitHub-Action wurde erfolgreich ausgelöst!");
+    }
+  };
+
+  xhr.send(JSON.stringify({
+    "ref": "main",
+    "inputs": actionInputs
+  }));
+}
+*/
+/*
+function encodeToBase64(fileContent) {
+  return btoa(fileContent); // Base64 encoding
+}
+*/
+/*
+function loadFileContent(inputfield) {
+  const fileName = document.getElementById(inputfield).value;
+  fetch(fileName)
+      .then(response => response.text())
+      .then(data => {
+          return data;
+      })
+      .catch(error => {
+          alert ("Error loading file. Please check the filename.");
+      });
+}
+*/
+function submit_AAP() {}
+/*
   // Maybe apiURL und/oder apiKey als parameter?
   // Define the API URL
   var apiKey = document.getElementById("token").value;
@@ -159,3 +207,4 @@ function submit_AAP() {
       alert(error);
     });
 }
+*/
