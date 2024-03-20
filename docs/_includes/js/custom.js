@@ -116,6 +116,7 @@ function fixStepIndicator(n) {
   x[n].className += " active";
 }
 
+/*
 function start_github_workflow(workflow) {
   // var nickname=document.getElementById("nickname").value;
   // ** fill up all vars
@@ -142,13 +143,13 @@ function start_github_workflow(workflow) {
     "inputs": actionInputs
   }));
 }
-
+*/
 /*
 function encodeToBase64(fileContent) {
   return btoa(fileContent); // Base64 encoding
 }
 */
-
+/*
 function loadFileContent(inputfield) {
   const fileName = document.getElementById(inputfield).value;
   fetch(fileName)
@@ -160,7 +161,9 @@ function loadFileContent(inputfield) {
           alert ("Error loading file. Please check the filename.");
       });
 }
-function submit_AAP() {
+*/
+function submit_AAP() {}
+/*
   // Maybe apiURL und/oder apiKey als parameter?
   // Define the API URL
   var apiKey = document.getElementById("token").value;
@@ -203,4 +206,5 @@ function submit_AAP() {
     .catch(error => {
       alert(error);
     });
-  }
+}
+*/
