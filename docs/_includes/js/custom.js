@@ -1,4 +1,35 @@
 var currentTab = 0; // Current tab is set to be the first tab (0)
+var formdata = {
+  token: "",
+  controller_instance_name: "",
+  controller_admin_password: "",
+  rhaap_manifest: "",
+  rhsm_username: "",
+  rhsm_password: "",
+  rhsm_poolid: "",
+  controller_ah_enable: "",
+  controller_ah_instance_name: "",
+  automation_hub_server_url: "",
+  quay_registry_username: "",
+  quay_registry_password: "",
+  rhsm_ah_offline_token: "",
+  controller_eda_enable: "",
+  controller_eda_instance_name: "",
+  letsencrypt_skip: "",
+  type: "",
+  dns_update: "",
+  dns_suffix: "",
+  dns_key: "",
+  dns_private: "",
+  controller_ansible_private_key: "",
+  controller_ansible_public_key: "",
+  type: "",
+  azure_location: "",
+  instance_flavor: "",
+  azure_resource_group: "",
+  azure_private_network: "",
+  azure_ssh_public_key: "",
+};
 
 function initTabs() {
   showTab(currentTab); // Display the current tab
@@ -38,8 +69,8 @@ function nextPrev(n) {
   if (currentTab >= x.length) {
     // ... the form gets submitted:
     //document.getElementById("regForm").submit()
-    submit_AAP();
     currentTab = 0;
+    submit_AAP();
   }
   // Otherwise, display the correct tab:
   showTab(currentTab);
@@ -62,6 +93,8 @@ function validateForm() {
       // and set the current valid status to false
       valid = false;
     }
+    // add all values to the formdata object
+    formdata[y[i].id] =  y[i].value;
   }
   // If the valid status is true, mark the step as finished and valid:
   if (valid) {
@@ -118,20 +151,14 @@ function fixStepIndicator(n) {
 function submit_AAP() {
   // Maybe apiURL und/oder apiKey als parameter?
   // Define the API URL
-  var apiKey = document.getElementById("token").value;
+  const apiKey = formdata.token
   // const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/170/launch/'; // Create demo
   const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/185/launch/'; // Debug only
   const data = {
-    "extra_vars": {
-      "creator_email": document.getElementById("email").value,
-      "controller_admin_password": document.getElementById("controller_admin_password").value,
-      // "rhaap_manifest": btoa(loadFileContent(document.getElementById("rhaap_manifest").value)),
-      "rhsm_username": document.getElementById("rhsm_username").value,
-      "rhsm_password": document.getElementById("rhsm_password").value,
-      "rhsm_poolid": document.getElementById("rhsm_poolid").value,
-    },
+    "extra_vars": formdata;
   };
 
+  alert(formdata.token)
   // disable cert check
   process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
