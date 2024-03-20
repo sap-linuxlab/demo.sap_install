@@ -16,8 +16,10 @@ function showTab(n) {
   }
   if (n == (x.length - 1)) {
     document.getElementById("nextBtn").innerHTML = "Submit";
+    document.getElementById("nextBtn").onclick = "nextPrev(1)";
   } else {
     document.getElementById("nextBtn").innerHTML = "Next";
+    document.getElementById("nextBtn").onclick = "submit_AAP";
   }
   //... and run a function that will display the correct step indicator:
   fixStepIndicator(n)
@@ -114,3 +116,67 @@ function fixStepIndicator(n) {
   x[n].className += " active";
 }
 
+function kick_workflow() {
+  // var nickname=document.getElementById("nickname").value;
+  // ** fill up all vars
+  var apiKey = document.getElementById("token").value
+  var actionInputs = {
+      "nickname": document.getElementById("nickname").value,
+      "email": document.getElementById("email").value,
+  };
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "https://api.github.com/repos/redhat-sap/demo.sap_install/actions/workflows/create_demo/actions/runs", true);
+  xhr.setRequestHeader("Authorization", `Bearer ${apiKey}`);
+  xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
+  xhr.setRequestHeader("Content-Type", "application/json");
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 201) {
+      alert("GitHub-Action wurde erfolgreich ausgelöst!");
+    }
+  };
+
+  xhr.send(JSON.stringify({
+    "ref": "main",
+    "inputs": actionInputs
+  }));
+}
+
+function submit_AAP() {
+  // Maybe apiURL und/oder apiKey als parameter?
+  // Define the API URL
+  var apiKey = document.getElementById("token").value;
+  const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/167/launch/';
+  const data = {
+    "extra_vars": { "tool_command": "echo successful", "xxx": "yyy" },
+  };
+
+  // disable cert check
+  process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  };
+
+  fetch(apiUrl, requestOptions)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error
+
+  ('Error:', error);
+    });
+  }

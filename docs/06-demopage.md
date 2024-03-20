@@ -9,13 +9,15 @@ has_children: false
 
 Just fill out the following form to install your instance of Red Hat Ansible Automation platform
 
-<form id="regForm" action="/action_page.php" autocomplete="on">
+<form id="regForm" autocomplete="on">
   <!-- One "tab" for each step in the form: -->
   <!-- TAB 1 -->
   <div class="formtab">
+    <h3>Access Token:</h3>
+    <p><input type="text"  placeholder="Access Token&ast;" oninput="this.className = ''" name="token" required> </p>
     <h3>Name:</h3>
-    <p><input type="text"  placeholder="Nickname..." oninput="this.className = ''" name="nickname" required> </p>
-    <p><input type="email" placeholder="Email..." oninput="this.className = ''" name="email" required></p>
+    <p><input type="text"  placeholder="Nickname*" oninput="this.className = ''" name="nickname" required> </p>
+    <p><input type="email" placeholder="Email&#8432;" oninput="this.className = ''" name="email" required></p>
     <h3>Cloud Provider:</h3>
     <p><select name="type" id="type" oninput="this.className = ''" >
       <option value="azure">Microsoft Azure</option>
@@ -104,5 +106,6 @@ Just fill out the following form to install your instance of Red Hat Ansible Aut
     <span class="step"></span>
     <span class="step"></span>
   </div>
+  <p id="required"> (*) required input</p> 
   <p id="error"></p>
 </form>
