@@ -38,8 +38,8 @@ function nextPrev(n) {
   if (currentTab >= x.length) {
     // ... the form gets submitted:
     //document.getElementById("regForm").submit()
-    document.getElementById("regForm").onclick = "submit_AAP()";
-    return false;
+    submit_AAP();
+    currentTab = 0;
   }
   // Otherwise, display the correct tab:
   showTab(currentTab);
