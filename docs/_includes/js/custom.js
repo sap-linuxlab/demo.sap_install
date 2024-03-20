@@ -143,9 +143,11 @@ function start_github_workflow(workflow) {
   }));
 }
 
+/*
 function encodeToBase64(fileContent) {
   return btoa(fileContent); // Base64 encoding
 }
+*/
 
 function loadFileContent(inputfield) {
   const fileName = document.getElementById(inputfield).value;
@@ -162,13 +164,13 @@ function submit_AAP() {
   // Maybe apiURL und/oder apiKey als parameter?
   // Define the API URL
   var apiKey = document.getElementById("token").value;
-  // const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/170/launch/'; # Create demo
+  // const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/170/launch/'; // Create demo
   const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/185/launch/'; // Debug only
   const data = {
     "extra_vars": {
       "creator_email": document.getElementById("email").value,
       "controller_admin_password": document.getElementById("controller_admin_password").value,
-      "rhaap_manifest": btoa(loadFileContent(document.getElementById("rhaap_manifest").value)),
+      // "rhaap_manifest": btoa(loadFileContent(document.getElementById("rhaap_manifest").value)),
       "rhsm_username": document.getElementById("rhsm_username").value,
       "rhsm_password": document.getElementById("rhsm_password").value,
       "rhsm_poolid": document.getElementById("rhsm_poolid").value,
