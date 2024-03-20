@@ -92,7 +92,7 @@ Just fill out the following form to install your instance of Red Hat Ansible Aut
   <!-- Buttons -->
   <div style="overflow:auto;">
     <div style="float:right;">
-      <button type="button" id="init" onclick="initTabs()">Refresh</button>
+      <!-- button type="button" id="init" onclick="initTabs()">Refresh</button -->
       <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
       <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
     </div>

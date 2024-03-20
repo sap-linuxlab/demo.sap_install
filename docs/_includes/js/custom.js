@@ -37,7 +37,8 @@ function nextPrev(n) {
   // if you have reached the end of the form...
   if (currentTab >= x.length) {
     // ... the form gets submitted:
-    document.getElementById("regForm").submit();
+    //document.getElementById("regForm").submit();
+    document.getElementById("regForm").onclick = "submit_AAP()"
     return false;
   }
   // Otherwise, display the correct tab:
@@ -114,3 +115,47 @@ function fixStepIndicator(n) {
   x[n].className += " active";
 }
 
+function submit_AAP() {
+  // Maybe apiURL und/oder apiKey als parameter?
+  // Define the API URL
+  var apiKey = document.getElementById("token").value;
+  // const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/170/launch/'; // Create demo
+  const apiUrl = 'https://tower.redhat-demo.de/api/v2/job_templates/185/launch/'; // Debug only
+  const data = {
+    "extra_vars": {
+      "creator_email": document.getElementById("email").value,
+      "controller_admin_password": document.getElementById("controller_admin_password").value,
+      // "rhaap_manifest": btoa(loadFileContent(document.getElementById("rhaap_manifest").value)),
+      "rhsm_username": document.getElementById("rhsm_username").value,
+      "rhsm_password": document.getElementById("rhsm_password").value,
+      "rhsm_poolid": document.getElementById("rhsm_poolid").value,
+    },
+  };
+
+  // disable cert check
+  process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  };
+
+  fetch(apiUrl, requestOptions)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      alert(response.json());
+    })
+    // Use alert instead
+    .then(data => {
+      alert(data);
+    })
+    .catch(error => {
+      alert(error);
+    });
+}
