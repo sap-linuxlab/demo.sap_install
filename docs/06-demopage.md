@@ -14,10 +14,10 @@ Just fill out the following form to install your instance of Red Hat Ansible Aut
   <!-- TAB 1 -->
   <div class="formtab">
     <h3>Access Token:</h3>
-    <p><input type="text"  placeholder="Access Token&ast;" oninput="this.className = ''" name="token" required> </p>
+    <p><input type="text"  placeholder="Access Token&ast;" oninput="this.className = ''" name="token" id="token" required> </p>
     <h3>Name:</h3>
-    <p><input type="text"  placeholder="Nickname*" oninput="this.className = ''" name="nickname" required> </p>
-    <p><input type="email" placeholder="Email*" oninput="this.className = ''" name="email" required></p>
+    <p><input type="text"  placeholder="Nickname*" oninput="this.className = ''" name="nickname" id="nickname" required> </p>
+    <p><input type="email" placeholder="Email*" oninput="this.className = ''" name="email" id="email" required></p>
     <h3>Cloud Provider*:</h3>
     <p><select name="type" id="type" oninput="this.className = ''" >
       <option value="azure">Microsoft Azure</option>
@@ -62,15 +62,15 @@ Just fill out the following form to install your instance of Red Hat Ansible Aut
   </div>
   <!-- TAB 5 -->
   <div class="formtab">Enter Red Hat Subscription Credentials:
-    <p><input type="text"  placeholder="RHSM Username" oninput="this.className=''" name="rhsm_username" id="rhsm_username" required></p>
-    <p><input type="text"  placeholder="RHSM Password" oninput="this.className=''" name="rhsm_password" id="rhsm_password" required></p>
-    <p><input type="text"  placeholder="RHSM PoolId" oninput="this.className=''" name="rhsm_poolid" id="rhsm_poolid" required></p>  
+    <p><input type="text"  placeholder="RHSM Username*" oninput="this.className=''" name="rhsm_username" id="rhsm_username" required></p>
+    <p><input type="text"  placeholder="RHSM Password*" oninput="this.className=''" name="rhsm_password" id="rhsm_password" required></p>
+    <p><input type="text"  placeholder="RHSM PoolId*" oninput="this.className=''" name="rhsm_poolid" id="rhsm_poolid" required></p>
   </div>
   <!-- TAB 6 -->
   <div class="formtab">SSH Keypair Configuration
-    <p><label for="controller_ansible_private_key">SSH Private Key</label> 
+    <p><label for="controller_ansible_private_key">SSH Private Key*</label>
        <input type="file"  oninput="this.className=''" name="controller_ansible_private_key" id="controller_ansible_private_key" required></p>    
-    <p><label for="controller_ansible_public_key">SSH Public Key</label>
+    <p><label for="controller_ansible_public_key">SSH Public Key*</label>
        <input type="file"  oninput="this.className=''" name="controlle_ansible_public_key" id="controller_ansible_public_key" required></p>
 
   </div>

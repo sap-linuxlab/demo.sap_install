@@ -69,7 +69,7 @@ function nextPrev(n) {
   if (currentTab >= x.length) {
     // ... the form gets submitted:
     //document.getElementById("regForm").submit()
-    currentTab = 0;
+    currentTab = 1;
     submit_AAP();
   }
   // Otherwise, display the correct tab:
@@ -95,6 +95,7 @@ function validateForm() {
     }
     // add all values to the formdata object
     formdata[y[i].id] =  y[i].value;
+    console.log(y[i].id + " " + formdata[y[i].id]);
   }
   // If the valid status is true, mark the step as finished and valid:
   if (valid) {
@@ -157,10 +158,14 @@ function submit_AAP() {
   const data = {
     "extra_vars": { formdata },
   };
-
-  alert("Token " + apiKey);
   // disable cert check
-  process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+  const fetch = require('node-fetch');
+  const https = require('https');
+  const httpsAgent = new https.Agent({
+    rejectUnauthorized: false,
+  });
+  // The following only works in CLI
+  // process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
   const requestOptions = {
     method: 'POST',
@@ -169,6 +174,7 @@ function submit_AAP() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
+    agent: httpsAgent,
   };
 
   fetch(apiUrl, requestOptions)
