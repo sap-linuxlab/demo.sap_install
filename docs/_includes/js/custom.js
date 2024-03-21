@@ -159,7 +159,7 @@ function call_gihub_api() {
   const github_token = formdata.token.toString();
 
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", "https://api.github.com/repos/redhat-sap/demo.sap_install/actions/workflows/WORKFLOW_FILE/actions/runs", true);
+  xhr.open("POST", "https://api.github.com/repos/redhat-sap/demo.sap_install/actions/workflows/dump_data/actions/runs", true);
   xhr.setRequestHeader("Authorization", `Bearer ${github_token}`);
   xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
   xhr.setRequestHeader("Content-Type", "application/json");

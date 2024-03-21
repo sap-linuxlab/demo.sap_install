@@ -11,7 +11,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Berechne Volumen
+      - name: Dump Data
         run: |
           # Die übergebenen Parameter aus dem JSON-Payload erhalten
           rhsm_username=${{ github.event.client_payload.rhsm_username }}
