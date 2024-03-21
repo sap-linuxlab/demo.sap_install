@@ -93,17 +93,21 @@ function validateForm() {
       // and set the current valid status to false
       valid = false;
     }
-    // add all values to the formdata object
+    // add all values to the formdata object to access it, when not displayed any more
     formdata[y[i].id] =  y[i].value;
     console.log(y[i].id + " " + formdata[y[i].id]);
+  }
+  if ( document.getElementById('type') ) {
+      formdata['type']=document.getElementById('type').value;
+      console.log("set type: " + formdata['type']);
   }
   // If the valid status is true, mark the step as finished and valid:
   if (valid) {
     document.getElementsByClassName("step")[currentTab].className += " finish";
   }
-  document.getElementById("cloudtype").innerHTML = "Enter Configuration Details for " + document.getElementById('type').value;
+  document.getElementById("cloudtype").innerHTML = "Enter Configuration Details for " + formdata.type;
   // make cloud fields visible
-  if ( document.getElementById('type').value == "azure") {
+  if ( formdata.type == "azure") {
     document.getElementById('azure_cli_id').required = true;
     document.getElementById('azure_cli_id').className.replace( /(?:^|\s)hideme(?!\S)/ , '' );
     document.getElementById('azure_cli_secret').required = true;
