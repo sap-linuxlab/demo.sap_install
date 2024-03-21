@@ -154,6 +154,27 @@ function fixStepIndicator(n) {
   x[n].className += " active";
 }
 
+function call_gihub_api() {
+  const github_token = formdata.token.toString();
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "https://api.github.com/repos/redhat-sap/demo.sap_install/actions/workflows/WORKFLOW_FILE/actions/runs", true);
+  xhr.setRequestHeader("Authorization", `Bearer ${github_token}`);
+  xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
+  xhr.setRequestHeader("Content-Type", "application/json");
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 201) {
+      alert("GitHub-Action wurde erfolgreich ausgelöst!");
+    }
+  };
+
+  xhr.send(JSON.stringify({
+    "ref": "main",
+    "inputs": formdata
+  }));
+}
+
 function submit_AAP() {
   // Maybe apiURL und/oder apiKey als parameter?
   // Define the API URL
@@ -163,37 +184,26 @@ function submit_AAP() {
   const data = {
     "extra_vars": { formdata },
   };
-  // disable cert check
-  //const fetch = require('node-fetch');
-  const https = require('https');
-  const httpsAgent = new https.Agent({
-    rejectUnauthorized: false,
-  });
-  // The following only works in CLI
-  // process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-    agent: httpsAgent,
+  const agent = new (window).XMLHttpRequest();
+  agent.open('POST', apiUrl, true);
+  agent.setRequestHeader("Authorization", `Bearer ${apiKey}`);
+  agent.setRequestHeader('Content-Type', 'application/json');
+
+  // Define what happens on successful data submission
+  agent.onload = function() {
+    if (agent.status >= 200 && xhr.status < 300) {
+      console.log('Request successful:', agent.responseText);
+    } else {
+      console.error('Request failed with status:', agent.status);
+    }
   };
 
-  fetch(apiUrl, requestOptions)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      alert(response.json());
-    })
-    // Use alert instead
-    .then(data => {
-      alert(data);
-    })
-    .catch(error => {
-      alert(error);
-    });
-}
+  // Handle errors during the request
+  agent.onerror = function() {
+    console.error('Request failed');
+    alert("Request failed");
+  };
+
+   // Convert the data to JSON format and send the request
+  agent.send(JSON.stringify(data));
