@@ -70,7 +70,7 @@ function nextPrev(n) {
   if (currentTab >= x.length) {
     // ... the form gets submitted:
     //document.getElementById("regForm").submit()
-    currentTab = 1;
+    currentTab = 0;
     //submit_AAP();
     call_gihub_api();
   }
