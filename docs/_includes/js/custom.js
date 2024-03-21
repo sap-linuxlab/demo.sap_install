@@ -71,7 +71,8 @@ function nextPrev(n) {
     // ... the form gets submitted:
     //document.getElementById("regForm").submit()
     currentTab = 1;
-    submit_AAP();
+    //submit_AAP();
+    call_gihub_api();
   }
   // Otherwise, display the correct tab:
   showTab(currentTab);

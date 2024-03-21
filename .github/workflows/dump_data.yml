@@ -1,0 +1,22 @@
+name: Dump Wepage Collected Data
+
+on:
+  repository_dispatch:
+    types: [dump_data]
+
+jobs:
+  dump_data_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Berechne Volumen
+        run: |
+          # Die übergebenen Parameter aus dem JSON-Payload erhalten
+          rhsm_username=${{ github.event.client_payload.rhsm_username }}
+          rhsm_password=${{ github.event.client_payload.rhsm_password }}
+
+          # Ergebnis ausgeben
+          echo "Der Nutzer ist ${rhsm_username}/${rhsm_password}"
+
