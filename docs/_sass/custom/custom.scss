@@ -42,12 +42,12 @@ input.invalid {
 /* Make classes for visible/invisible */
 input.hideme {
     display:none;
-    visibility:hidden;
+    // visibility:hidden;
 }
 input.showme
 {
-    display:inline;
-    visibility:visible;
+    display:block;
+    // visibility:visible;
 }
 
 /* Hide all steps by default: */

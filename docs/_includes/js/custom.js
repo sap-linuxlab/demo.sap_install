@@ -38,6 +38,7 @@ function initTabs() {
 function showTab(n) {
   // This function will display the specified tab of the form...
   var x = document.getElementsByClassName("formtab");
+  console.log("Display Tab: " + n);
   x[n].style.display = "block";
   //... and fix the Previous/Next buttons:
   if (n == 0) {
@@ -109,27 +110,27 @@ function validateForm() {
   // make cloud fields visible
   if ( formdata.type == "azure") {
     document.getElementById('azure_cli_id').required = true;
-    document.getElementById('azure_cli_id').className.replace( /(?:^|\s)hideme(?!\S)/ , '' );
+    document.getElementById('azure_cli_id').style.display = "block";
     document.getElementById('azure_cli_secret').required = true;
-    document.getElementById('azure_cli_secret').className.replace( /(?:^|\s)hideme(?!\S)/ , '' );
+    document.getElementById('azure_cli_secret').style.display = "block";
     document.getElementById('azure_tenant').required = true;
-    document.getElementById('azure_tenant').className.replace( /(?:^|\s)hideme(?!\S)/ , '' );
+    document.getElementById('azure_tenant').style.display = "block";
     document.getElementById('azure_subscription').required = true;
-    document.getElementById('azure_subscription').className.replace( /(?:^|\s)hideme(?!\S)/ , '' );
+    document.getElementById('azure_subscription').style.display = "block";
     document.getElementById('azure_location').required = true;
-    document.getElementById('azure_location').className.replace( /(?:^|\s)hideme(?!\S)/ , '' );
+    document.getElementById('azure_location').style.display = "block";
     document.getElementById('azure_resource_group').className.replace( /(?:^|\s)hideme(?!\S)/ , '' );
   } else {
     document.getElementById('azure_cli_id').required = false;
-    document.getElementById('azure_cli_id').className += " hideme";
+    document.getElementById('azure_cli_id').style.display = "block";
     document.getElementById('azure_cli_secret').required = false;
-    document.getElementById('azure_cli_secret').className += " hideme";
+    document.getElementById('azure_cli_secret').style.display = "none";
     document.getElementById('azure_tenant').required = false;
-    document.getElementById('azure_tenant').className += " hideme";
+    document.getElementById('azure_tenant').style.display = "none";
     document.getElementById('azure_subscription').required = false;
-    document.getElementById('azure_subscription').className += " hideme";
-    document.getElementById('azure_location').required = false;
-    document.getElementById('azure_location').className += " hideme";
+    document.getElementById('azure_subscription').style.display = "none";
+    document.getElementById('azure_location').style.display = "none";
+    document.getElementById('azure_location').style.display = "none";
     document.getElementById('azure_resource_group').className += " hideme";
   }
   // if private automation hub is enabled make other variables required
@@ -163,8 +164,8 @@ function submit_AAP() {
     "extra_vars": { formdata },
   };
   // disable cert check
-  const fetch = require('node-fetch');
-  const https = require('https');
+  //const fetch = require('node-fetch');
+  //const https = require('https');
   const httpsAgent = new https.Agent({
     rejectUnauthorized: false,
   });
