@@ -165,7 +165,7 @@ function submit_AAP() {
   };
   // disable cert check
   //const fetch = require('node-fetch');
-  //const https = require('https');
+  const https = require('https');
   const httpsAgent = new https.Agent({
     rejectUnauthorized: false,
   });
