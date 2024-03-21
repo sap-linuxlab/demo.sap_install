@@ -171,7 +171,7 @@ function call_gihub_api() {
   };
 
   xhr.send(JSON.stringify({
-    "ref": "main",
+    "ref": "dev",
     "inputs": formdata
   }));
 }
