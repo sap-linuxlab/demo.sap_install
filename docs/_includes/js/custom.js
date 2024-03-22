@@ -71,8 +71,8 @@ function nextPrev(n) {
     // ... the form gets submitted:
     //document.getElementById("regForm").submit()
     currentTab = 0;
-    submit_AAP();
-    //call_gihub_api();
+    //submit_AAP();
+    call_gihub_api();
   }
   // Otherwise, display the correct tab:
   showTab(currentTab);
@@ -159,9 +159,9 @@ function call_gihub_api() {
   const github_token = formdata.token.toString();
 
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", "https://api.github.com/repos/redhat-sap/demo.sap_install/actions/workflows/dump_data/actions/runs", true);
+  xhr.open("POST", 'https://api.github.com/repos/redhat-sap/demo.sap_install/dispatches', true);
   xhr.setRequestHeader("Authorization", `Bearer ${github_token}`);
-  xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
+  // xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
   xhr.setRequestHeader("Content-Type", "application/json");
 
   xhr.onreadystatechange = function () {
@@ -173,8 +173,8 @@ function call_gihub_api() {
   };
 
   xhr.send(JSON.stringify({
-    "ref": "dev",
-    "inputs": formdata
+    'event_type': 'dump_data',
+    'client_payload': formdata,
   }));
 }
 

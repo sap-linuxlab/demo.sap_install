@@ -8,15 +8,15 @@ jobs:
   dump_data_job:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      # name: Checkout repository
+      #  uses: actions/checkout@v2
 
       - name: Dump Data
         run: |
           # Die übergebenen Parameter aus dem JSON-Payload erhalten
-          rhsm_username=${{ github.event.client_payload.rhsm_username }}
-          rhsm_password=${{ github.event.client_payload.rhsm_password }}
+          nickname=${{ github.event.client_payload.nickname }}
+          email=${{ github.event.client_payload.email }}
 
           # Ergebnis ausgeben
-          echo "Der Nutzer ist ${rhsm_username}/${rhsm_password}"
+          echo "Der Nutzer ${nickname}} hat die email ${email}"
 
