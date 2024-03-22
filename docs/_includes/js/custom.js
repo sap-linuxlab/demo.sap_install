@@ -166,14 +166,17 @@ function call_gihub_api() {
   var xhr = new XMLHttpRequest();
   xhr.open("POST", 'https://api.github.com/repos/redhat-sap/demo.sap_install/dispatches', true);
   xhr.setRequestHeader("Authorization", `Bearer ${github_token}`);
-  // xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
+  xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
   xhr.setRequestHeader("Content-Type", "application/json");
 
   xhr.onreadystatechange = function () {
     console.log('RState: ',xhr.readyState);
     console.log('Status: ', xhr.status);
-    if (xhr.readyState === 4 && xhr.status === 201) {
-      alert("GitHub-Action started succesfully");
+    if (xhr.readyState == 4) {
+      if (xhr.status == 201) {
+        alert("GitHub-Action started succesfully");
+      } else {
+        alert("Warning: GitHub-Action not started succesfully");
     }
   };
 
