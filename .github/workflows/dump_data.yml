@@ -21,8 +21,8 @@ jobs:
             --oauth2-bearer "${{ secrets.AAP_DEPLOY_TOKEN }}" \
             -H 'Content-Type: application/json' \
             -d '{ "extra_vars": {
-              "creator_email": ${{ github.event.client_payload.creator_email }},
-              "type": ${{ github.event.client_payload.type }},
+              "creator_email": "${{ github.event.client_payload.creator_email }}",
+              "type": "${{ github.event.client_payload.type }}",
               "controller_admin_password": "${{ github.event.client_payload.controller_admin_password }}",
               "controller_ah_enable": "${{ github.event.client_payload.controller_ah_enable }}",
               "controller_ansible_private_key": "${{ github.event.client_payload.controller_ansible_private_key }}",
@@ -40,12 +40,12 @@ jobs:
               "dns_key": "${{ github.event.client_payload.dns_key }}",
               "dns_private": "${{ github.event.client_payload.dns_private }}",
               "dns_suffix": "${{ github.event.client_payload.dns_suffix }}",
-              "azure_cli_secret": "${{ github.event.client_payload.azure_cli_secret }}"
+              "azure_cli_secret": "${{ github.event.client_payload.azure_cli_secret }}",
               "azure_cli_id": "${{ github.event.client_payload.azure_cli_id }}",
               "azure_location": "${{ github.event.client_payload.azure_location }}",
               "azure_resource_group": "${{ github.event.client_payload.azure_resource_group }}",
               "azure_subscription": "${{ github.event.client_payload.azure_subscription }}",
               "azure_tenant": "${{ github.event.client_payload.azure_tenant }}",
-              "instance_flavor": "${{ github.event.client_payload.instance_flavor }}",
+              "instance_flavor": "${{ github.event.client_payload.instance_flavor }}"
               }
             }'

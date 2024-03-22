@@ -18,7 +18,6 @@ var formdata = {
   controller_eda_enable: "",
   controller_eda_instance_name: "",
   letsencrypt_skip: "",
-  type: "",
   dns_update: "",
   dns_suffix: "",
   dns_key: "",
@@ -88,7 +87,6 @@ function validateForm() {
   // A loop that checks every input field in the current tab:
   for (i = 0; i < y.length; i++) {
     // If a field is empty...
-    document.getElementById("error").innerHTML += y[i].value + " ";
     if ( y[i].required && y[i].value == "" ) {
       // Print message that the fields are required
       // document.getElementById("error").innerHTML = "Fill in the required fields";
@@ -99,11 +97,22 @@ function validateForm() {
     }
     // add all values to the formdata object to access it, when not displayed any more
     formdata[y[i].id] =  y[i].value;
-    console.log(y[i].id + " " + formdata[y[i].id]);
+    // Checkbox Values
+    if ( y[i].type == 'checkbox' ) {
+      if ( y[i].checked ) {
+        formdata[y[i].id] = 'true';
+      } else {
+        formdata[y[i].id] = 'false';
+      }
+    }
+    // Read in file types
+
+    // Debug output
+    console.log(y[i].id + ": " + formdata[y[i].id]);
   }
   if ( document.getElementById('type') ) {
       formdata['type']=document.getElementById('type').value;
-      console.log("set type: " + formdata['type']);
+      console.log("type: " + formdata['type']);
   }
   // If the valid status is true, mark the step as finished and valid:
   if (valid) {
