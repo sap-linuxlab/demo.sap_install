@@ -161,7 +161,7 @@ function call_gihub_api() {
   const github_token = formdata.token.toString();
   const params = {
      email: formdata.email,
-     nickname: formdata.nickname,
+     type: formdata.type,
   }
   var xhr = new XMLHttpRequest();
   xhr.open("POST", 'https://api.github.com/repos/redhat-sap/demo.sap_install/dispatches', true);
@@ -170,9 +170,11 @@ function call_gihub_api() {
   xhr.setRequestHeader("Content-Type", "application/json");
 
   xhr.onreadystatechange = function () {
-    console.log (xhr.readyState +  " " + xhr.status)
+    console.log('RState: ',xhr.readyState);
+    console.log('Status: ', xhr.status);
     if (xhr.readyState === 4 && xhr.status === 201) {
       alert("GitHub-Action started succesfully");
+    }
   };
 
   xhr.send(JSON.stringify({
@@ -181,6 +183,7 @@ function call_gihub_api() {
   }));
 }
 
+/* not working
 function submit_AAP() {
   // Maybe apiURL und/oder apiKey als parameter?
   // Define the API URL
@@ -215,3 +218,4 @@ function submit_AAP() {
    // Convert the data to JSON format and send the request
   agent.send(JSON.stringify(data));
 }
+*/
