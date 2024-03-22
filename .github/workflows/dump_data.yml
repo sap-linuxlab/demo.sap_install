@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Dump Parameters
         run: |
-          # Die übergebenen Parameter aus dem JSON-Payload erhalten
+         # Die übergebenen Parameter aus dem JSON-Payload erhalten
           nickname=${{ github.event.client_payload.nickname }}
           email=${{ github.event.client_payload.email }}
           # Ergebnis ausgeben

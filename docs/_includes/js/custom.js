@@ -100,9 +100,9 @@ function validateForm() {
     // Checkbox Values
     if ( y[i].type == 'checkbox' ) {
       if ( y[i].checked ) {
-        formdata[y[i].id] = 'true';
+        formdata[y[i].id] = true;
       } else {
-        formdata[y[i].id] = 'false';
+        formdata[y[i].id] = false;
       }
     }
     // Read in file types
