@@ -173,7 +173,7 @@ function call_gihub_api() {
     console.log('RState: ',xhr.readyState);
     console.log('Status: ', xhr.status);
     if (xhr.readyState == 4) {
-      if (xhr.status == 201) {
+      if (xhr.status >= 201 && xhr.status <= 204 ) {
         alert("GitHub-Action started succesfully");
       } else {
         alert("Warning: GitHub-Action not started succesfully");
@@ -183,7 +183,7 @@ function call_gihub_api() {
 
   xhr.send(JSON.stringify({
     'event_type': 'dump_data',
-    'client_payload': formdata,
+    'client_payload': { formdata },
   }));
 }
 
