@@ -5,7 +5,7 @@ nav_order: 6
 has_children: false
 ---
 
-# Deploy Ansible Automation Platform
+## Deploy Ansible Automation Platform
 
 Just fill out the following form to install your instance of Red Hat Ansible Automation platform
 
