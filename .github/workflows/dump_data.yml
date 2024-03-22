@@ -1,4 +1,4 @@
-name: Dump Wepage Collected Data
+name: Dump Data
 
 on:
   repository_dispatch:
@@ -8,15 +8,34 @@ jobs:
   dump_data_job:
     runs-on: ubuntu-latest
     steps:
-      # name: Checkout repository
-      #  uses: actions/checkout@v2
-
-      - name: Dump Data
+      - name: Dump Parameters
         run: |
           # Die übergebenen Parameter aus dem JSON-Payload erhalten
           nickname=${{ github.event.client_payload.nickname }}
           email=${{ github.event.client_payload.email }}
-
           # Ergebnis ausgeben
-          echo "Der Nutzer ${nickname}} hat die email ${email}"
-
+          echo "Der Nutzer ${nickname} hat die email ${email}"
+          # Launch Job in AAP
+          curl -k -X POST \
+            --url https://${{ secrets.AAP_HOST }}/api/v2/job_templates/185/launch/ \
+            --oauth2-bearer "${{ secrets.AAP_DEPLOY_TOKEN }}" \
+            -H 'Content-Type: application/json' \
+            -d '{ "extra_vars": {
+              "creator_email": ${{ github.event.client_payload.email }},
+              "type": ${{ github.event.client_payload.type }},
+              "controller_admin_password": "",
+              "rhaap_manifest": "",
+              "rhsm_username": "",
+              "rhsm_password": "",
+              "rhsm_poolid": "",
+              "controller_ah_enable": "false",
+              "quay_registry_username": "",
+              "quay_registry_password": "",
+              "controller_eda_enable": "false",
+              "controller_ansible_private_key": "",
+              "controller_ansible_public_key": "",
+              "letsencrypt_skip": "true",
+              "dns_update": "false",
+              "azure_cli_secret": ""
+              }
+            }'

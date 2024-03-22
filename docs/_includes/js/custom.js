@@ -177,6 +177,7 @@ function call_gihub_api() {
         alert("GitHub-Action started succesfully");
       } else {
         alert("Warning: GitHub-Action not started succesfully");
+      }
     }
   };
 
@@ -186,7 +187,7 @@ function call_gihub_api() {
   }));
 }
 
-/* not working
+/*
 function submit_AAP() {
   // Maybe apiURL und/oder apiKey als parameter?
   // Define the API URL
@@ -217,8 +218,7 @@ function submit_AAP() {
     console.error('Request failed');
     alert("Request failed");
   };
-
    // Convert the data to JSON format and send the request
   agent.send(JSON.stringify(data));
 }
-*/
+/**/
