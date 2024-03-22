@@ -179,7 +179,7 @@ function call_gihub_api() {
 
   xhr.send(JSON.stringify({
     'event_type': 'dump_data',
-    'client_payload': formdata,
+    'client_payload': params,
   }));
 }
 
