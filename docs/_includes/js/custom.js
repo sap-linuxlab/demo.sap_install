@@ -170,11 +170,9 @@ function call_gihub_api() {
   xhr.setRequestHeader("Content-Type", "application/json");
 
   xhr.onreadystatechange = function () {
+    console.log (xhr.readyState +  " " + xhr.status)
     if (xhr.readyState === 4 && xhr.status === 201) {
       alert("GitHub-Action started succesfully");
-    } else {
-      alert("Calling GitHub Action failed");
-    }
   };
 
   xhr.send(JSON.stringify({
