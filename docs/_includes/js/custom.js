@@ -71,8 +71,8 @@ function nextPrev(n) {
     // ... the form gets submitted:
     //document.getElementById("regForm").submit()
     currentTab = 0;
-    //submit_AAP();
-    call_gihub_api();
+    submit_AAP();
+    //call_gihub_api();
   }
   // Otherwise, display the correct tab:
   showTab(currentTab);
@@ -166,7 +166,9 @@ function call_gihub_api() {
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 201) {
-      alert("GitHub-Action wurde erfolgreich ausgelöst!");
+      alert("GitHub-Action started succesfully");
+    } else {
+      alert("Calling GitHub Action failed");
     }
   };
 
@@ -186,10 +188,11 @@ function submit_AAP() {
     "extra_vars": { formdata },
   };
 
-  const agent = new (window).XMLHttpRequest();
+  const agent = new XMLHttpRequest();
   agent.open('POST', apiUrl, true);
   agent.setRequestHeader("Authorization", `Bearer ${apiKey}`);
   agent.setRequestHeader('Content-Type', 'application/json');
+  agent.setRequestHeader('Access-Control-Allow-Origin','http://redhat-sap.github.io')
 
   // Define what happens on successful data submission
   agent.onload = function() {
