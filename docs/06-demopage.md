@@ -17,7 +17,7 @@ Just fill out the following form to install your instance of Red Hat Ansible Aut
     <p><input type="text"  placeholder="Access Token&ast;" oninput="this.className = ''" name="token" id="token" required> </p>
     <h3>Name:</h3>
     <p><input type="text"  placeholder="Nickname*" oninput="this.className = ''" name="nickname" id="nickname" required> </p>
-    <p><input type="email" placeholder="Email*" oninput="this.className = ''" name="email" id="email" required></p>
+    <p><input type="creator_email" placeholder="Email*" oninput="this.className = ''" name="creator_email" id="creator_email" required></p>
     <h3>Cloud Provider*:</h3>
     <p><select name="type" id="type" oninput="this.className = ''" >
       <option value="azure">Microsoft Azure</option>

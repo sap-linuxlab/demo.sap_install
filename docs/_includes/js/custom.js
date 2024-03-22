@@ -2,7 +2,7 @@ var currentTab = 0; // Current tab is set to be the first tab (0)
 var formdata = {
   token: "",
   nickname: "",
-  email: "",
+  creator_email: "",
   controller_instance_name: "",
   controller_admin_password: "",
   rhaap_manifest: "",
@@ -160,7 +160,7 @@ function fixStepIndicator(n) {
 function call_gihub_api() {
   const github_token = formdata.token.toString();
   const params = {
-     email: formdata.email,
+     creator_email: formdata.creator_email,
      type: formdata.type,
   }
   var xhr = new XMLHttpRequest();
@@ -183,7 +183,7 @@ function call_gihub_api() {
 
   xhr.send(JSON.stringify({
     'event_type': 'dump_data',
-    'client_payload': params,
+    'client_payload': formdata,
   }));
 }
 
