@@ -1,6 +1,8 @@
 var currentTab = 0; // Current tab is set to be the first tab (0)
 var formdata = {
   token: "",
+  nickname: "",
+  email: "",
   controller_instance_name: "",
   controller_admin_password: "",
   rhaap_manifest: "",
@@ -157,7 +159,10 @@ function fixStepIndicator(n) {
 
 function call_gihub_api() {
   const github_token = formdata.token.toString();
-
+  const params = {
+     email: formdata.email,
+     nickname: formdata.nickname,
+  }
   var xhr = new XMLHttpRequest();
   xhr.open("POST", 'https://api.github.com/repos/redhat-sap/demo.sap_install/dispatches', true);
   xhr.setRequestHeader("Authorization", `Bearer ${github_token}`);
