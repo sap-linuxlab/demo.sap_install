@@ -177,7 +177,7 @@ function call_gihub_api() {
   xhr.setRequestHeader("Authorization", `Bearer ${github_token}`);
   xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
   xhr.setRequestHeader("Content-Type", "application/json");
-
+: 
   xhr.onreadystatechange = function () {
     console.log('RState: ',xhr.readyState);
     console.log('Status: ', xhr.status);
@@ -193,8 +193,10 @@ function call_gihub_api() {
   xhr.send(JSON.stringify({
     'event_type': 'dump_data',
     'client_payload': {
-       'email': formdata.email ,
+       'creator_email': formdata.creator_email ,
        'type': formdata.type,
+       'controller_ah_enable': formdata.controller_ah_enable,
+       'controller_eda_enable': formdata.controller_eda_enable,
     }
   }));
 }

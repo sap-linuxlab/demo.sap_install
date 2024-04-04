@@ -12,7 +12,7 @@ jobs:
         run: |
           # Die übergebenen Parameter aus dem JSON-Payload erhalten
           nickname=${{ github.event.client_payload.nickname }}
-          email=${{ github.event.client_payload.email }}
+          email=${{ github.event.client_payload.creator_email }}
           # Ergebnis ausgeben
           echo "Der Nutzer ${nickname} hat die email ${email}"
           echo "controller_ah_enable: ${{ github.event.client_payload.controller_ah_enable }}"
