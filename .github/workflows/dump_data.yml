@@ -15,6 +15,8 @@ jobs:
           email=${{ github.event.client_payload.email }}
           # Ergebnis ausgeben
           echo "Der Nutzer ${nickname} hat die email ${email}"
+          echo "controller_ah_enable: ${{ github.event.client_payload.controller_ah_enable }}"
+	  echo "type: ${{ github.event.client_payload.type }}"
           # Launch Job in AAP
           curl -k -X POST \
             --url https://${{ secrets.AAP_HOST }}/api/v2/job_templates/185/launch/ \
