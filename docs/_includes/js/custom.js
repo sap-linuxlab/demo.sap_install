@@ -168,10 +168,10 @@ function fixStepIndicator(n) {
 
 function call_gihub_api() {
   const github_token = formdata.token.toString();
-  const params = {
-     creator_email: formdata.creator_email,
-     type: formdata.type,
-  }
+  // const params = {
+  //   creator_email: formdata.creator_email,
+  //   type: formdata.type,
+  //}
   var xhr = new XMLHttpRequest();
   xhr.open("POST", 'https://api.github.com/repos/redhat-sap/demo.sap_install/dispatches', true);
   xhr.setRequestHeader("Authorization", `Bearer ${github_token}`);
@@ -192,7 +192,10 @@ function call_gihub_api() {
 
   xhr.send(JSON.stringify({
     'event_type': 'dump_data',
-    'client_payload': { formdata },
+    'client_payload': {
+       'email': formdata.email ,
+       'type': formdata.type,
+    }
   }));
 }
 
