@@ -21,13 +21,13 @@ dependencies:
         - name: fedora.linux_system_roles
         - name: community.general
         - name: ansible.posix
- 	- name: git+https://github.com/sap-linuxlab/community.sap_install.git,dev
+        - name: git+https://github.com/sap-linuxlab/community.sap_install.git,dev
           type: git
- 	- name: git+https://github.com/sap-linuxlab/community.sap_libs.git,dev
+        - name: git+https://github.com/sap-linuxlab/community.sap_libs.git,dev
           type: git
- 	- name: git+https://github.com/sap-linuxlab/community.sap_operations.git,dev
+        - name: git+https://github.com/sap-linuxlab/community.sap_operations.git,dev
           type: git
- 	- name: git+https://github.com/sap-linuxlab/community.sap_launchpad.git,dev
+        - name: git+https://github.com/sap-linuxlab/community.sap_launchpad.git,dev
           type: git
   python: requirements.txt
   # system: bindep.txt
