@@ -1,0 +1,42 @@
+version: 3
+
+images:
+  base_image:
+    name: quay.io/ansible/awx-ee:latest
+
+dependencies:
+  galaxy:
+    roles:
+        - src: mk-ansible-roles.check_reboot
+        - src: mk-ansible-roles.subscribe_rhn
+        - src: mk-ansible-roles.setup_nfs_server
+    collections:
+        - name: azure.azcollection
+        - name: google.cloud
+        - name: vmware.vmware_rest
+        - name: community.vmware
+          version: 3.9.0
+        - name: openstack.cloud
+          version: 1.8.0
+        - name: fedora.linux_system_roles
+        - name: community.general
+        - name: ansible.posix
+ 	- name: git+https://github.com/sap-linuxlab/community.sap_install.git,dev
+          type: git
+ 	- name: git+https://github.com/sap-linuxlab/community.sap_libs.git,dev
+          type: git
+ 	- name: git+https://github.com/sap-linuxlab/community.sap_operations.git,dev
+          type: git
+ 	- name: git+https://github.com/sap-linuxlab/community.sap_launchpad.git,dev
+          type: git
+  python: requirements.txt
+  # system: bindep.txt
+  
+options:
+  package_manager_path: /usr/bin/dnf
+
+additional_build_steps:
+  prepend_base:
+    - RUN dnf update -y
+  append_final:
+    - RUN dnf clean all
