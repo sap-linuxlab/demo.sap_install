@@ -72,8 +72,8 @@ function nextPrev(n) {
     // ... the form gets submitted:
     //document.getElementById("regForm").submit()
     currentTab = 0;
-    //submit_AAP();
-    call_gihub_api();
+    submit_AAP();
+    //call_gihub_api();
   }
   // Otherwise, display the correct tab:
   showTab(currentTab);
@@ -201,7 +201,6 @@ function call_gihub_api() {
   }));
 }
 
-/*
 function submit_AAP() {
   // Maybe apiURL und/oder apiKey als parameter?
   // Define the API URL
@@ -235,4 +234,3 @@ function submit_AAP() {
    // Convert the data to JSON format and send the request
   agent.send(JSON.stringify(data));
 }
-/**/
