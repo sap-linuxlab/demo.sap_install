@@ -40,11 +40,37 @@ s4fndn2023:
   - S4FND108_INST_EXPORT_7.zip
   - S4FND108_INST_EXPORT_8.zip
   - S4FND108_INST_EXPORT_9.zip
-  - R3trans_81-70007807.SAR
+  - 
+ERROR. More than 1 result, manual intervention required....
+Identified ENSA2_110-70007807.SAR : Standalone Enqueue Server 2, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified R3trans_112-70007807.SAR : R3TRANS, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SAPEXE_10-70007807.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SAPEXE_100-70007807.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SAPEXE_11-70007807.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SAPEXE_13-70007807.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SAPEXE_15-70007807.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SAPEXE_4-70007807.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SAPEXE_50-70007807.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SAPEXE_51-70007807.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SAPEXE_6-70007807.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SAPEXE_60-70007807.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SAPSLDREG_85-70007807.SAR : SAPSLDREG, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified SNMPLIB_0-70007807.SAR : snmplib, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified ccmagent_60-70007807.sar : CCMAGENT, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified dw_112-70007807.sar : disp+work package, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified dw_utils_110-70007807.sar : Kernel utilities, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified sapftp_110-70007807.sar : SAPFTP, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified saphttp_85-70007807.sar : SAPHTTP, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified sapkprotp_85-70007807.sar : SAPKPROTP, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified saplicense_68-70007807.sar : SAPLICENSE, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified sapmc_68-70007807.sar : SAPMC, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified sapnwrfc_78-70007807.sar : sapnwrfc, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified sapwebgui_60-70007807.sar : SAP GUI for HTML patch, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
+Identified tp_111-70007807.sar : TP, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on x86_64 64bit #Database independent
   - S4FND108_NW_LANG_DE.SAR
   - S4FND108_NW_LANG_EN.SAR
 swpm:
-  - SWPM20SP17_2-80003424.SAR
-  - SUM20SP19_5-80002456.SAR
+  - SWPM20SP18_2-80003424.SAR
+  - SUM20SP20_3-80002456.SAR
 sapcar:
   - SAPCAR_1115-70006178.EXE
