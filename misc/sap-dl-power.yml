@@ -39,25 +39,7 @@ s4fndn2023:
   - S4FND108_INST_EXPORT_7.zip
   - S4FND108_INST_EXPORT_8.zip
   - S4FND108_INST_EXPORT_9.zip
-  - 
-ERROR. More than 1 result, manual intervention required....
-Identified ENSA2_110-70007832.SAR : Standalone Enqueue Server 2, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified R3trans_112-70007832.SAR : R3TRANS, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified SAPEXE_100-70007832.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified SAPEXE_51-70007832.SAR : Kernel Part I (793), Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified SAPSLDREG_85-70007832.SAR : SAPSLDREG, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified SNMPLIB_0-70007832.SAR : snmplib, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified ccmagent_60-70007832.sar : CCMAGENT, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified dw_112-70007832.sar : disp+work package, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified dw_utils_110-70007832.sar : Kernel utilities, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified sapftp_110-70007832.sar : SAPFTP, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified saphttp_85-70007832.sar : SAPHTTP, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified sapkprotp_85-70007832.sar : SAPKPROTP, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified saplicense_68-70007832.sar : SAPLICENSE, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified sapmc_68-70007832.sar : SAPMC, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified sapnwrfc_78-70007832.sar : sapnwrfc, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified sapwebgui_60-70007832.sar : SAP GUI for HTML patch, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
-Identified tp_111-70007832.sar : TP, Support Package SAP KERNEL 7.93 64-BIT UNICODE Linux on Power LE 64bit #Database independent
+  - R3trans_112-70007832.SAR
   - S4FND108_NW_LANG_DE.SAR
   - S4FND108_NW_LANG_EN.SAR
 swpm:
