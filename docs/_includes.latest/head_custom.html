@@ -1,0 +1,33 @@
+<script defer>
+/* The form should be initialized after everything is rendered.
+   -> script defer is used to run this after the whole text is loaded
+   -> the functions wait until it is rendered
+   Thanks to
+   https://stackoverflow.com/questions/8611713/running-javascript-after-page-is-fully-rendered
+*/
+function initTab() {
+    /*
+      The short pause allows any required callback functions
+      to execute before actually highlighting, and allows
+      the JQuery $(document).ready wrapper to finish.
+     */
+    setTimeout(function() {
+        showTab(currentTab);
+    }, 200);
+}
+
+/*
+  Only trigger the highlighter after document fully loaded.  This is
+  necessary for cases where page load takes a significant length
+  of time to fully load.
+*/
+if (document.readyState == 'complete') {
+    initTab();
+} else {
+    document.onreadystatechange = function () {
+        if (document.readyState === "complete") {
+            initTab();
+        }
+    }
+}
+</script>

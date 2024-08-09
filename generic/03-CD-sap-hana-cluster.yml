@@ -1,7 +1,7 @@
 ---
 # call playbook with # ansible-playbook example_in_one_file.yml
 - name: "Phase 03-C and 03-D -Setup HANA System Replication"
-  hosts: hanas
+  hosts: "{{ group_hana | d('hanas') }}"
   become: true
 
 #  vars:

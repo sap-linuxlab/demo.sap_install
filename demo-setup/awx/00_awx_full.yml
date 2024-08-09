@@ -1,0 +1,38 @@
+---
+- name: Configure AWX
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    # secrets.yml
+    - testenv/vars.yml
+
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ awxsetup.kubeconfig }}"
+    CONTROLLER_USERNAME: admin
+    CONTROLLER_HOST: "http://{{ awxsetup.name }}.{{ awxsetup.baseurl }}"
+    CONTROLLER_VERIFY_SSL: false 
+
+  tasks:
+# - name: Roll out AWX on Kubernetes
+#   include_tasks: 01_awx_kube.yml
+
+#  - name: Create Route 
+#    include_tasks: 01a_awx_kube_route.yml
+
+# - name: Create Ingress
+#   include_tasks: 01a_awx_kube_ingress.yml
+
+# - name: Configure AWX
+#   include_tasks: 02_awx_config.yml
+
+# - name: delete Demo 
+#   include_tasks: 03_awx_delete_default.yml
+
+  - name: wait for AWX Deployment
+    include_tasks: 02a_wait_for_awx.yml
+
+  - name: AWX-Password
+    debug: 
+      msg: "Password: {{ awxadmin.resources[0].data.password | b64decode }}"

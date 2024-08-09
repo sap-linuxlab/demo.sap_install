@@ -1,0 +1,16 @@
+awxsetup:
+  name: k3s
+  baseurl: example.com
+  kubeconfig: ~/.kube/config
+  namespace: awx
+
+org:
+  name: "Org 1"
+  desc: "My Organization"
+
+ee:
+  sap_ee_dev:
+    image: "quay.io/mkoch-redhat/sap-ee:dev"
+
+  sap_ee_latest:
+    image: "quay.io/mkoch-redhat/sap-ee:latest"

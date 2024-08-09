@@ -1,0 +1,69 @@
+---
+- name: Collect all input variables and configure local AAP
+  hosts: localhost
+  gather_facts: false
+   
+  vars:
+    demo_setup_org: "RHPDS Setup"
+
+  tasks:
+    - name: Generate unique ID
+      ansible.builtin.set_fact:
+        guid: "{{ lookup('community.general.random_string', length=5, upper=false, special=false) }}"
+      when: guid is undefined
+
+    - name: Display created GUID
+      ansible.builtin.debug:
+        var: guid
+        verbosity: 2
+
+    - name: Create unique variables
+      ansible.builtin.set_fact:
+        controller_instance_name: "ctrl-{{ guid }}"
+        controller_ah_instance_name: "hub-{{ guid }}"
+        controller_eda_instance_name: "eda-{{ guid }}"
+        demo_org: "{{ demo_setup_org }}"
+
+    - name: Debug all output variables
+      debug:
+        var: hostvars[inventory_hostname]
+
+    - name: Variables for Demo Setup credential
+      ansible.builtin.debug:
+        msg:
+          - "controller_instance_name: {{ controller_instance_name }}"
+          - "controller_admin_password: {{ controller_admin_password }}"
+          - "rhaap_manifest: {{ rhaap_manifest }}"
+          - "rhsm_username: {{ rhsm_username }}"
+          - "rhsm_password: {{ rhsm_password }}"
+          - "rhsm_poolid: {{ rhsm_poolid }}"
+          - "controller_ah_enable: {{ controller_ah_enable }}"
+          - "controller_ah_instance_name: {{ controller_ah_instance_name }}"
+          - "automation_hub_server_url: {{ automation_hub_server_url }}"
+          - "quay_registry_username: {{ quay_registry_username }}"
+          - "quay_registry_password: {{ quay_registry_password }}"
+          - "rhsm_ah_offline_token: {{ rhsm_ah_offline_token }}"
+          - "controller_eda_enable: {{ controller_eda_enable }}"
+          - "controller_eda_instance_name: {{ controller_eda_instance_name }}"
+          - "letsencrypt_skip: {{ letsencrypt_skip }}"
+          - "type: {{ type }}"
+          - "dns_update: {{ dns_update }}"
+          - "dns_suffix: {{ dns_suffix }}"
+          - "dns_key: {{ dns_key }}"
+          - "dns_private: {{ dns_private }}"
+
+    - name: Debug SSH Key/Machine Credentials
+      ansible.builtin.debug:
+        msg:
+          - "controller_ansible_private_key: {{ controller_ansible_private_key }}"
+          - "controller_ansible_public_key: {{ controller_ansible_public_key }}"
+          
+    - name: debug Azure Cloud credentials
+      ansible.builtin.debug:
+        msg:
+          - 'type: {{ type }}'
+          - "azure_location: {{ azure_location  }}"
+          - "instance_flavor: {{ instance_flavor  }}"
+          - "azure_resource_group: {{ azure_resource_group  }}"
+          - "azure_private_network: {{ azure_private_network | default(azure_resource_group+'_net') }}"
+          - "azure_ssh_public_key: {{ controller_ansible_public_key }}"

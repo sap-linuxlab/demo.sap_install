@@ -23,7 +23,7 @@
 # - or set the foillowing environment vars:
 #    AZURE_SUBSCRIPTION_ID: subscription_id
 #    AZURE_CLIENT_ID:       client_id
-#    AZURE_SECRET:          secret 
+#    AZURE_SECRET:          secret
 #    AZURE_TENANT:          tenant
 #
 # Global variables:
@@ -32,34 +32,34 @@
 #
 #   see az_create_vm for details on possible variables
 
-- name: phase 1 -- Server Provisioning
+- name: Phase 1 -- Server Provisioning
   hosts: localhost
   gather_facts: false
 
-  collections:
-    - azure.azcollection
+  vars:
+    check_python_prereqs: false
 
   tasks:
-  - name: Output creation dictionary configuration
-    debug:
-      msg:
-        - "Name: {{ item.name }}"
-        - "Size: {{ item.size }}"
-        - "Disk_GB: {{ item.disk_gb | default('Undefined - using default') }}"
-        - "Group: {{ item.group }}"
-    loop: "{{ server_def }}"
+    - name: Output creation dictionary configuration
+      ansible.builtin.debug:
+        msg:
+          - "Name: {{ item.name }}"
+          - "Size: {{ item.size }}"
+          - "Disk_GB: {{ item.disk_gb | default('Undefined - using default') }}"
+          - "Group: {{ item.group }}"
+      loop: "{{ server_def }}"
 
-  - name: ensure python requirements for azure.azcollection are installed
-    include_role:
-      name: az_python_reqs
+    - name: Ensure python requirements for azure.azcollection are installed
+      when: check_python_prereqs
+      ansible.builtin.include_role:
+        name: az_python_reqs
 
-  - name: Create Azure VM
-    include_role:
-      name: az_vm_create
-    vars:
-      az_vm_create_vm_name: "{{ item.name }}"
-      az_vm_create_disk_size: "{{ item.disk_gb | default(150) }}" 
-      az_vm_create_group: "{{ item.group }}"
-      az_vm_create_vm_size: "{{ item.size }}"
-    loop: "{{ server_def }}"
-  
+    - name: Create Azure VM
+      ansible.builtin.include_role:
+        name: az_vm_create
+      vars:
+        az_vm_create_vm_name: "{{ item.name }}"
+        az_vm_create_disk_size: "{{ item.disk_gb | default(150) }}"
+        az_vm_create_group: "{{ item.group }}"
+        az_vm_create_vm_size: "{{ item.size }}"
+      loop: "{{ server_def }}"

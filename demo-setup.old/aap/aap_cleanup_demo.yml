@@ -1,0 +1,72 @@
+---
+- name: Remove Deployment from local AAP
+  hosts: localhost
+  gather_facts: false
+   
+  vars:
+    demo_setup_org: "RHPDS Setup"
+    demo_org: "RHPDS Setup"
+
+  tasks:
+    - name: Assert that variable guid is defined
+      ansible.builtin.assert:
+        that:
+          - guid is defined
+          - guid | length > 0
+      
+    - name: Display created guid
+      ansible.builtin.debug:
+        var: guid
+        verbosity: 2
+
+    - name: Ensure Job templates are absent
+      awx.awx.job_template:
+        name: "{{ guid }} {{ item }}"
+        organization: "{{ demo_org }}"
+        state: absent
+      loop:
+        - sub01-infra-create
+        - sub03-full-create
+      
+    - name: Ensure SSH KeyPair is removed
+      awx.awx.credential:
+        name: '{{ guid }} SSH Keypair'
+        credential_type: "Ansible SSA ssh keypair"
+        organization: "{{ demo_org }}"
+        state: absent
+
+    - name: Ensure Machine credential is removed
+      awx.awx.credential:
+        name: "{{ guid }} Machine Credential"
+        organization: "{{ demo_org }}"
+        credential_type: Machine
+        state: absent
+        
+    - name: Ensure  Ansible SSA Demo Credential is removed
+      awx.awx.credential:
+        name: '{{ guid }} Demo Setup Credential'
+        organization: "{{ demo_org }}"
+        credential_type: Ansible SSA demo setup
+        state: absent
+          
+    - name: Ensure Controller Credential is absent
+      awx.awx.credential:
+        name: "{{ guid }} Controller"
+        organization: "{{ demo_org }}"
+        credential_type: Red Hat Ansible Automation Platform
+        state: absent
+
+    - name: Ensure Ansible SSA project is absent
+      awx.awx.project:
+        name: "{{ guid }} Ansible SSA Demo Project"
+        organization: "{{ demo_org }}"
+        state: absent
+        
+    - name: Ensure demo inventory is absent
+      awx.awx.inventory:
+        name: "{{ guid }} Ansible SSA Demo" 
+        organization: "{{ demo_org }}"
+        state: absent
+
+    - name: Ensure Cloud specific credentials and Inventory is absent
+      ansible.builtin.import_tasks: cloud_credential_{{ type }}_remove.yml

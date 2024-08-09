@@ -1,0 +1,53 @@
+name: Dump Data
+
+on:
+  repository_dispatch:
+    types: [dump_data]
+
+jobs:
+  dump_data_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump Parameters
+        run: |
+          # Die übergebenen Parameter aus dem JSON-Payload erhalten
+          nickname=${{ github.event.client_payload.nickname }}
+          email=${{ github.event.client_payload.creator_email }}
+          # Ergebnis ausgeben
+          echo "Der Nutzer ${nickname} hat die email ${email}"
+          echo "controller_ah_enable: ${{ github.event.client_payload.controller_ah_enable }}"
+          echo "type: ${{ github.event.client_payload.type }}"
+          # Launch Job in AAP
+          curl -k -X POST \
+            --url https://${{ secrets.AAP_HOST }}/api/v2/job_templates/185/launch/ \
+            --oauth2-bearer "${{ secrets.AAP_DEPLOY_TOKEN }}" \
+            -H 'Content-Type: application/json' \
+            -d '{ "extra_vars": {
+              "creator_email": "${{ github.event.client_payload.creator_email }}",
+              "type": "${{ github.event.client_payload.type }}",
+              "controller_admin_password": "${{ github.event.client_payload.controller_admin_password }}",
+              "controller_ah_enable": "${{ github.event.client_payload.controller_ah_enable }}",
+              "controller_ansible_private_key": "${{ github.event.client_payload.controller_ansible_private_key }}",
+              "controller_ansible_public_key": "${{ github.event.client_payload.controller_ansible_public_key }}",
+              "controller_eda_enable": "${{ github.event.client_payload.controller_eda_enable }}",
+              "rhaap_manifest": "${{ github.event.client_payload.rhaap_manifest }}",
+              "rhsm_username": "${{ github.event.client_payload.rhsm_username }}",
+              "rhsm_password": "${{ github.event.client_payload.rhsm_password }}",
+              "rhsm_poolid": "${{ github.event.client_payload.rhsm_poolid }}",
+              "rhsm_ah_offline_token": "${{ github.event.client_payload.rhsm_ah_offline_token }}",
+              "quay_registry_username": "${{ github.event.client_payload.quay_registry_username }}",
+              "quay_registry_password": "${{ github.event.client_payload.quay_registry_password }}",
+              "letsencrypt_skip": "${{ github.event.client_payload.letsencrypt_skip }}",
+              "dns_update": "${{ github.event.client_payload.dns_update }}",
+              "dns_key": "${{ github.event.client_payload.dns_key }}",
+              "dns_private": "${{ github.event.client_payload.dns_private }}",
+              "dns_suffix": "${{ github.event.client_payload.dns_suffix }}",
+              "azure_cli_secret": "${{ github.event.client_payload.azure_cli_secret }}",
+              "azure_cli_id": "${{ github.event.client_payload.azure_cli_id }}",
+              "azure_location": "${{ github.event.client_payload.azure_location }}",
+              "azure_resource_group": "${{ github.event.client_payload.azure_resource_group }}",
+              "azure_subscription": "${{ github.event.client_payload.azure_subscription }}",
+              "azure_tenant": "${{ github.event.client_payload.azure_tenant }}",
+              "instance_flavor": "${{ github.event.client_payload.instance_flavor }}"
+              }
+            }'

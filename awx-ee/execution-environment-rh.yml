@@ -1,0 +1,52 @@
+version: 3
+
+build_arg_defaults:
+  ANSIBLE_GALAXY_CLI_COLLECTION_OPTS: '--ignore-certs'
+
+images:
+  base_image:
+    name: registry.redhat.io/ansible-automation-platform-24/ee-minimal-rhel9:latest
+
+dependencies:
+  galaxy:
+    roles:
+        - src: mk-ansible-roles.check_reboot
+        - src: mk-ansible-roles.setup_nfs_server
+    collections:
+        - name: azure.azcollection
+        - name: google.cloud
+        - name: vmware.vmware_rest
+        - name: community.vmware
+          version: 3.9.0
+        - name: openstack.cloud
+          version: 1.8.0
+        - name: fedora.linux_system_roles
+        - name: community.general
+        - name: ansible.posix
+        - name: community.sap_libs
+        - name: community.sap_operations
+        - name: community.sap_install
+        - name: community.sap_launchpad
+        - name: redhat.rhel_system_roles
+        - name: redhat.sap_install
+        - name: sap.sap_operations
+  python: requirements.txt
+  #system: bindep.txt
+
+options:
+  package_manager_path: /usr/bin/microdnf
+
+additional_build_files:
+  # copy arbitary files next to this EE Definition into the build context - we can refer to them later
+  # temporary build files are stored in directory _build
+  - src: files
+    dest: configs
+
+additional_build_steps:
+  #prepend_base:
+  #  - COPY _build/configs/cert.pem /etc/pki/ca-trust/source/anchors/
+  #  - RUN update-ca-trust
+  prepend_galaxy:
+    - COPY _build/configs/ansible.cfg /etc/ansible/ansible.cfg
+    - ARG ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_REPO_TOKEN
+      #- ARG ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_REPO_TOKEN

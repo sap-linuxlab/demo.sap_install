@@ -1,4 +1,4 @@
 #!/bin/bash
 
 podman run -it --env-file ./testenv.docker --name sapdemosetup \
-  --hostname sds quay.io/mkoch-redhat/sapdemosetup:latest
+	--hostname sds quay.io/mkoch-redhat/sapdemosetup:latest

@@ -1,0 +1,117 @@
+- name: Wait for the AWX Api to be accessible
+  ansible.builtin.uri:
+    url: "http://{{ awxsetup.name }}.{{ awxsetup.baseurl }}/api/v2/ping"
+  register: result
+  until: "result.status == 200"
+  retries: 30
+  delay: 10
+
+- name: Pause 30 Seconds to settle API # <- Even if API becomes accessible, it will not work right away. Wait needed
+  ansible.builtin.pause:
+    seconds: 30
+
+- name: Get Admin PW
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ awxsetup.name }}-admin-password"
+    namespace: "{{ awxsetup.namespace }}"
+  register: awxadmin
+  # Password will be in: {{ awxadmin.resources[0].data.password | b64decode }}
+
+- name: Upload Config to AWX
+  block:   # <- Run as block, to add AWX Passwd into temporary environment
+  - name: Create Organization
+    awx.awx.organization:
+      name: "{{ org.name }}"
+      description: "{{ org.desc }}"
+      galaxy_credentials:  # <- Default Galaxy Credential mandatory, otherwise EE requirements will not be pulled
+        - Ansible Galaxy
+      state: present
+
+  - name: Set SCM Credential
+    awx.awx.credential:
+      name: "{{ credential.scm.name }}"
+      organization: "{{ org.name }}"
+      state: present
+      credential_type: Source Control
+      inputs:
+        username: "{{ credential.scm.user }}"
+        password: "{{ credential.scm.pwd }}"
+
+  - name: Set Machine Credential
+    awx.awx.credential:
+      name: "{{ credential.machine.name }}"
+      organization: "{{ org.name }}"
+      state: present
+      credential_type: Machine
+      inputs:
+        username: "{{ credential.machine.login }}"
+        ssh_key_data: "{{ lookup('file', '~/.ssh/id_rsa') }}" # <- Change for different SSH Key location
+
+  - name: Set Registry Credential
+    awx.awx.credential:
+      name: "{{ credential.ee.name }}"
+      organization: "{{ org.name }}"
+      state: present
+      credential_type: Container Registry
+      inputs:
+        host: "{{ credential.ee.host }}"
+        username: "{{ credential.ee.user }}"
+        password: "{{ credential.ee.pwd }}"
+
+  - name: Set EEs
+    awx.awx.execution_environment:
+      name: "{{ item.key }}"
+      organization: "{{ org.name }}"
+      state: present
+      credential: "{{ credential.ee.name }}"
+      image: "{{ item.value.image }}"
+    with_dict: "{{ ee }}"
+
+  - name: Add Inventory
+    awx.awx.inventory:
+      name: "{{ inventory.name }}"
+      description: "{{ inventory.description }}"
+      organization: "{{ org.name }}"
+      state: present
+
+  - name: Create Inventory Hosts
+    awx.awx.host:
+      name: "{{ item.key }}"
+      description: "{{ item.value.description }}"
+      inventory: "{{ inventory.name }}"
+      state: "present"
+      enabled: true
+      variables:
+        ansible_host: "{{ item.value.ip }}"
+        ansible_port: "{{ item.value.port | default('22') }}"
+    with_dict: "{{ inventory_host }}"
+
+  - name: Add Project with cache timeout
+    awx.awx.project:
+      name: "{{ project.name }}"
+      description: "{{ project.desc }}"
+      organization: "{{ org.name }}"
+      scm_url: "{{ project.scm }}"
+      scm_type: "git"
+      scm_credential: "{{ credential.scm.name }}"
+      scm_update_on_launch: true
+      scm_update_cache_timeout: 60
+      state: present
+
+  - name: Create job templates
+    awx.awx.job_template:
+      name: "{{ item.value.name }}"
+      credential: "{{ item.value.credential }}"
+      execution_environment: "{{ item.value.ee }}"
+      job_type: "{{ item.value.type }}"
+      organization: "{{ org.name }}"
+      inventory: "{{ item.value.inv }}"
+      project: "{{ project.name }}"
+      playbook: "{{ item.value.pb }}"
+      extra_vars: "{{ item.value.exv }}"
+      state: "present"
+    with_dict: "{{ jobtmpl }}"
+  environment:
+    CONTROLLER_PASSWORD: "{{ awxadmin.resources[0].data.password | b64decode }}"

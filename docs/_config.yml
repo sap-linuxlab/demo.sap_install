@@ -1,17 +1,20 @@
 
 title: SAP Install
 description: How to Use Ansible Collection `community.sap_install`
-url: "http://sap-linuxlab.github.io/demo.sap_install"
+#url: "http://sap-linuxlab.github.io/demo.sap_install"
+url: "http://redhat-sap.github.io/demo.sap_install"
 markdown: GFM
 remote_theme: just-the-docs/just-the-docs
 # https://just-the-docs.github.io/just-the-docs/docs/configuration/
 #logo: "assets/img/logo-RHAAP.png"
 logo: "assets/img/logo-awx.png"
 aux_links:
-  "Main Page":
+  "SAP LinuxLab Main Page":
     - "//sap-linuxlab.github.io"
-  "Playbook examples":
-    - "//github.com/sap-linuxlab/demo.sap_install"
+  "Source Code for these Examples":
+    - "//github.com/redhat-sap/demo.sap_install"
+  "More Source Code Examples":
+    - "//github.com/sap-linuxlab/ansible.playbooks_for_sap"
 aux_links_new_tab: true
 
 search_enabled: true

@@ -19,17 +19,17 @@
 
   tasks:
     - name: Ensure network is configured correctly
-      include_role:
+      ansible.builtin.include_role:
         name: fedora.linux_system_roles.network
 
     - name: Ensure timesync is configured correctly
-      include_role:
+      ansible.builtin.include_role:
         name: fedora.linux_system_roles.timesync
 
     - name: Ensure system is properly subscribed
-      include_role:
+      ansible.builtin.include_role:
         name: community.sap_operations.sap_rhsm
 
     - name: Ensure storage is configured correctly
-      include_role:
+      ansible.builtin.include_role:
         name: fedora.linux_system_roles.storage

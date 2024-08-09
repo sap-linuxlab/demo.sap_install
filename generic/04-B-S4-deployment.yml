@@ -5,14 +5,14 @@
 #
 
 - name: Install S4
-  hosts: s4hanas
+  hosts: "{{ group_nw | d('s4hanas') }}"
   become: true
 
   tasks:
     - name: Output all variables
-      debug:
+      ansible.builtin.debug:
         var: hostvars[inventory_hostname]
-        verbosity: 1
+        verbosity: 2
 
     # The following tasks are a work around until the extract directory
     # can be specified in the parameters of sap_swpm
@@ -28,15 +28,15 @@
         owner: root
         group: root
 
-    - name: copy installation archives from NFS to local disk
+    - name: Copy installation archives from NFS to local disk
       ansible.builtin.copy:
         src: "{{ sap_swpm_software_directory + '/' }}"
-        dest: "{{ sap_swpm_software_extract_directory + '/'}}"
+        dest: "{{ sap_swpm_software_extract_directory + '/' }}"
+        mode: preserve
         remote_src: true
 
-    - name: execute the SWPM Installation
-      include_role:
+    - name: Execute the SWPM Installation
+      ansible.builtin.include_role:
         name: community.sap_install.sap_swpm
       vars:
         sap_swpm_software_path: "{{ sap_swpm_software_extract_directory }}"
-
