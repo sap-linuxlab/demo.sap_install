@@ -1,0 +1,41 @@
+- name: Delete DEMO Setup
+  block: # <- Run as block, to add AWX Passwd into temprary environment
+  - name: delte default job
+    awx.awx.job_template:
+      name: "Demo Job Template"
+      organization: "Default"
+      state: absent
+
+  - name: remove default project
+    awx.awx.project:
+      name: "Demo Project"
+      state: absent
+
+  - name: remove demo inventory host
+    awx.awx.host:
+      name: "localhost"
+      inventory: "Demo Inventory"
+      state: absent
+
+  - name: remove Inventory
+    awx.awx.inventory:
+      name: "Demo Inventory"
+      organization: "Default"
+      state: absent
+
+  - name: remove Machine Credential
+    awx.awx.credential:
+      name: "Demo Credential"
+      state: absent
+      credential_type: Machine
+
+  - name: remove Organization
+    awx.awx.organization:
+      name: "Default"
+      state: absent
+  environment:
+    CONTROLLER_PASSWORD: "{{ awxadmin.resources[0].data.password | b64decode }}"
+  rescue: # <- If Demo is already Deleted, Block will cause error. Rescue will continue PB
+  - name: Already Deleted
+    ansible.builtin.debug:
+      msg: 'Demo Environment already deleted'

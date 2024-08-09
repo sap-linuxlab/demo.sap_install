@@ -1,0 +1,275 @@
+---
+- name: Create Contoller Server
+  hosts: localhost
+  gather_facts: false
+  tags:
+    - install_awx
+    - install_k3s
+
+  # Required parameters for this playbook
+  # type : cloudtype (azure, digitalocean, ec2, gcp or vmware)
+  # instance_name: Name der vm
+  # instance_flavor
+  # Azure
+  # azure_resource_group
+  # azure_location
+  # -- see:  https://gitlab.com/ansible-ssa/role-instance/-/blob/main/defaults/main.yml?ref_type=heads
+
+  # Required Environment variables:
+  # For Azure:
+
+  tasks:
+    - name: Check for required variables
+      ansible.builtin.assert:
+        that:
+          - hash is defined
+          - hash is string
+          - hash | length > 0
+          - type is defined
+        fail_msg: "Variable definition wrong or missing"
+
+    - name: Ensure SSH Keydirectory exists
+      ansible.builtin.file:
+        path: "/tmp/{{ hash }}"
+        state: directory
+        mode: '0700'
+
+    - name: Create new SSH keypair
+      community.crypto.openssh_keypair:
+        path: "/tmp/{{ hash }}/idrsa"
+        type: rsa
+        size: 4096
+
+    - name: Check that file idrsa exists
+      ansible.builtin.stat:
+        path: '/tmp/{{ hash }}/idrsa'
+      register: _idrsa
+
+    - name: Check that file idrsa.pub exists
+      ansible.builtin.stat:
+        path: '/tmp/{{ hash }}/idrsa.pub'
+      register: _idrsapub
+
+    - name: Assert that keys are generated
+      ansible.builtin.assert:
+        that:
+          - _idrsa.stat.exists
+          - _idrsa.stat.size > 0
+          - _idrsapub.stat.exists
+          - _idrsapub.stat.size >0
+        fail_msg: "SSH Keys are not generated successfully"
+        success_msg: "SSH Keys are generated successfully in /tmp/{{ hash }}"
+
+    - name: Read keys into variables
+      ansible.builtin.set_fact:
+        controller_ansible_private_key: "{{ lookup('file', '/tmp/' + hash + '/idrsa') }}"
+        controller_ansible_public_key: "{{ lookup('file', '/tmp/' + hash + '/idrsa.pub') }}"
+
+    ## TODO: Evtl muss auf EC2 und GCP das Keypair angelegt werden
+
+    - name: Create Cloud Server for AWX Controller
+      ansible.builtin.include_role:
+        name: ansible_ssa.general.instance
+      vars:
+        instance_name: "controller" # noqa var-naming[no-role-prefix]
+        instance_group: "controller_group"
+        instance_parameters: "{{ controller_instance_parameters | default({}) }}"
+        instance_wait_for_connection: true
+        azure_ssh_public_key: "{{ controller_ansible_public_key }}"
+
+    - name: Display login information
+      ansible.builtin.debug:
+        msg: 'Login with ssh -i /tmp/{{ hash }}/idrsa ansible@{{ _azure_public_ip.publicipaddresses[0].ip_address }} '
+
+    - name: Create a group with new host
+      ansible.builtin.add_host:
+        name: "controller"
+        groups: "controller_group"
+        ansible_host: '{{ _azure_public_ip.publicipaddresses[0].ip_address }}'
+        ansible_user: 'ansible'
+        ansible_ssh_private_key_file: /tmp/{{ hash }}/idrsa
+
+##################################################################################
+- name: Configure K3S and install AWX operator
+  hosts: controller_group
+  become: true
+  vars:
+    k3s_version: 'v1.29.6+k3s2'
+    controller_domain: "internal.cloudapp.net"  ## TODO - set dependant on cloud
+  environment:
+    K8S_AUTH_KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  tags:
+    - install_k3s
+  tasks:
+    - name: Ensure host is reachable
+      ansible.builtin.ping:
+      register: ping_result
+      until: ping_result is succeeded
+      retries: 3
+      delay: 5  # Wait 5 seconds between retries
+
+    - name: Ensure proper /etc/hosts entry
+      ansible.builtin.include_role:
+        name: community.sap_install.sap_maintain_etc_hosts
+      vars:
+        sap_maintain_etc_hosts_list:
+          - node_ip: "{{ ansible_default_ipv4.address }}"
+            node_name: "controller"
+            node_domain: "{{ controller_domain }}"
+            state: present
+
+    - name: Update RHEL # noqa package-latest
+      ansible.builtin.package:
+        name: '*'
+        state: latest
+
+    - name: Check cloud type specific diskspace
+      ansible.builtin.include_tasks: check_storage_{{ type }}.yml
+
+    - name: Reboot RHEL
+      ansible.builtin.reboot:
+
+    - name: Ensure host is reachable
+      ansible.builtin.ping:
+      register: ping_result
+      until: ping_result is succeeded
+      retries: 3
+      delay: 5  # Wait 5 seconds between retries
+
+    - name: Ensure required packages installed
+      ansible.builtin.package:
+        name:
+          - python3-pip
+          - git
+          - curl
+        state: present
+
+    - name: Ensure prereqs for kubernetes.core are installed
+      ansible.builtin.pip:
+        name:
+          - kubernetes>=24.2.0
+          - requests-oauthlib
+          - jsonpatch
+        state: present
+
+    - name: Install K3S
+      ansible.builtin.shell: |
+        set -o pipefail
+        curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} sh -s - --write-kubeconfig-mode 644
+      register: _k3s_install_log
+      changed_when: "'[INFO]  No change detected so skipping service start' not in _k3s_install_log.stdout"
+
+    - name: Install helm
+      ansible.builtin.shell: |
+        set -o pipefail
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3  | HELM_INSTALL_DIR=/usr/bin bash
+      args:
+        creates: /usr/bin/helm
+      tags:
+        - install_op
+
+    - name: Install helm repository for awx-operator
+      kubernetes.core.helm_repository:
+        name: awx-operator
+        repo_url: https://ansible.github.io/awx-operator/
+      tags:
+        - install_op
+
+    - name: Install the awx-operator chart
+      kubernetes.core.helm:
+        name: awx-op
+        chart_ref: awx-operator/awx-operator
+        release_namespace: awx
+        create_namespace: true
+        update_repo_cache: true
+        wait: true
+      tags:
+        - install_op
+
+    # TODO -- could be ok with above wait
+    # - name: Check that all pods in awx namespace are running (NOT WORKING)
+    #   kubernetes.core.k8s_info:
+    #     kind: Pod
+    #     namespace: awx
+    #     field_selectors:
+    #       - status.phase=Running
+    #   register: _awx_pods
+    #   until: _awx_pods.resources | length == 0
+    #   retries: 10
+    #   delay: 10
+
+##################################################################################
+  # Workflow of installing AWX:
+  # 1. create namespace: awx
+  # 2. create PVs on localhost
+  # 3. create the secrets for Postgres and AWX
+  # 4. create AWX
+  # can be installed directly  with helm chart: See here https://github.com/kurokobo/awx-on-k3s/blob/main/tips/alternative-methods.md
+- name: Install AWX
+  hosts: controller_group
+  become: true
+  vars:
+    controller_domain: "internal.cloudapp.net" ### TODO -- set dependant on cloud type
+    controller_svc_name: "controller"          ### TODO -- try with awx later
+  environment:
+    K8S_AUTH_KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  tags:
+    - install_awx
+  tasks:
+    - name: Create directory /tmp/base
+      ansible.builtin.file:
+        path: /tmp/base
+        state: directory
+        mode: '0755'
+
+    - name: Copy templates from base to /tmp/base
+      ansible.builtin.template:
+        src: base/{{ item }}
+        dest: /tmp/base/{{ item | basename }}
+        mode: '0644'
+      loop:
+        - awx.yaml.j2
+        - kustomization.yaml.j2
+
+    - name: Copy files from base to /tmp/base
+      ansible.builtin.copy:
+        src: base/{{ item }}
+        dest: /tmp/base/{{ item }}
+        mode: '0644'
+      loop:
+        - pv.yaml
+        - pvc.yaml
+
+    - name: Create self-signed certificate in base
+      ansible.builtin.command:
+        cmd: >
+          openssl req -x509 -nodes -days 3650 -newkey rsa:2048
+          -out ./tls.crt -keyout ./tls.key
+          -subj "/CN={{ controller_svc_name }}.{{ controller_domain }}/O={{ controller_svc_name }}.{{ controller_domain }}"
+          -addext "subjectAltName = DNS:controller.{{ controller_domain }}"
+        creates: /tmp/base/tls.crt
+        chdir: /tmp/base
+      register: _cert_creation
+
+    - name: Create AWX from kustomization.yaml
+      ansible.builtin.command:
+        cmd: /usr/local/bin/kubectl apply -k base
+        chdir: /tmp
+
+      # ansible.builtin.shell: |
+      #  set -o pipefail
+      #  cat <<EOF | kubectl apply -f -
+      #  apiVersion: v1
+      #  kind: Secret
+      #  metadata:
+      #    name: awx-tls-secret
+      #    namespace: awx
+      #  type: Opaque
+      #  data:
+      #    tls.crt: {{ lookup('file', '/tmp/base/controller/controller.crt') | b64encode }}
+      #    tls.key: {{ lookup('file', '/tmp/base/controller/controller.key') | b64encode }}
+      #  EOF
+      # args:
+      #  executable: /bin/bash
+      # register: _awx_tls_secret_result
+      # changed_when: "'created' in _awx_tls_secret_result.stdout"

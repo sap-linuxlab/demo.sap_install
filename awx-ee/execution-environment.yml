@@ -25,6 +25,9 @@ dependencies:
         - name: community.sap_operations
         - name: community.sap_install
         - name: community.sap_launchpad
+        - name: community.crypto 
+        - name: kubernetes.core
+        - name: ansible.utils
   python: requirements.txt
   # system: bindep.txt
   

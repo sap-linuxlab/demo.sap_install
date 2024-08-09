@@ -1,0 +1,5 @@
+
+- statt https auf port 8443 und http auf 8000, Variable mit SSL=TRUE/FALSE reinreichen und einfach ssl.enable definiern
+- -v directory mit certifikaten optional reinreichen oder selfsigned, wenn leer bzw. undefiniert
+- hierzu best practise mit Andreas/Wanja besprechen
+

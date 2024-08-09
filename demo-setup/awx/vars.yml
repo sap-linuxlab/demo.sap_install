@@ -1,0 +1,55 @@
+awxsetup:
+  name: awx01
+  baseurl: rhel.example.com
+  kubeconfig: ~/.kube/config
+  namespace: awx
+
+org:
+  name: "Org 1"
+  desc: "My Organization"
+
+project:
+  name: "Project 1"
+  desc: "My wonderful AWX Project"
+  scm:  << SCM URL for Project >>
+
+ee:
+  ee_ce9:
+    image: "quay.io/ansible/awx-ee" # <- Your EE URL here
+
+inventory:
+  name: "inv1"
+  description: "Some static Servers"
+
+inventory_host:
+  srv01.example.com:
+    description: "My first Server"
+    ip: 192.168.1.1
+  srv02.example.com:
+    description: "My second Server"
+    ip: 192.168.1.2
+  cloud.provider.com:
+    description: "My Cloud Server"
+    ip: 1.2.3.4
+    port: 1234   # <- Only if not 22
+
+jobtmpl:
+  firstjob:
+    name: "Run first Ansible Job"
+    type: "run"
+    inv: "inv1"
+    credential: << My Machine Credential >> # <- as defined in secrets
+    pb: "first.yml"
+    ee: "AWX EE (latest)" # <- or my custome EE as above
+    exv: # <- Extra Variables
+      first: "First extra Variable"
+      second: "second extra Variable"
+  secondjob:
+    name: "Another Ansible Job Template"
+    type: "run"
+    inv: "inv1"
+    credential: << My Machine Credential >> # <- as defined in secrets
+    pb: "second.yml"
+    ee: "ee_ce9"
+    exv:
+      null: null 

@@ -1,0 +1,17 @@
+- name: Create AWX Route
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      kind: Route
+      apiVersion: route.openshift.io/v1
+      metadata:
+        name: "{{ awxsetup.name }}-route"
+        namespace: "{{ awxsetup.namespace }}"
+      spec:
+        host: "{{ awxsetup.name }}.{{ awxsetup.baseurl }}"
+        to:
+          kind: Service
+          name: "{{ awxsetup.name }}-service"
+        port:
+          targetPort: http
+        wildcardPolicy: None

@@ -1,0 +1,19 @@
+- name: Create AWX
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: awx.ansible.com/v1beta1
+      kind: AWX
+      metadata:
+        name: "{{ awxsetup.name }}"
+        namespace: "{{ awxsetup.namespace }}"
+      spec:
+        admin_user: admin
+        admin_password_secret: "{{ awxsetup.name }}-admin-password"
+        postgres_storage_requirements:
+          requests:
+            storage: 10Gi
+        projects_persistence: true
+        projects_storage_size: 10Gi
+        projects_storage_access_mode: ReadWriteOnce
+        auto_upgrade: true

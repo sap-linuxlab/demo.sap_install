@@ -1,0 +1,21 @@
+- name: Wait for the AWX Api to be accessible
+  ansible.builtin.uri:
+    url: "http://{{ awxsetup.name }}.{{ awxsetup.baseurl }}/api/v2/ping"
+  register: result
+  until: "result.status == 200"
+  retries: 30
+  delay: 10
+
+- name: Pause 30 Seconds to settle API # <- Even if API becomes accessible, it will not work right away. Wait needed
+  ansible.builtin.pause:
+    seconds: 30
+
+- name: Get Admin PW
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ awxsetup.name }}-admin-password"
+    namespace: "{{ awxsetup.namespace }}"
+  register: awxadmin
+  # Password will be in: {{ awxadmin.resources[0].data.password | b64decode }}
+

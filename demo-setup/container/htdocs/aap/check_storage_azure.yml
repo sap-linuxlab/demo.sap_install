@@ -1,0 +1,46 @@
+---
+# Ensures that the Azure VM contains
+# - >10GB in /data for the PVs
+# - >10GB in /var/lib/rancher for K3S
+
+# Find  unused disks
+# - name: find unused disks
+#   set_fact:
+#     unused_disks: "{{ unused_disks|default([]) + [ item.key ] }}"
+#   when:
+#     - not item.value.partitions
+#     - not item.value.holders
+#     - item.key | regex_search ("sd")
+#   with_dict: "{{ ansible_devices }}"
+
+# - name: Print the list of unused disks
+#   ansible.builtin.debug:
+#     var: unused_disks|default([])
+
+- name: Ensure additional LVs with required sizes are created
+  ansible.builtin.include_role:
+    name: fedora.linux_system_roles.storage
+  vars:
+    storage_pools:
+      - name: rootvg
+        disks: "{{ ansible_lvm['pvs'] | dict2items | selectattr('value.vg', 'eq', 'rootvg') |  map(attribute='key') | list  }}"
+        volumes:
+          - name: datavg
+            size: 11Gi
+            fs_type: xfs
+            mount_point: /data
+          - name: k3svg
+            size: 11Gi
+            fs_type: xfs
+            mount_point: /var/lib/rancher
+
+- name: Create directory /data/postgres-15
+  ansible.builtin.file:
+    path: /data/postgres-15
+    state: directory
+
+- name: Create directory /data/projects with UID 1000
+  ansible.builtin.file:
+    path: /data/projects
+    state: directory
+    owner: "ansible"

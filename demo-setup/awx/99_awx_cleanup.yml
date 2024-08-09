@@ -1,0 +1,53 @@
+---
+- name: Remove AWX
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - secrets.yml
+    - vars.yml
+
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ awxsetup.kubeconfig }}"
+
+  tasks:
+  - name: delete  AWX Route # <- Change to ingress cleanup when using Ingress instead of Route
+    kubernetes.core.k8s:
+      state: absent
+      definition:
+        kind: Route
+        apiVersion: route.openshift.io/v1
+        metadata:
+          name: "{{ awxsetup.name }}-route"
+          namespace: "{{ awxsetup.namespace }}"
+
+  - name: Delete AWX
+    kubernetes.core.k8s:
+      state: absent
+      definition:
+        apiVersion: awx.ansible.com/v1beta1
+        kind: AWX
+        metadata:
+          name: "{{ awxsetup.name }}"
+          namespace: "{{ awxsetup.namespace }}"
+
+  - name: Delete Secret
+    kubernetes.core.k8s:
+      state: absent
+      definition:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: "{{ awxsetup.name }}-admin-password"
+          namespace: "{{ awxsetup.namespace }}"
+
+  - name: Delete DB PVC # <- Optional. If not run, a new awx rollout will preserve the DB 
+    kubernetes.core.k8s:
+      state: absent
+      definition:
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: "postgres-13-{{ awxsetup.name }}-postgres-13-0"
+          namespace: "{{ awxsetup.namespace }}"
