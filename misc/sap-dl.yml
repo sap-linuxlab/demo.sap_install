@@ -11,53 +11,10 @@ s4fndn2021:
   - S4FND106_INST_EXPORT_7.zip
   - S4FND106_INST_EXPORT_8.zip
   - S4FND106_NW_LANG_DE.SAR
-  - 
-ERROR. More than 1 result, manual intervention required....
-Identified 19118000000000006243 : S4FND106_NW_LANG_EN.SAR, CD
-Identified 19118000000000010048 : S4FND106_NW_LANG_EN.SAR, CD
-  - 
-ERROR. More than 1 result, manual intervention required....
-Identified igsexe_0-70005417.sar : Installation for SAP IGS integrated in SAP Kernel, Support Package SAP IGS 7.81 Linux on x86_64 64bit
-Identified igsexe_1-70005417.sar : Installation for SAP IGS integrated in SAP Kernel, Support Package SAP IGS 7.81 Linux on x86_64 64bit
-Identified igsexe_2-70005417.sar : Installation for SAP IGS integrated in SAP Kernel, Support Package SAP IGS 7.81 Linux on x86_64 64bit
-Identified igsexe_3-70005417.sar : Installation for SAP IGS integrated in SAP Kernel, Support Package SAP IGS 7.81 Linux on x86_64 64bit
-Identified igsexe_4-70005417.sar : Installation for SAP IGS integrated in SAP Kernel, Support Package SAP IGS 7.81 Linux on x86_64 64bit
-  - 
-ERROR. More than 1 result, manual intervention required....
-Identified igshelper_0-10010245.sar : SAP IGS Fonts and Textures, Support Package SAP IGS HELPER # OS independent
-Identified igshelper_15-10010245.sar : SAP IGS Fonts and Textures, Support Package SAP IGS HELPER # OS independent
-Identified igshelper_17-10010245.sar : SAP IGS Fonts and Textures, Support Package SAP IGS HELPER # OS independent
-Identified igshelper_3-10010245.sar : SAP IGS Fonts and Textures, Support Package SAP IGS HELPER # OS independent
-Identified igshelper_4-10010245.sar : SAP IGS Fonts and Textures, Support Package SAP IGS HELPER # OS independent
-  # SAPEXE_100-80005374.SAR
-  - 
-ERROR. More than 1 result, manual intervention required....
-Identified ENSA2_336-80005374.SAR : Standalone Enqueue Server 2, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified R3trans_331-80005374.SAR : R3TRANS, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified SAPEXE_100-80005374.SAR : Kernel Part I (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified SAPEXE_16-80005374.SAR : Kernel Part I (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified SAPEXE_200-80005374.SAR : Kernel Part I (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified SAPEXE_300-80005374.SAR : Kernel Part I (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified SAPEXE_5-80005374.SAR : Kernel Part I (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified SAPEXE_50-80005374.SAR : Kernel Part I (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified SAPEXE_69-80005374.SAR : Kernel Part I (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified SAPEXE_7-80005374.SAR : Kernel Part I (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified SAPEXE_9-80005374.SAR : Kernel Part I (785), Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified SAPSLDREG_246-80005374.SAR : SAPSLDREG, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified SNMPLIB_225-80005374.SAR : snmplib, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified ccmagent_319-80005374.sar : CCMAGENT, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified dw_340-80005374.sar : disp+work package, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified dw_utils_340-80005374.sar : Kernel utilities, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified sapftp_318-80005374.sar : SAPFTP, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified saphttp_254-80005374.sar : SAPHTTP, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified sapkprotp_242-80005374.sar : SAPKPROTP, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified saplicense_329-80005374.sar : SAPLICENSE, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified sapmc_328-80005374.sar : SAPMC, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified sapnwrfc_339-80005374.sar : sapnwrfc, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified saprouter_218-80005374.sar : SAPROUTER, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified sapwebgui_339-80005374.sar : SAP GUI for HTML patch, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-Identified tp_336-80005374.sar : TP, Support Package SAP KERNEL 7.85 64-BIT UNICODE Linux on x86_64 64bit #Database independent
-  # SAPEXEDB_100-80005373.SAR
+  - S4FND106_NW_LANG_EN.SAR
+  - igsexe_1-70005417.sar
+  - igshelper_17-10010245.sar
+  - SAPEXE_200-80005374.SAR
   - SAPEXEDB_200-80005373.SAR
   - SAPHOSTAGENT58_58-80004822.SAR
 s4fndn2022: []
